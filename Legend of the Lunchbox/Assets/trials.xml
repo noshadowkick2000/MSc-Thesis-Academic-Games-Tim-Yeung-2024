@@ -1,0 +1,18 @@
+<root>
+    <level>
+        <encounter enemy="chair" health="2">
+            <property>wooden</property>
+            <property>sitting</property>
+            <property>sharp</property>
+            <property>sleeping</property>
+            <property>hot</property>
+        </encounter>
+        <encounter enemy="bicycle" health="2">
+            <property>riding</property>
+            <property>metal</property>
+            <property>hitting</property>
+            <property>enormous</property>
+            <property>edible</property>
+        </encounter>
+    </level>
+</root>
