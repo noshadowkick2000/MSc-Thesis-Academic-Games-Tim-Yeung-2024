@@ -1,4 +1,5 @@
 using Assets;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,16 +18,27 @@ public class Encounter : MonoBehaviour
   
   private void Awake()
   {
-    health = startingHealth;
-    engine = GameObject.FindObjectOfType<GameEngine>();
+    engine = FindObjectOfType<GameEngine>();
   }
 
-  private void Init(int enemyId, int startingHealth, int[] propertyIds, bool[] validProperty)
+  public void Init(int enemyId, int startingHealth, int[] propertyIds, bool[] validProperty)
   {
     this.enemyId = enemyId;
     this.startingHealth = startingHealth;
     this.propertyIds = propertyIds;
     this.validProperty = validProperty;
+    health = startingHealth;
+  }
+
+  public override string ToString()
+  {
+    return $"------" +
+      $"{Environment.NewLine}" +
+      $"Enemy id: {enemyId} | Starting health: {startingHealth} | Property ids: {propertyIds} | Correct properties: {validProperty} " +
+      $"{Environment.NewLine}" +
+      $"Current enemy health: {health} | Properties used: {currentProperty}" +
+      $"{Environment.NewLine}" +
+      $"------";
   }
 
 
@@ -34,7 +46,7 @@ public class Encounter : MonoBehaviour
   /// Evaluates input from player for current item
   /// </summary>
   /// <returns>(bool) true if input was correct</returns>
-  private bool EvaluateInput(bool valid)
+  public bool EvaluateInput(bool valid)
   {
     bool correct = valid == validProperty[currentProperty];
     currentProperty++;
@@ -48,7 +60,7 @@ public class Encounter : MonoBehaviour
     return correct;
   }
 
-  private void DealDamage()
+  public void DealDamage()
   {
     health--;
     if (health == 0)
@@ -57,12 +69,12 @@ public class Encounter : MonoBehaviour
     }
   }
 
-  private void Appear()
+  public void Appear()
   {
     //TODO
   }
 
-  private void Die()
+  public void Die()
   {
     //TODO
   }

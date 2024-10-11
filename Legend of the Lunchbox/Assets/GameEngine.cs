@@ -22,19 +22,25 @@ namespace Assets
     }
 
     private GameState state = GameState.CUTSCENE;
-    private Logger logger;
+
+    [SerializeField] private string logFolderInDocs = "LotL";
 
     private void Awake()
     {
-      logger = GetComponent<Logger>();
+      Logger.Awake(logFolderInDocs);
       StateChange(GameState.CUTSCENE);
+    }
+
+    private void OnDestroy()
+    {
+      Logger.OnDestroy();
     }
 
 
     public void StateChange(GameState newState)
     {
       state = newState;
-      logger.Log($"State changed to {nameof(state)}");
+      Logger.Log($"State changed to {nameof(state)}");
 
       switch (state)
       {
