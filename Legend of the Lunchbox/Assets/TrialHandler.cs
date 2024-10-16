@@ -1,3 +1,4 @@
+using Assets;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,9 +11,8 @@ using UnityEngine.Windows;
 
 public class TrialHandler : MonoBehaviour
 {
-  [SerializeField] private string pathToTrials;
-  [SerializeField] private int levelId = 0;
   private List<Encounter> encounters = new List<Encounter>();
+  private int encounterCounter = 0;
 
   private int GetId(string name)
   {
@@ -21,14 +21,20 @@ public class TrialHandler : MonoBehaviour
 
   private void Awake()
   {
-    XmlDocument doc = new XmlDocument();
-    doc.Load(@pathToTrials);
+    LoadEncounters();
+    PrepareModels();
+  }
 
-    XmlNode level = doc.DocumentElement.ChildNodes[levelId];
+  private void LoadEncounters()
+  {
+    XmlDocument doc = new XmlDocument();
+    doc.Load(@GameEngine.PathToTrials);
+
+    XmlNode level = doc.DocumentElement.ChildNodes[GameEngine.LevelId];
 
     Transform objectRoot = new GameObject("EncounterHolder").transform;
     objectRoot.parent = transform;
-    
+
     try
     {
       foreach (XmlNode encounter in level.ChildNodes)
@@ -48,14 +54,41 @@ public class TrialHandler : MonoBehaviour
         Logger.Log($"Loaded encounter: {Environment.NewLine}{enc.ToString()}");
         encounters.Add(enc);
       }
+
       Logger.Log($"Finished loading successfully, {encounters.Count} encounters loaded");
     }
-    catch (Exception ex) 
-    { 
+    catch (Exception ex)
+    {
       Logger.Log(ex.ToString());
       Logger.Log("Failed to load all encounters");
     }
-    
-    
+  }
+
+  private Dictionary<int, Transform> objectDictionary = new Dictionary<int, Transform>();
+  private void PrepareModels()
+  {
+    foreach (GameObject obj in GameEngine.PropertiesAndObjects)
+    {
+      Transform spawnedPrefab = Instantiate(obj, transform).transform;
+      spawnedPrefab.gameObject.SetActive(false);
+      objectDictionary.Add(GetId(obj.name), spawnedPrefab);
+    }
+  }
+
+  public Encounter GetEncounter()
+  {
+    return encounters[encounterCounter];
+  }
+
+  public Transform ActivateObject(int id)
+  {
+    objectDictionary[id].gameObject.SetActive(true);
+    return objectDictionary[id];
+  }
+
+  public void CompleteEncounter(int id)
+  {
+    objectDictionary[id].gameObject.SetActive(false);
+    encounterCounter++;
   }
 }
