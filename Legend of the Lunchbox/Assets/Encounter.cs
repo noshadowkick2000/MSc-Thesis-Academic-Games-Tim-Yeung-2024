@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class Encounter : MonoBehaviour
 {
-  private GameEngine engine;
+  //private GameEngine engine;
   private int enemyId;
   public int GetEnemyId()
   {
@@ -31,7 +31,7 @@ public class Encounter : MonoBehaviour
   
   private void Awake()
   {
-    engine = FindObjectOfType<GameEngine>();
+    //engine = FindObjectOfType<GameEngine>();
   }
 
   public void Init(int enemyId, int startingHealth, int[] propertyIds, bool[] validProperty)
