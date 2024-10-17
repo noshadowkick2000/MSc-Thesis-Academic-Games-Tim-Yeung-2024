@@ -34,6 +34,7 @@ namespace Assets
     [SerializeField] private float bagStartTime = 1.0f;
     [SerializeField] private float pullingTime = 0.5f;
     [SerializeField] private float enemyTimeOut = 4.0f;
+    [SerializeField] private float feedbackTime = 2.0f;
 
     [Header("Assets")]
     [SerializeField] private GameObject[] propertiesAndObjects;
@@ -113,8 +114,10 @@ namespace Assets
           TimedOut();
           break;
         case GameState.DAMAGINGPLAYER:
+          DamagingPlayer();
           break;
         case GameState.DAMAGINGENEMY:
+          DamagingEnemy();
           break;
         case GameState.ENDINGENCOUNTER:
           break;
@@ -140,34 +143,36 @@ namespace Assets
       StateChange(nextState);
     }
 
+    private Encounter curEncounter;
     private void StartOnRail()
     {
+      //Have the trial manager give an encounter which gives an object to transition to.
+      curEncounter = trialHandler.GetEncounter();
+     
       float duration = Random.Range(minimumWalkTime, maximumWalkTime);
 
       StartCoroutine(Timer(duration, GameState.STARTINGENCOUNTER));
     }
 
-    private Encounter curEncounter;
-    private Transform obj;
-
+    private Transform curEnemy;
     private void StartEncounter()
     {
-      //Have the trial manager give an encounter which gives an object to transition to.
-      curEncounter = trialHandler.GetEncounter();
-      obj = trialHandler.ActivateObject(curEncounter.GetEnemyId());
-      cameraController.ShowObject(obj, encounterStartTime);
-      
+      curEnemy = trialHandler.ActivateObject(curEncounter.GetEnemyId());
+      cameraController.ShowObject(curEnemy, encounterStartTime);
+
       StartCoroutine(Timer(encounterStartTime, GameState.SHOWINGENEMY));
       //cameraController.ShowObject()
     }
 
     private void ShowingEnemy()
     {
+      Logger.Log($"Enemy: {curEncounter.GetEnemyId()}");
       StartCoroutine(Timer(enemyShowTime, GameState.SHOWINGBAG));
     }
 
     private void ShowingBag()
     {
+      Logger.Log("Showing bag");
       cameraController.ShowObject(playerController.GetBag(), bagStartTime);
       StartCoroutine(Timer(bagStartTime, GameState.PULLINGOOBJECT));
     }
@@ -176,6 +181,7 @@ namespace Assets
     Coroutine timerRoutine;
     private void PullObject()
     {
+      Logger.Log(curEncounter.CurrentPropertyInfo());
       acceptingInput = true;
 
       timerRoutine = StartCoroutine(Timer(enemyTimeOut, GameState.DAMAGINGPLAYER));
@@ -184,18 +190,43 @@ namespace Assets
     private void EvaluatingInput()
     {
       acceptingInput = false;
-
-      bool correct = curEncounter.EvaluateInput(input == InputState.Using);
-      if (correct) { StateChange(GameState.DAMAGINGENEMY); }
-      else { StateChange(GameState.DAMAGINGPLAYER); }
-
       StopCoroutine(timerRoutine);
       timerRoutine = null;
+
+      bool correct = curEncounter.EvaluateInput(input == InputState.Using);
+      Logger.Log($"Input correct: {correct}");
+      if (correct) { StateChange(GameState.DAMAGINGENEMY); }
+      else { StateChange(GameState.DAMAGINGPLAYER); }
     }
 
     private void TimedOut()
     {
+      Logger.Log("No player input");
       acceptingInput = false;
+
+      StateChange(GameState.DAMAGINGPLAYER);
+    }
+
+    private void DamagingPlayer()
+    {
+      playerHealth--;
+
+      if (playerHealth == 0) { }//TODO DIE
+      else StateChange(GameState.STARTINGENCOUNTER);
+      
+    }
+
+    private void DamagingEnemy()
+    {
+      cameraController.ShowObject(curEnemy, feedbackTime / 2);
+      bool dying = curEncounter.DealDamage();
+      if (dying)
+      {
+        trialHandler.CompleteEncounter(curEncounter.GetEnemyId());
+        curEncounter.Die();
+        StateChange(GameState.ONRAIL);
+      }
+      StartCoroutine(Timer(feedbackTime, GameState.STARTINGENCOUNTER));
     }
 
     private enum InputState

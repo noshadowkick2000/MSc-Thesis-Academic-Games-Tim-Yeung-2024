@@ -18,15 +18,7 @@ public class Encounter : MonoBehaviour
 
   // Properties are given numerical identifiers, enemy compares id to their weakness list
   private int[] propertyIds;
-  public int[] GetPropertIds()
-  {
-    return propertyIds;
-  }
   private bool[] validProperty;
-  public bool[] GetValidProperty ()
-  {
-    return validProperty;
-  }
   private int currentProperty = 0;
   
   private void Awake()
@@ -62,6 +54,11 @@ public class Encounter : MonoBehaviour
       $"------";
   }
 
+  public string CurrentPropertyInfo()
+  {
+    return $"Current property: {propertyIds[currentProperty]} | {validProperty[currentProperty]}";
+  }
+
 
   /// <summary>
   /// Evaluates input from player for current item
@@ -71,26 +68,23 @@ public class Encounter : MonoBehaviour
   {
     bool correct = valid == validProperty[currentProperty];
     currentProperty++;
-    if (correct && valid)
-      DealDamage();
-    //else if (!correct)
-    //  engine.DamagePlayer();
-    
-    //TODO handle playing animations etc
 
     return correct;
   }
 
-  public void DealDamage()
+  /// <summary>
+  /// Deal damage to the enemy
+  /// </summary>
+  /// <returns>returns true if enemy's health is depleted</returns>
+  public bool DealDamage()
   {
     health--;
     if (health == 0)
-    {
-      Die();
-    }
+      return true;
+    return false;
   }
 
-  private void Die()
+  public void Die()
   {
     //TODO
   }
