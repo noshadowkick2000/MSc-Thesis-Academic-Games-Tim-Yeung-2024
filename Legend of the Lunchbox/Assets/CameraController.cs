@@ -6,9 +6,14 @@ public class CameraController : MonoBehaviour
 {
   [SerializeField] private Vector3 objectOffset;
 
-  public void ShowObject(Transform showedObject, float duration)
+  public void SmoothToObject(Transform showedObject, float duration)
   {
     StartCoroutine(TransitionCamera(showedObject, duration));
+  }
+
+  public void ImmediateToObject(Transform showedObject)
+  {
+    transform.position = showedObject.position + objectOffset;
   }
 
   private IEnumerator TransitionCamera(Transform showedObject, float duration)

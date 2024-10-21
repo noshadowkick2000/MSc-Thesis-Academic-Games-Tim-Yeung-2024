@@ -13,12 +13,12 @@ namespace Assets
     {
       CUTSCENE,
       ONRAIL,
-      STARTINGENCOUNTER,
-      SHOWINGENEMY,
-      SHOWINGBAG,
-      PULLINGOOBJECT,
-      EVALUATINGINPUT,
-      TIMEDOUT,
+      STARTINGENCOUNTER, //Camera starts panning to enemy
+      SHOWINGENEMY, //Camera shows enemy
+      SETTINGUPMIND, //Camera transitions to player and clouds pop up to frame the thinking
+      THINKINGOFPROPERTY, //Thinking animation is shown
+      EVALUATINGINPUT, //Property is shown and player needs to confirm or reject
+      TIMEDOUT, 
       DAMAGINGPLAYER,
       DAMAGINGENEMY,
       ENDINGENCOUNTER
@@ -31,7 +31,7 @@ namespace Assets
     [SerializeField] private float maximumWalkTime = 8.0f;
     [SerializeField] private float encounterStartTime = 1.0f;
     [SerializeField] private float enemyShowTime = 2.0f;
-    [SerializeField] private float bagStartTime = 1.0f;
+    [SerializeField] private float mindStartTime = 1.0f;
     [SerializeField] private float pullingTime = 0.5f;
     [SerializeField] private float enemyTimeOut = 4.0f;
     [SerializeField] private float feedbackTime = 2.0f;
@@ -72,8 +72,9 @@ namespace Assets
     private void Awake()
     {
       Init();
-
       Logger.Awake(logFolderInDocs, console);
+      trialHandler.Init();
+      
       StateChange(GameState.ONRAIL);
     }
 
@@ -101,11 +102,11 @@ namespace Assets
         case GameState.SHOWINGENEMY:
           ShowingEnemy();
           break;
-        case GameState.SHOWINGBAG:
-          ShowingBag();
+        case GameState.SETTINGUPMIND:
+          SetUpMindFrame();
           break;
-        case GameState.PULLINGOOBJECT:
-          PullObject();
+        case GameState.THINKINGOFPROPERTY:
+          ThinkingOfProperty();
           break;
         case GameState.EVALUATINGINPUT:
           EvaluatingInput();
@@ -158,7 +159,7 @@ namespace Assets
     private void StartEncounter()
     {
       curEnemy = trialHandler.ActivateObject(curEncounter.GetEnemyId());
-      cameraController.ShowObject(curEnemy, encounterStartTime);
+      cameraController.SmoothToObject(curEnemy, encounterStartTime);
 
       StartCoroutine(Timer(encounterStartTime, GameState.SHOWINGENEMY));
       //cameraController.ShowObject()
@@ -167,22 +168,24 @@ namespace Assets
     private void ShowingEnemy()
     {
       Logger.Log($"Enemy: {curEncounter.GetEnemyId()}");
-      StartCoroutine(Timer(enemyShowTime, GameState.SHOWINGBAG));
+      StartCoroutine(Timer(enemyShowTime, GameState.SETTINGUPMIND));
     }
 
-    private void ShowingBag()
+    private void SetUpMindFrame()
     {
-      Logger.Log("Showing bag");
-      cameraController.ShowObject(playerController.GetBag(), bagStartTime);
-      StartCoroutine(Timer(bagStartTime, GameState.PULLINGOOBJECT));
+      Logger.Log("Setting up mind frame");
+      cameraController.ImmediateToObject(playerController.StartMind());
+      
+      StartCoroutine(Timer(mindStartTime, GameState.THINKINGOFPROPERTY));
     }
 
     bool acceptingInput = false;
     Coroutine timerRoutine;
-    private void PullObject()
+    private void ThinkingOfProperty()
     {
       Logger.Log(curEncounter.CurrentPropertyInfo());
       acceptingInput = true;
+      playerController.StartThought();
 
       timerRoutine = StartCoroutine(Timer(enemyTimeOut, GameState.DAMAGINGPLAYER));
     }
@@ -192,6 +195,7 @@ namespace Assets
       acceptingInput = false;
       StopCoroutine(timerRoutine);
       timerRoutine = null;
+      playerController.EndThought();
 
       bool correct = curEncounter.EvaluateInput(input == InputState.Using);
       Logger.Log($"Input correct: {correct}");
@@ -211,17 +215,19 @@ namespace Assets
     {
       playerHealth--;
 
-      if (playerHealth == 0) { }//TODO DIE
-      else StateChange(GameState.STARTINGENCOUNTER);
+      if (playerHealth == 0) { Logger.Log("Played died"); }//TODO DIE
+      else { Logger.Log("Player damaged"); StateChange(GameState.STARTINGENCOUNTER); }
       
     }
 
     private void DamagingEnemy()
     {
-      cameraController.ShowObject(curEnemy, feedbackTime / 2);
+      
+      cameraController.SmoothToObject(curEnemy, feedbackTime / 2);
       bool dying = curEncounter.DealDamage();
       if (dying)
       {
+        Logger.Log("Enemy died");
         trialHandler.CompleteEncounter(curEncounter.GetEnemyId());
         curEncounter.Die();
         StateChange(GameState.ONRAIL);
@@ -240,8 +246,8 @@ namespace Assets
     private void Update()
     {
       input = InputState.None;
-      if (Input.GetButtonDown("use")) { input = InputState.Using; }
-      if (Input.GetButtonDown("discard")) { input = InputState.Discarding; }
+      if (Input.GetButtonDown("Use")) { input = InputState.Using; }
+      if (Input.GetButtonDown("Discard")) { input = InputState.Discarding; }
       Logger.Log($"Input: {input.ToString()}");
 
       if (acceptingInput && input != InputState.None)

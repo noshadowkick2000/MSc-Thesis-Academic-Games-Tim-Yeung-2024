@@ -1,4 +1,4 @@
-<root>
+<!-- <root>
     <level>
         <encounter enemy="chair" health="2">
             <property correct="true">wooden</property>
@@ -13,6 +13,15 @@
             <property correct="false">hitting</property>
             <property correct="false">enormous</property>
             <property correct="false">edible</property>
+        </encounter>
+    </level>
+</root> -->
+
+<root>
+    <level>
+        <encounter enemy="hammer" health="2">
+            <property correct="true">hammering</property>
+            <property correct="true">hammersound</property>
         </encounter>
     </level>
 </root>

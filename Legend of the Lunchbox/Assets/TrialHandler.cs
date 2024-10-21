@@ -19,7 +19,7 @@ public class TrialHandler : MonoBehaviour
     return (name.Aggregate(0, (current, c) => (current * 31) + c));
   }
 
-  private void Awake()
+  public void Init()
   {
     LoadEncounters();
     PrepareModels();
