@@ -593,7 +593,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5162899491460500509}
-  - component: {fileID: 5351778619729382272}
+  - component: {fileID: -6766889533050795710}
   m_Layer: 0
   m_Name: hammering
   m_TagString: Untagged
@@ -618,7 +618,7 @@ Transform:
   - {fileID: 4194419870518499473}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 114.66, z: 0}
---- !u!111 &5351778619729382272
+--- !u!111 &-6766889533050795710
 Animation:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -628,7 +628,8 @@ Animation:
   m_Enabled: 1
   serializedVersion: 3
   m_Animation: {fileID: -203655887218126122, guid: 93d61941f40452a4baee8920d85dcb97, type: 3}
-  m_Animations: []
+  m_Animations:
+  - {fileID: -203655887218126122, guid: 93d61941f40452a4baee8920d85dcb97, type: 3}
   m_WrapMode: 0
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0

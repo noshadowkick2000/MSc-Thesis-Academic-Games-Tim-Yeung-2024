@@ -222,8 +222,8 @@ namespace Assets
     private void EvaluatingInput()
     {
       acceptingInput = false;
-      timerRoutine = null;
       StopCoroutine(timerRoutine);
+      timerRoutine = null;
 
       bool correct = trialHandler.EvaluateProperty(input == InputState.Using);
 
@@ -260,20 +260,26 @@ namespace Assets
     private void EndingEncounter()
     {
       bool won = trialHandler.KillEncounter();
-      if (won) 
-      {
-        Logger.Log("Player defeated enemy");
-        if (trialHandler.LevelOver)
-          StartCoroutine(Timer(encounterStopTime, GameState.CUTSCENE));
-        else
-          StartCoroutine(Timer(encounterStopTime, GameState.ONRAIL));
-      }
-      else
+      if (!won) 
       {
         Logger.Log("Player lost enemy");
         playerHealth--;
-        if (playerHealth == 0) { Logger.Log("Played died"); }//TODO DIE
+        if (playerHealth == 0)
+        { 
+          Logger.Log("Played died");
+          StartCoroutine(Timer(encounterStopTime, GameState.CUTSCENE)); // TODO animations etc
+          return;
+        }
       }
+      else
+      {
+        Logger.Log("Player defeated enemy");
+      }
+
+      if (trialHandler.LevelOver)
+        StartCoroutine(Timer(encounterStopTime, GameState.CUTSCENE));
+      else
+        StartCoroutine(Timer(encounterStopTime, GameState.ONRAIL));
     }
 
     private enum InputState
