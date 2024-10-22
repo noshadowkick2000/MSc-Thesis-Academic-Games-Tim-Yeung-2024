@@ -59,33 +59,50 @@ public class Encounter : MonoBehaviour
     return $"Current property: {propertyIds[currentProperty]} | {validProperty[currentProperty]}";
   }
 
+  public int GetCurrentPropertyId() { return propertyIds[currentProperty]; }
+
+  public bool EncounterOver => currentProperty >= propertyIds.Length;
+
 
   /// <summary>
   /// Evaluates input from player for current item
   /// </summary>
   /// <returns>(bool) true if input was correct</returns>
-  public bool EvaluateInput(bool valid)
+  public bool EvaluateInput(bool used)
   {
-    bool correct = valid == validProperty[currentProperty];
+    bool correct = used == validProperty[currentProperty];
     currentProperty++;
 
     return correct;
   }
 
-  /// <summary>
-  /// Deal damage to the enemy
-  /// </summary>
-  /// <returns>returns true if enemy's health is depleted</returns>
-  public bool DealDamage()
+  public void SkipProperty()
   {
-    health--;
-    if (health == 0)
-      return true;
-    return false;
+    currentProperty++;
   }
 
-  public void Die()
+  public void DealDamage()
   {
-    //TODO
+    health--;
+  }
+
+  public bool EndEncounter()
+  {
+    bool won = health <= 0;
+    if (won)
+      WonEncounter();
+    else
+      LostEncounter();
+    return won;
+  }
+
+  private void WonEncounter()
+  {
+
+  }
+
+  private void LostEncounter()
+  {
+
   }
 }

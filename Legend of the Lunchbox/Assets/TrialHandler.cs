@@ -75,20 +75,100 @@ public class TrialHandler : MonoBehaviour
     }
   }
 
-  public Encounter GetEncounter()
+
+  /// <summary>
+  /// Returns activated object and starts encounter
+  /// </summary>
+  /// <returns></returns>
+  public Transform StartEncounter()
   {
-    return encounters[encounterCounter];
+    int curEncounter = encounters[encounterCounter].GetEnemyId();
+    Transform obj = objectDictionary[curEncounter];
+    obj.gameObject.SetActive(true);
+    return obj;
   }
 
-  public Transform ActivateObject(int id)
+  public int GetCurrentEncounterId()
   {
-    objectDictionary[id].gameObject.SetActive(true);
-    return objectDictionary[id];
+    return encounters[encounterCounter].GetEnemyId();
   }
 
-  public void CompleteEncounter(int id)
+  public string GetCurrentPropertyInfo()
   {
-    objectDictionary[id].gameObject.SetActive(false);
+    return encounters[encounterCounter].CurrentPropertyInfo();
+  }
+
+  /// <summary>
+  /// Spawns property
+  /// </summary>
+  /// <returns></returns>
+  public Transform SpawnProperty()
+  {
+    int propid = encounters[encounterCounter].GetCurrentPropertyId();
+    Transform property = objectDictionary[propid];
+    property.gameObject.SetActive(true);
+    return property;
+  }
+
+  /// <summary>
+  /// Returns true if input was correct and destroys property
+  /// </summary>
+  /// <param name="used"></param>
+  /// <returns></returns>
+  public bool EvaluateProperty(bool used)
+  {
+    int propid = encounters[encounterCounter].GetCurrentPropertyId();
+    Transform property = objectDictionary[propid];
+    property.gameObject.SetActive(false);
+    return encounters[encounterCounter].EvaluateInput(used);
+  }
+
+  public void SkipProperty()
+  {
+    int propid = encounters[encounterCounter].GetCurrentPropertyId();
+    Transform property = objectDictionary[propid];
+    property.gameObject.SetActive(false);
+    encounters[encounterCounter].SkipProperty();
+  }
+
+  public void DamageEncounter()
+  {
+    encounters[encounterCounter].DealDamage();
+  }
+
+  public bool EncounterOver => encounters[encounterCounter].EncounterOver;
+
+  /// <summary>
+  /// Kill encounter and return true if encounter was won
+  /// </summary>
+  /// <returns></returns>
+  public bool KillEncounter()
+  {
+    bool won = encounters[encounterCounter].EndEncounter();
+    int curEncounter = encounters[encounterCounter].GetEnemyId();
+    Transform obj = objectDictionary[curEncounter];
+    obj.gameObject.SetActive(false);
     encounterCounter++;
+
+    return won;
   }
+
+  public bool LevelOver => encounterCounter >= encounters.Count;
+
+  //public Encounter GetEncounter()
+  //{
+  //  return encounters[encounterCounter];
+  //}
+
+  //public Transform ActivateObject(int id)
+  //{
+  //  objectDictionary[id].gameObject.SetActive(true);
+  //  return objectDictionary[id];
+  //}
+
+  //public void CompleteEncounter(int id)
+  //{
+  //  objectDictionary[id].gameObject.SetActive(false);
+  //  encounterCounter++;
+  //}
 }

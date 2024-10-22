@@ -17,10 +17,11 @@ namespace Assets
       SHOWINGENEMY, //Camera shows enemy
       SETTINGUPMIND, //Camera transitions to player and clouds pop up to frame the thinking
       THINKINGOFPROPERTY, //Thinking animation is shown
-      EVALUATINGINPUT, //Property is shown and player needs to confirm or reject
+      SHOWINGPROPERTY, //Property is shown and player needs to confirm or reject
+      EVALUATINGINPUT, 
       TIMEDOUT, 
-      DAMAGINGPLAYER,
-      DAMAGINGENEMY,
+      ANSWERWRONG,
+      ANSWERCORRECT,
       ENDINGENCOUNTER
     }
 
@@ -29,12 +30,13 @@ namespace Assets
     [Header("Experimental Variables")]
     [SerializeField] private float minimumWalkTime = 2.0f;
     [SerializeField] private float maximumWalkTime = 8.0f;
-    [SerializeField] private float encounterStartTime = 1.0f;
-    [SerializeField] private float enemyShowTime = 2.0f;
+    [SerializeField] private float encounterStartTime = 0.5f;
+    [SerializeField] private float enemyShowTime = 3.0f;
     [SerializeField] private float mindStartTime = 1.0f;
     [SerializeField] private float pullingTime = 0.5f;
     [SerializeField] private float enemyTimeOut = 4.0f;
     [SerializeField] private float feedbackTime = 2.0f;
+    [SerializeField] private float encounterStopTime = 2f;
 
     [Header("Assets")]
     [SerializeField] private GameObject[] propertiesAndObjects;
@@ -108,19 +110,23 @@ namespace Assets
         case GameState.THINKINGOFPROPERTY:
           ThinkingOfProperty();
           break;
+        case GameState.SHOWINGPROPERTY:
+          ShowingProperty();
+          break;
         case GameState.EVALUATINGINPUT:
           EvaluatingInput();
           break;
         case GameState.TIMEDOUT:
           TimedOut();
           break;
-        case GameState.DAMAGINGPLAYER:
-          DamagingPlayer();
+        case GameState.ANSWERWRONG:
+          AnswerWrong();
           break;
-        case GameState.DAMAGINGENEMY:
-          DamagingEnemy();
+        case GameState.ANSWERCORRECT:
+          AnswerCorrect();
           break;
         case GameState.ENDINGENCOUNTER:
+          EndingEncounter();
           break;
       }
     }
@@ -144,37 +150,38 @@ namespace Assets
       StateChange(nextState);
     }
 
-    private Encounter curEncounter;
     private void StartOnRail()
-    {
-      //Have the trial manager give an encounter which gives an object to transition to.
-      curEncounter = trialHandler.GetEncounter();
-     
+    {     
       float duration = Random.Range(minimumWalkTime, maximumWalkTime);
 
       StartCoroutine(Timer(duration, GameState.STARTINGENCOUNTER));
     }
 
-    private Transform curEnemy;
     private void StartEncounter()
     {
-      curEnemy = trialHandler.ActivateObject(curEncounter.GetEnemyId());
-      cameraController.SmoothToObject(curEnemy, encounterStartTime);
+      trialHandler.StartEncounter();
+
+      cameraController.SmoothToObject(LocationHolder.EnemyCameraLocation, encounterStartTime);
 
       StartCoroutine(Timer(encounterStartTime, GameState.SHOWINGENEMY));
-      //cameraController.ShowObject()
     }
 
     private void ShowingEnemy()
     {
-      Logger.Log($"Enemy: {curEncounter.GetEnemyId()}");
+      Logger.Log($"Enemy: {trialHandler.GetCurrentEncounterId()}");
+
+      playerController.Idle();
+      
       StartCoroutine(Timer(enemyShowTime, GameState.SETTINGUPMIND));
     }
 
     private void SetUpMindFrame()
     {
       Logger.Log("Setting up mind frame");
-      cameraController.ImmediateToObject(playerController.StartMind());
+
+      playerController.StartMind();
+
+      cameraController.ImmediateToObject(LocationHolder.MindCameraLocation);
       
       StartCoroutine(Timer(mindStartTime, GameState.THINKINGOFPROPERTY));
     }
@@ -183,56 +190,90 @@ namespace Assets
     Coroutine timerRoutine;
     private void ThinkingOfProperty()
     {
-      Logger.Log(curEncounter.CurrentPropertyInfo());
-      acceptingInput = true;
-      playerController.StartThought();
+      if (trialHandler.EncounterOver)
+      {
+        Logger.Log("Encounter over");
 
-      timerRoutine = StartCoroutine(Timer(enemyTimeOut, GameState.DAMAGINGPLAYER));
+        playerController.Idle();
+
+        StateChange(GameState.ENDINGENCOUNTER);
+      }
+      else
+      {
+        Logger.Log(trialHandler.GetCurrentPropertyInfo());
+
+        playerController.StartThought();
+
+        StartCoroutine(Timer(pullingTime, GameState.SHOWINGPROPERTY));
+      }
+    }
+
+    private void ShowingProperty()
+    {
+      acceptingInput = true;
+
+      playerController.EndThought();
+
+      trialHandler.SpawnProperty().position = LocationHolder.PropertyLocation.position;
+
+      timerRoutine = StartCoroutine(Timer(enemyTimeOut, GameState.TIMEDOUT));
     }
 
     private void EvaluatingInput()
     {
       acceptingInput = false;
-      StopCoroutine(timerRoutine);
       timerRoutine = null;
-      playerController.EndThought();
+      StopCoroutine(timerRoutine);
 
-      bool correct = curEncounter.EvaluateInput(input == InputState.Using);
+      bool correct = trialHandler.EvaluateProperty(input == InputState.Using);
+
       Logger.Log($"Input correct: {correct}");
-      if (correct) { StateChange(GameState.DAMAGINGENEMY); }
-      else { StateChange(GameState.DAMAGINGPLAYER); }
+
+      if (correct) { StateChange(GameState.ANSWERCORRECT); }
+      else { StateChange(GameState.ANSWERWRONG); }
     }
 
     private void TimedOut()
     {
       Logger.Log("No player input");
+
       acceptingInput = false;
 
-      StateChange(GameState.DAMAGINGPLAYER);
+      trialHandler.SkipProperty();
+
+      StateChange(GameState.ANSWERWRONG);
     }
 
-    private void DamagingPlayer()
+    private void AnswerWrong()
     {
-      playerHealth--;
-
-      if (playerHealth == 0) { Logger.Log("Played died"); }//TODO DIE
-      else { Logger.Log("Player damaged"); StateChange(GameState.STARTINGENCOUNTER); }
+      Logger.Log("Player gave wrong response"); 
       
+      StartCoroutine(Timer(feedbackTime, GameState.THINKINGOFPROPERTY));
     }
 
-    private void DamagingEnemy()
+    private void AnswerCorrect()
     {
-      
-      cameraController.SmoothToObject(curEnemy, feedbackTime / 2);
-      bool dying = curEncounter.DealDamage();
-      if (dying)
+      trialHandler.DamageEncounter();
+      StartCoroutine(Timer(feedbackTime, GameState.THINKINGOFPROPERTY));
+    }
+
+    private void EndingEncounter()
+    {
+      bool won = trialHandler.KillEncounter();
+      if (won) 
       {
-        Logger.Log("Enemy died");
-        trialHandler.CompleteEncounter(curEncounter.GetEnemyId());
-        curEncounter.Die();
-        StateChange(GameState.ONRAIL);
+        Logger.Log("Player defeated enemy");
+        if (trialHandler.LevelOver)
+          StartCoroutine(Timer(encounterStopTime, GameState.CUTSCENE));
+        else
+          StartCoroutine(Timer(encounterStopTime, GameState.ONRAIL));
       }
-      StartCoroutine(Timer(feedbackTime, GameState.STARTINGENCOUNTER));
+      else
+      {
+        Logger.Log("Player lost enemy");
+        playerHealth--;
+        if (playerHealth == 0) { Logger.Log("Played died"); }//TODO DIE
+      }
     }
 
     private enum InputState
@@ -248,7 +289,7 @@ namespace Assets
       input = InputState.None;
       if (Input.GetButtonDown("Use")) { input = InputState.Using; }
       if (Input.GetButtonDown("Discard")) { input = InputState.Discarding; }
-      Logger.Log($"Input: {input.ToString()}");
+      if (input != InputState.None) { Logger.Log($"Input: {input.ToString()}"); }
 
       if (acceptingInput && input != InputState.None)
       {

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4949076156074294554}
   - component: {fileID: 7611339501166079813}
   m_Layer: 0
-  m_Name: hammersounds
+  m_Name: hammersound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

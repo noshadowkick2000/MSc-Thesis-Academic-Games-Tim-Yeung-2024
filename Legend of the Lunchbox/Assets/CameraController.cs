@@ -4,30 +4,35 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-  [SerializeField] private Vector3 objectOffset;
-
-  public void SmoothToObject(Transform showedObject, float duration)
+  public void SmoothToObject(Transform goal, float duration)
   {
-    StartCoroutine(TransitionCamera(showedObject, duration));
+    Vector3 position = goal.position;
+    Quaternion rotation = goal.rotation;
+    StartCoroutine(TransitionCamera(position, rotation, duration));
   }
 
-  public void ImmediateToObject(Transform showedObject)
+  public void ImmediateToObject(Transform goal)
   {
-    transform.position = showedObject.position + objectOffset;
+    Vector3 position = goal.position;
+    Quaternion rotation = goal.rotation;
+    transform.position = position;
+    transform.rotation = rotation;
   }
 
-  private IEnumerator TransitionCamera(Transform showedObject, float duration)
+  private IEnumerator TransitionCamera(Vector3 position, Quaternion rotation, float duration)
   {
     Vector3 startingPos = transform.position;
-    Vector3 goalPos = showedObject.position + objectOffset;
+    Quaternion startingRot = transform.rotation;
+
     float startTime = Time.realtimeSinceStartup;
     while (Time.realtimeSinceStartup < startTime + duration)
     {
       float x = (Time.realtimeSinceStartup - startTime) / duration;
-      transform.position = Vector3.Lerp(startingPos, goalPos, x);
+      transform.position = Vector3.Lerp(startingPos, position, x);
+      transform.rotation = Quaternion.Lerp(startingRot, rotation, x);
       yield return null;
     }
-    transform.position = goalPos;
-    //transform.LookAt(showedObject.position, Vector3.up);
+    transform.position = position;
+    transform.rotation = rotation;
   }
 }
