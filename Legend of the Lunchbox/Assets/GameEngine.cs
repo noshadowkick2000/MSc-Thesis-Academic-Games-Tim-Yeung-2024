@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using Unity.VisualScripting.Antlr3.Runtime;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Assets
 {
@@ -37,6 +39,7 @@ namespace Assets
     [SerializeField] private float enemyTimeOut = 4.0f;
     [SerializeField] private float feedbackTime = 2.0f;
     [SerializeField] private float encounterStopTime = 2f;
+    [SerializeField] private float playerResetTime = 2f;
 
     [Header("Assets")]
     [SerializeField] private GameObject[] propertiesAndObjects;
@@ -94,6 +97,7 @@ namespace Assets
       switch (state)
       {
         case GameState.CUTSCENE:
+          EndGame();
           break;
         case GameState.ONRAIL:
           StartOnRail();
@@ -150,9 +154,16 @@ namespace Assets
       StateChange(nextState);
     }
 
+    private void EndGame()
+    {
+      SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
+    }
+
     private void StartOnRail()
     {     
       float duration = Random.Range(minimumWalkTime, maximumWalkTime);
+
+      cameraController.ImmediateToObject(LocationHolder.BaseCameraLocation);
 
       StartCoroutine(Timer(duration, GameState.STARTINGENCOUNTER));
     }
@@ -170,7 +181,7 @@ namespace Assets
     {
       Logger.Log($"Enemy: {trialHandler.GetCurrentEncounterId()}");
 
-      playerController.Idle();
+      playerController.Idle(false);
       
       StartCoroutine(Timer(enemyShowTime, GameState.SETTINGUPMIND));
     }
@@ -194,9 +205,11 @@ namespace Assets
       {
         Logger.Log("Encounter over");
 
-        playerController.Idle();
+        playerController.Idle(true);
 
-        StateChange(GameState.ENDINGENCOUNTER);
+        cameraController.ImmediateToObject(LocationHolder.EnemyCameraLocation);
+
+        StartCoroutine(Timer(encounterStopTime, GameState.ENDINGENCOUNTER));
       }
       else
       {
@@ -259,6 +272,8 @@ namespace Assets
 
     private void EndingEncounter()
     {
+      cameraController.SmoothToObject(LocationHolder.BaseCameraLocation, playerResetTime);
+
       bool won = trialHandler.KillEncounter();
       if (!won) 
       {
@@ -267,7 +282,7 @@ namespace Assets
         if (playerHealth == 0)
         { 
           Logger.Log("Played died");
-          StartCoroutine(Timer(encounterStopTime, GameState.CUTSCENE)); // TODO animations etc
+          StartCoroutine(Timer(playerResetTime, GameState.CUTSCENE)); // TODO animations etc
           return;
         }
       }
@@ -277,9 +292,9 @@ namespace Assets
       }
 
       if (trialHandler.LevelOver)
-        StartCoroutine(Timer(encounterStopTime, GameState.CUTSCENE));
+        StartCoroutine(Timer(playerResetTime, GameState.CUTSCENE));
       else
-        StartCoroutine(Timer(encounterStopTime, GameState.ONRAIL));
+        StartCoroutine(Timer(playerResetTime, GameState.ONRAIL));
     }
 
     private enum InputState

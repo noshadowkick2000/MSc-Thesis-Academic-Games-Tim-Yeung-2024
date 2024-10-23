@@ -5,6 +5,8 @@ using UnityEngine;
 public class LocationHolder : MonoBehaviour
 {
   [Header("Camera positions")]
+  [SerializeField] private Transform baseCameraLocation;
+  public static Transform BaseCameraLocation;
   [SerializeField] private Transform mindCameraLocation;
   public static Transform MindCameraLocation;
   [SerializeField] private Transform enemyCameraLocation;
@@ -26,6 +28,7 @@ public class LocationHolder : MonoBehaviour
 
   private void Awake()
   {
+    BaseCameraLocation = baseCameraLocation;
     MindCameraLocation = mindCameraLocation;
     EnemyCameraLocation = enemyCameraLocation;
     EnemyLocation = enemyLocation;
