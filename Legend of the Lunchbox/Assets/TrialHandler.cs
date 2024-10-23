@@ -117,18 +117,35 @@ public class TrialHandler : MonoBehaviour
   /// <returns></returns>
   public bool EvaluateProperty(bool used)
   {
-    int propid = encounters[encounterCounter].GetCurrentPropertyId();
-    Transform property = objectDictionary[propid];
-    property.gameObject.SetActive(false);
+    StartCoroutine(DeActivateProperty(used ? GameEngine.InputState.Using : GameEngine.InputState.Discarding)); // Fix
     return encounters[encounterCounter].EvaluateInput(used);
   }
 
   public void SkipProperty()
   {
+    encounters[encounterCounter].SkipProperty();
+    StartCoroutine(DeActivateProperty(GameEngine.InputState.None));
+  }
+
+  private IEnumerator DeActivateProperty(GameEngine.InputState input)
+  {
     int propid = encounters[encounterCounter].GetCurrentPropertyId();
     Transform property = objectDictionary[propid];
+
+    float duration = 0.5f; // TODO DEPEND ON OTHER TIMINGS
+    float movement = 0.02f;
+
+    float startTime = Time.realtimeSinceStartup;
+    while (Time.realtimeSinceStartup < startTime + duration)
+    {
+      float x = 1 - (Time.realtimeSinceStartup - startTime) / duration;
+      property.localScale = new Vector3(x, x, x);
+      if (input != GameEngine.InputState.None)
+        property.position += new Vector3(input == GameEngine.InputState.Using ? movement : -movement, 0, 0);
+      yield return null;
+    }
+
     property.gameObject.SetActive(false);
-    encounters[encounterCounter].SkipProperty();
   }
 
   public void DamageEncounter()

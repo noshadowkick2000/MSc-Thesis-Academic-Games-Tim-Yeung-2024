@@ -225,7 +225,7 @@ namespace Assets
     {
       acceptingInput = true;
 
-      playerController.EndThought();
+      playerController.EndThought(enemyTimeOut);
 
       trialHandler.SpawnProperty().position = LocationHolder.PropertyLocation.position;
 
@@ -237,6 +237,8 @@ namespace Assets
       acceptingInput = false;
       StopCoroutine(timerRoutine);
       timerRoutine = null;
+
+      playerController.CancelTimer();
 
       bool correct = trialHandler.EvaluateProperty(input == InputState.Using);
 
@@ -297,7 +299,7 @@ namespace Assets
         StartCoroutine(Timer(playerResetTime, GameState.ONRAIL));
     }
 
-    private enum InputState
+    public enum InputState
     {
       None,
       Using,
