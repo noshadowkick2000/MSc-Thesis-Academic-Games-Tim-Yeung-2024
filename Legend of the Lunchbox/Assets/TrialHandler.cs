@@ -123,8 +123,8 @@ public class TrialHandler : MonoBehaviour
 
   public void SkipProperty()
   {
-    encounters[encounterCounter].SkipProperty();
     StartCoroutine(DeActivateProperty(GameEngine.InputState.None));
+    encounters[encounterCounter].SkipProperty();
   }
 
   private IEnumerator DeActivateProperty(GameEngine.InputState input)
