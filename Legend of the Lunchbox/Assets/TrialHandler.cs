@@ -11,7 +11,7 @@ using UnityEngine.Windows;
 
 public class TrialHandler : MonoBehaviour
 {
-  private List<Encounter> encounters = new List<Encounter>();
+  private readonly List<Encounter> encounters = new List<Encounter>();
   private int encounterCounter = 0;
 
   private int GetId(string name)
@@ -19,10 +19,17 @@ public class TrialHandler : MonoBehaviour
     return (name.Aggregate(0, (current, c) => (current * 31) + c));
   }
 
-  public void Init()
+  private void Awake()
   {
     LoadEncounters();
     PrepareModels();
+
+    SubscribeToEvents();
+  }
+
+  private void OnDestroy()
+  {
+    UnSubscribeToEvents();
   }
 
   private void LoadEncounters()
@@ -80,7 +87,7 @@ public class TrialHandler : MonoBehaviour
   /// Returns activated object and starts encounter
   /// </summary>
   /// <returns></returns>
-  public Transform StartEncounter()
+  private Transform StartEncounter()
   {
     int curEncounter = encounters[encounterCounter].GetEnemyId();
     Transform obj = objectDictionary[curEncounter];
@@ -114,20 +121,21 @@ public class TrialHandler : MonoBehaviour
   /// Returns true if input was correct and destroys property
   /// </summary>
   /// <param name="used"></param>
+  /// <param name="input"></param>
   /// <returns></returns>
-  public bool EvaluateProperty(bool used)
+  public bool EvaluateProperty(InputHandler.InputState input)
   {
-    StartCoroutine(DeActivateProperty(used ? GameEngine.InputState.Using : GameEngine.InputState.Discarding)); // Fix
-    return encounters[encounterCounter].EvaluateInput(used);
+    StartCoroutine(DeActivateProperty(input)); // Fix
+    return encounters[encounterCounter].EvaluateInput(input == InputHandler.InputState.Using);
   }
 
   public void SkipProperty()
   {
-    StartCoroutine(DeActivateProperty(GameEngine.InputState.None));
+    StartCoroutine(DeActivateProperty(InputHandler.InputState.None));
     encounters[encounterCounter].SkipProperty();
   }
 
-  private IEnumerator DeActivateProperty(GameEngine.InputState input)
+  private IEnumerator DeActivateProperty(InputHandler.InputState input)
   {
     int propid = encounters[encounterCounter].GetCurrentPropertyId();
     Transform property = objectDictionary[propid];
@@ -140,8 +148,8 @@ public class TrialHandler : MonoBehaviour
     {
       float x = 1 - (Time.realtimeSinceStartup - startTime) / duration;
       property.localScale = new Vector3(x, x, x);
-      if (input != GameEngine.InputState.None)
-        property.position += new Vector3(input == GameEngine.InputState.Using ? movement : -movement, 0, 0);
+      if (input != InputHandler.InputState.None)
+        property.position += new Vector3(input == InputHandler.InputState.Using ? movement : -movement, 0, 0);
       yield return null;
     }
 
@@ -172,20 +180,41 @@ public class TrialHandler : MonoBehaviour
 
   public bool LevelOver => encounterCounter >= encounters.Count;
 
-  //public Encounter GetEncounter()
-  //{
-  //  return encounters[encounterCounter];
-  //}
+  //-------------------------------------------------------
 
-  //public Transform ActivateObject(int id)
-  //{
-  //  objectDictionary[id].gameObject.SetActive(true);
-  //  return objectDictionary[id];
-  //}
+  private void SubscribeToEvents()
+  {
+    GameEngine.StartingEncounterStartedEvent += StartingEncounter;
+    GameEngine.ShowingPropertyStartedEvent += ShowingProperty;
+    GameEngine.TimedOutStartedEvent += TimedOut;
+    GameEngine.AnswerCorrectStartedEvent += AnswerCorrect;
+  }
+  
+  private void UnSubscribeToEvents()
+  {
+    GameEngine.StartingEncounterStartedEvent -= StartingEncounter;
+    GameEngine.ShowingPropertyStartedEvent -= ShowingProperty;
+    GameEngine.TimedOutStartedEvent -= TimedOut;
+    GameEngine.AnswerCorrectStartedEvent -= AnswerCorrect;
+  }
 
-  //public void CompleteEncounter(int id)
-  //{
-  //  objectDictionary[id].gameObject.SetActive(false);
-  //  encounterCounter++;
-  //}
+  protected virtual void StartingEncounter(float duration)
+  {
+    StartEncounter().position = LocationHolder.EnemyLocation.position;
+  }
+
+  protected virtual void ShowingProperty(float enemyTimeOut, Action<InputHandler.InputState> callback )
+  {
+    SpawnProperty().position = LocationHolder.PropertyLocation.position;
+  }
+
+  protected virtual void TimedOut()
+  {
+    SkipProperty();
+  }
+
+  protected virtual void AnswerCorrect()
+  {
+    DamageEncounter();
+  }
 }

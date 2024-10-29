@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -5,6 +6,7 @@ using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 namespace Assets
 {
@@ -24,6 +26,9 @@ namespace Assets
       TIMEDOUT, 
       ANSWERWRONG,
       ANSWERCORRECT,
+      EVALUATINGENCOUNTER,
+      WONENCOUNTER,
+      LOSTENCOUNTER,
       ENDINGENCOUNTER
     }
 
@@ -56,31 +61,22 @@ namespace Assets
     public static int LevelId;
 
     // Connected components
-    private UIConsole console = null; 
-    private CameraController cameraController = null;
     private TrialHandler trialHandler = null;
-    PlayerController playerController = null;
+    
+    private int playerHealth;
+    private int friendHealth;
 
-    private void Init()
+    private void Awake()
     {
       LogFolderInDocs = logFolderInDocs;
       PathToTrials= pathToTrials;
       PropertiesAndObjects = propertiesAndObjects;
       LevelId = levelId;
-
-      console = FindObjectOfType<UIConsole>();
-      cameraController = FindObjectOfType<CameraController>();
-      trialHandler = GetComponent<TrialHandler>();
-      playerController = FindObjectOfType<PlayerController>();
-    }
-
-    private void Awake()
-    {
-      Init();
-      Logger.Awake(logFolderInDocs, console);
-      trialHandler.Init();
       
-      StateChange(GameState.ONRAIL);
+      trialHandler = GetComponent<TrialHandler>();
+      
+      // TODO temp
+      OnRail();
     }
 
     private void OnDestroy()
@@ -88,236 +84,170 @@ namespace Assets
       Logger.OnDestroy();
     }
 
+    public delegate void StateChangeEvent();
+    public delegate void StateChangeEventTimed(float duration);
+    public delegate void StateChangeEventBooled(bool boolean);
 
-    public void StateChange(GameState newState)
-    {
-      state = newState;
-      Logger.Log($"State changed to {state.ToString()}");
+    public delegate void StateChangeEventTimedCallback(float duration, Action<InputHandler.InputState> callback);
 
-      switch (state)
-      {
-        case GameState.CUTSCENE:
-          EndGame();
-          break;
-        case GameState.ONRAIL:
-          StartOnRail();
-          break;
-        case GameState.STARTINGENCOUNTER:
-          StartEncounter();
-          break;
-        case GameState.SHOWINGENEMY:
-          ShowingEnemy();
-          break;
-        case GameState.SETTINGUPMIND:
-          SetUpMindFrame();
-          break;
-        case GameState.THINKINGOFPROPERTY:
-          ThinkingOfProperty();
-          break;
-        case GameState.SHOWINGPROPERTY:
-          ShowingProperty();
-          break;
-        case GameState.EVALUATINGINPUT:
-          EvaluatingInput();
-          break;
-        case GameState.TIMEDOUT:
-          TimedOut();
-          break;
-        case GameState.ANSWERWRONG:
-          AnswerWrong();
-          break;
-        case GameState.ANSWERCORRECT:
-          AnswerCorrect();
-          break;
-        case GameState.ENDINGENCOUNTER:
-          EndingEncounter();
-          break;
-      }
-    }
+    public static event StateChangeEvent CutSceneStartedEvent;
+    public static event StateChangeEvent OnRailStartedEvent;
+    public static event StateChangeEventTimed StartingEncounterStartedEvent;
+    public static event StateChangeEvent ShowingEnemyStartedEvent;
+    public static event StateChangeEvent SettingUpMindStartedEvent;
+    public static event StateChangeEventBooled ThinkingOfPropertyStartedEvent;
+    public static event StateChangeEventTimedCallback ShowingPropertyStartedEvent;
+    public static event StateChangeEvent EvaluatingInputStartedEvent;
+    public static event StateChangeEvent TimedOutStartedEvent;
+    public static event StateChangeEvent AnswerWrongStartedEvent;
+    public static event StateChangeEvent AnswerCorrectStartedEvent;
+    public static event StateChangeEvent EvaluatingEncounterStartedEvent;
+    public static event StateChangeEvent WonEncounterStartedEvent;
+    public static event StateChangeEvent LostEncounterStartedEvent;
+    public static event StateChangeEventTimed EndingEncounterStartedEvent;
 
-    private int playerHealth;
-    private int friendHealth;
-    public void DamagePlayer()
-    {
-      if (friendHealth > 0)
-        friendHealth--;
-      else
-        playerHealth--;
-
-      //TODO EVAL PLAYER DIE ETC
-    }
-
-    private IEnumerator Timer(float duration, GameState nextState)
+    private IEnumerator Timer(float duration, Action nextState)
     {
       yield return new WaitForSecondsRealtime(duration);
 
-      StateChange(nextState);
+      nextState();
     }
 
-    private void EndGame()
+    private void CutScene()
     {
+      CutSceneStartedEvent?.Invoke();
+      
+      // TODO remove
       SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
     }
 
-    private void StartOnRail()
+    private void OnRail()
     {     
+      OnRailStartedEvent?.Invoke();
+
       float duration = Random.Range(minimumWalkTime, maximumWalkTime);
-
-      cameraController.ImmediateToObject(LocationHolder.BaseCameraLocation);
-
-      StartCoroutine(Timer(duration, GameState.STARTINGENCOUNTER));
+      StartCoroutine(Timer(duration, StartingEncounter));
     }
 
-    private void StartEncounter()
+    private void StartingEncounter()
     {
-      trialHandler.StartEncounter();
+      StartingEncounterStartedEvent?.Invoke(encounterStartTime);
 
-      cameraController.SmoothToObject(LocationHolder.EnemyCameraLocation, encounterStartTime);
-
-      StartCoroutine(Timer(encounterStartTime, GameState.SHOWINGENEMY));
+      StartCoroutine(Timer(encounterStartTime, ShowingEnemy));
     }
 
     private void ShowingEnemy()
     {
-      Logger.Log($"Enemy: {trialHandler.GetCurrentEncounterId()}");
-
-      playerController.Idle(false);
+      ShowingEnemyStartedEvent?.Invoke();
       
-      StartCoroutine(Timer(enemyShowTime, GameState.SETTINGUPMIND));
+      StartCoroutine(Timer(enemyShowTime, SettingUpMind));
     }
 
-    private void SetUpMindFrame()
+    private void SettingUpMind()
     {
-      Logger.Log("Setting up mind frame");
-
-      playerController.StartMind();
-
-      cameraController.ImmediateToObject(LocationHolder.MindCameraLocation);
+      SettingUpMindStartedEvent?.Invoke();
       
-      StartCoroutine(Timer(mindStartTime, GameState.THINKINGOFPROPERTY));
+      StartCoroutine(Timer(mindStartTime, ThinkingOfProperty));
     }
-
-    bool acceptingInput = false;
-    Coroutine timerRoutine;
+    
     private void ThinkingOfProperty()
     {
+      ThinkingOfPropertyStartedEvent?.Invoke(trialHandler.EncounterOver);
+      
       if (trialHandler.EncounterOver)
-      {
-        Logger.Log("Encounter over");
-
-        playerController.Idle(true);
-
-        cameraController.ImmediateToObject(LocationHolder.EnemyCameraLocation);
-
-        StartCoroutine(Timer(encounterStopTime, GameState.ENDINGENCOUNTER));
-      }
-      else
-      {
-        Logger.Log(trialHandler.GetCurrentPropertyInfo());
-
-        playerController.StartThought();
-
-        StartCoroutine(Timer(pullingTime, GameState.SHOWINGPROPERTY));
-      }
+        EvaluatingEncounter();
+      else 
+        StartCoroutine(Timer(pullingTime, ShowingProperty));
     }
-
+    
+    Coroutine timerRoutine;
     private void ShowingProperty()
     {
-      acceptingInput = true;
-
-      playerController.EndThought(enemyTimeOut);
-
-      trialHandler.SpawnProperty().position = LocationHolder.PropertyLocation.position;
-
-      timerRoutine = StartCoroutine(Timer(enemyTimeOut, GameState.TIMEDOUT));
+      ShowingPropertyStartedEvent?.Invoke(enemyTimeOut, InputAvailable);
+      
+      timerRoutine = StartCoroutine(Timer(enemyTimeOut, TimedOut));
+    }
+    
+    private void InputAvailable(InputHandler.InputState input)
+    {
+      EvaluatingInput(input);
     }
 
-    private void EvaluatingInput()
+    private void EvaluatingInput(InputHandler.InputState input)
     {
-      acceptingInput = false;
+      EvaluatingInputStartedEvent?.Invoke();
+      
       StopCoroutine(timerRoutine);
       timerRoutine = null;
 
-      playerController.CancelTimer();
-
-      bool correct = trialHandler.EvaluateProperty(input == InputState.Using);
-
-      Logger.Log($"Input correct: {correct}");
-
-      if (correct) { StateChange(GameState.ANSWERCORRECT); }
-      else { StateChange(GameState.ANSWERWRONG); }
+      if (trialHandler.EvaluateProperty(input))
+        AnswerCorrect();
+      else
+        AnswerWrong();
     }
 
     private void TimedOut()
     {
-      Logger.Log("No player input");
+      TimedOutStartedEvent?.Invoke();
 
-      acceptingInput = false;
-
-      trialHandler.SkipProperty();
-
-      StateChange(GameState.ANSWERWRONG);
+      AnswerWrong();
     }
 
     private void AnswerWrong()
     {
-      Logger.Log("Player gave wrong response"); 
+      AnswerWrongStartedEvent?.Invoke();
       
-      StartCoroutine(Timer(feedbackTime, GameState.THINKINGOFPROPERTY));
+      StartCoroutine(Timer(feedbackTime, ThinkingOfProperty));
     }
 
     private void AnswerCorrect()
     {
-      trialHandler.DamageEncounter();
-      StartCoroutine(Timer(feedbackTime, GameState.THINKINGOFPROPERTY));
+      AnswerCorrectStartedEvent?.Invoke();
+      
+      StartCoroutine(Timer(feedbackTime, ThinkingOfProperty));
+    }
+
+    private void EvaluatingEncounter()
+    {
+      EvaluatingEncounterStartedEvent?.Invoke();
+      
+      bool won = trialHandler.KillEncounter();
+
+      if (won)
+        WonEncounter();
+      else 
+        LostEncounter();
+    }
+
+    private void WonEncounter()
+    {
+      WonEncounterStartedEvent?.Invoke();
+      
+      StartCoroutine(Timer(encounterStopTime, EndingEncounter));
+    }
+
+    private void LostEncounter()
+    {
+      LostEncounterStartedEvent?.Invoke();
+
+      playerHealth--;
+      
+      StartCoroutine(Timer(encounterStopTime, EndingEncounter));
     }
 
     private void EndingEncounter()
     {
-      cameraController.SmoothToObject(LocationHolder.BaseCameraLocation, playerResetTime);
+      EndingEncounterStartedEvent?.Invoke(playerResetTime);
 
-      bool won = trialHandler.KillEncounter();
-      if (!won) 
-      {
-        Logger.Log("Player lost enemy");
-        playerHealth--;
-        if (playerHealth == 0)
-        { 
-          Logger.Log("Played died");
-          StartCoroutine(Timer(playerResetTime, GameState.CUTSCENE)); // TODO animations etc
-          return;
-        }
+      if (playerHealth == 0)
+      { 
+        Logger.Log("Played died");
+        StartCoroutine(Timer(playerResetTime, CutScene)); // TODO animations etc
       }
+      else if (trialHandler.LevelOver)
+        StartCoroutine(Timer(playerResetTime, CutScene));
       else
-      {
-        Logger.Log("Player defeated enemy");
-      }
-
-      if (trialHandler.LevelOver)
-        StartCoroutine(Timer(playerResetTime, GameState.CUTSCENE));
-      else
-        StartCoroutine(Timer(playerResetTime, GameState.ONRAIL));
-    }
-
-    public enum InputState
-    {
-      None,
-      Using,
-      Discarding
-    }
-
-    InputState input = InputState.None; 
-    private void Update()
-    {
-      input = InputState.None;
-      if (Input.GetButtonDown("Use")) { input = InputState.Using; }
-      if (Input.GetButtonDown("Discard")) { input = InputState.Discarding; }
-      if (input != InputState.None) { Logger.Log($"Input: {input.ToString()}"); }
-
-      if (acceptingInput && input != InputState.None)
-      {
-        StateChange(GameState.EVALUATINGINPUT);
-      }
+        StartCoroutine(Timer(playerResetTime, OnRail));
     }
   }
 }
