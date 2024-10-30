@@ -18,6 +18,13 @@ public class UIController : MonoBehaviour
         thoughtUI.SetActive(false);
         mindUI.SetActive(false);
         controlIndicatorUI.SetActive(false);
+        
+        SubscribeToEvents();
+    }
+
+    private void OnDestroy()
+    {
+        UnsubscribeFromEvents();
     }
 
     private void Idle(bool encounterOver)

@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
     UnsubscribeFromEvents();
   }
 
-  private void Idle(bool encounterOver)
+  private void Idle()
   {
     playerAnimator.SetTrigger("idle");
     transform.rotation = LocationHolder.BasePlayerLocation.rotation;
@@ -54,7 +54,7 @@ public class PlayerController : MonoBehaviour
 
   protected virtual void ShowingEnemy()
   {
-    Idle(false);
+    Idle();
   }
 
   protected virtual void SettingUpMind()
@@ -65,6 +65,6 @@ public class PlayerController : MonoBehaviour
   protected virtual void ThinkingOfProperty(bool encounterOver)
   {
     if (encounterOver)
-      Idle(true);
+      Idle();
   }
 }
