@@ -10,9 +10,9 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject mindUI;
     [SerializeField] private GameObject thoughtUI;
     [SerializeField] private GameObject controlIndicatorUI;
+    [SerializeField] private GameObject distractionUI;
     [SerializeField] private Slider timerUI;
     
-    // Start is called before the first frame update
     void Awake()
     {
         thoughtUI.SetActive(false);
@@ -39,6 +39,7 @@ public class UIController : MonoBehaviour
 
     private void StartMind()
     {
+        distractionUI.SetActive(false);
         StartCoroutine(AnimateCanvas(false));
     }
     
@@ -65,8 +66,8 @@ public class UIController : MonoBehaviour
         if (inverse)
             mindUI.SetActive(false);
     }
-    
-    public void StartThought() 
+
+    private void StartThought() 
     { 
         thoughtUI.SetActive(true);
         controlIndicatorUI.SetActive(false);
@@ -80,6 +81,11 @@ public class UIController : MonoBehaviour
         controlIndicatorUI.SetActive(true);
 
         timerRoutine = StartCoroutine(AnimateTimer(timeOut));
+    }
+
+    private void ExitMind()
+    {
+        distractionUI.SetActive(true);
     }
 
     private void CancelTimer()
@@ -98,12 +104,15 @@ public class UIController : MonoBehaviour
         }
     }
     
+    //-----------------------------------------------------
+    
     private void SubscribeToEvents()
     {
         GameEngine.SettingUpMindStartedEvent += SettingUpMind;
         GameEngine.ThinkingOfPropertyStartedEvent += ThinkingOfProperty;
         GameEngine.ShowingPropertyStartedEvent += ShowingProperty;
         GameEngine.EvaluatingInputStartedEvent += EvaluatingInput;
+        GameEngine.EndingEncounterStartedEvent += EndingEncounter;
     }
 
     private void UnsubscribeFromEvents()
@@ -112,6 +121,7 @@ public class UIController : MonoBehaviour
         GameEngine.ThinkingOfPropertyStartedEvent -= ThinkingOfProperty;
         GameEngine.ShowingPropertyStartedEvent -= ShowingProperty;
         GameEngine.EvaluatingInputStartedEvent -= EvaluatingInput;
+        GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
     }
     
     protected virtual void SettingUpMind()
@@ -135,5 +145,10 @@ public class UIController : MonoBehaviour
     protected virtual void EvaluatingInput()
     {
         CancelTimer();
+    }
+
+    protected virtual void EndingEncounter(float duration)
+    {
+        ExitMind();
     }
 }

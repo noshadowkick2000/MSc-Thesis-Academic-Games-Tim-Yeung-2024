@@ -10,17 +10,17 @@ public static class Logger
   private static StreamWriter _output;
   private static string _folderName;
 
-  private static UIConsole _uiConsole;
+  private static LoggerComponent _loggerComponent;
 
   // TODO IMPLEMENT FEATURE IN GAME SETUP TO SELECT FOLDER FOR THE RESULTS
 
-  public static void Awake(UIConsole ui)
+  public static void Awake(LoggerComponent ui)
   {
     _folderName = GameEngine.LogFolderInDocs;
     string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + _folderName;
     string filename = DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss");
     _output = new StreamWriter($"{path}\\{filename}.log");
-    _uiConsole = ui;
+    _loggerComponent = ui;
   }
 
   private static string ConvertSecondsToReadableTime(double seconds)
@@ -47,7 +47,7 @@ public static class Logger
     }
     _output.WriteLine(line);
     Console.WriteLine(line);
-    _uiConsole.PrintToUI(line);
+    _loggerComponent.PrintToUI(line);
   }
 
   public static void OnDestroy()

@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+  [SerializeField] private Transform playerTransform;
   [SerializeField] private Material playerMat;
   [SerializeField] private Texture2D normalFace;
   [SerializeField] private Texture2D thinkingFace;
@@ -23,16 +24,16 @@ public class PlayerController : MonoBehaviour
   private void Idle()
   {
     playerAnimator.SetTrigger("idle");
-    transform.rotation = LocationHolder.BasePlayerLocation.rotation;
-    transform.position = LocationHolder.BasePlayerLocation.position;
+    playerTransform.rotation = LocationHolder.BasePlayerLocation.rotation;
+    playerTransform.position = LocationHolder.BasePlayerLocation.position;
     playerMat.mainTexture = normalFace;
   }
 
   private void StartMind()
   {
     playerAnimator.SetTrigger("think");
-    transform.rotation = LocationHolder.ThinkingPlayerLocation.rotation;
-    transform.position = LocationHolder.ThinkingPlayerLocation.position;
+    playerTransform.rotation = LocationHolder.ThinkingPlayerLocation.rotation;
+    playerTransform.position = LocationHolder.ThinkingPlayerLocation.position;
     playerMat.mainTexture = thinkingFace;
   }
   

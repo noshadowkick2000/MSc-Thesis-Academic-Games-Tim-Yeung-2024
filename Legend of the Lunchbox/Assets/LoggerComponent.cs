@@ -4,16 +4,14 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-[RequireComponent(typeof(TextMeshProUGUI))]
-public class UIConsole : MonoBehaviour
+public class LoggerComponent : MonoBehaviour
 {
   [SerializeField] private int lineLimit = 20;
+  [SerializeField] private TextMeshProUGUI ui;
   private string[] lines;
-  private TextMeshProUGUI ui;
-
+  
   private void Awake()
   {
-    ui = GetComponent<TextMeshProUGUI>();
     lines = new string[lineLimit];
     for(int i = 0; i < lines.Length; i++)
       lines[i] = "";
