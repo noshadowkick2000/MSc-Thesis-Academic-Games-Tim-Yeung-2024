@@ -1197,6 +1197,7 @@ GameObject:
   - component: {fileID: 959961330}
   - component: {fileID: 959961333}
   - component: {fileID: 959961334}
+  - component: {fileID: 959961335}
   m_Layer: 0
   m_Name: Gamecontroller
   m_TagString: Untagged
@@ -1286,6 +1287,18 @@ MonoBehaviour:
   propertyLocation: {fileID: 606651514}
   basePlayerLocation: {fileID: 417157718}
   thinkingPlayerLocation: {fileID: 1471251712}
+--- !u!114 &959961335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 959961329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 834fb125928a74249bb6adf39a5d92b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
