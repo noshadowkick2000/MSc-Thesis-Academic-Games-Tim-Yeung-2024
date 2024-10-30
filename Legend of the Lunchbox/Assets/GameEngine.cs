@@ -13,27 +13,6 @@ namespace Assets
   [RequireComponent(typeof(TrialHandler))]
   public class GameEngine : MonoBehaviour
   {
-    public enum GameState
-    {
-      CUTSCENE,
-      ONRAIL,
-      STARTINGENCOUNTER, //Camera starts panning to enemy
-      SHOWINGENEMY, //Camera shows enemy
-      SETTINGUPMIND, //Camera transitions to player and clouds pop up to frame the thinking
-      THINKINGOFPROPERTY, //Thinking animation is shown
-      SHOWINGPROPERTY, //Property is shown and player needs to confirm or reject
-      EVALUATINGINPUT, 
-      TIMEDOUT, 
-      ANSWERWRONG,
-      ANSWERCORRECT,
-      EVALUATINGENCOUNTER,
-      WONENCOUNTER,
-      LOSTENCOUNTER,
-      ENDINGENCOUNTER
-    }
-
-    private GameState state = GameState.CUTSCENE;
-
     [Header("Experimental Variables")]
     [SerializeField] private float minimumWalkTime = 2.0f;
     [SerializeField] private float maximumWalkTime = 8.0f;
