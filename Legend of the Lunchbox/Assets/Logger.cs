@@ -2,28 +2,25 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Assets;
 using UnityEngine;
 
 public static class Logger
 {
-  private static StreamWriter output;
-  private static string folderName;
+  private static StreamWriter _output;
+  private static string _folderName;
 
-  private static UIConsole uiConsole;
-  private static bool uiUsed = false;
+  private static UIConsole _uiConsole;
 
   // TODO IMPLEMENT FEATURE IN GAME SETUP TO SELECT FOLDER FOR THE RESULTS
 
-  public static void Awake(string name, UIConsole? ui)
+  public static void Awake(UIConsole ui)
   {
-    folderName = name;
-    string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + folderName;
+    _folderName = GameEngine.LogFolderInDocs;
+    string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + _folderName;
     string filename = DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss");
-    output = new StreamWriter($"{path}\\{filename}.log");
-
-    uiUsed = ui != null;
-    if (uiUsed)
-      uiConsole = ui;
+    _output = new StreamWriter($"{path}\\{filename}.log");
+    _uiConsole = ui;
   }
 
   private static string ConvertSecondsToReadableTime(double seconds)
@@ -48,17 +45,13 @@ public static class Logger
     {
       line += $"{Environment.NewLine}{padding}{lines[i]}";
     }
-    output.WriteLine(line);
+    _output.WriteLine(line);
     Console.WriteLine(line);
-
-    if (uiUsed)
-      uiConsole.PrintToUI(line);
+    _uiConsole.PrintToUI(line);
   }
-
-  
 
   public static void OnDestroy()
   {
-    output.Close();
+    _output.Close();
   }
 }

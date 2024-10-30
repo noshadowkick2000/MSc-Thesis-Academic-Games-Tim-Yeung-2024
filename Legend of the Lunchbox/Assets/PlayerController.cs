@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Assets;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,6 +21,13 @@ public class PlayerController : MonoBehaviour
     thoughtUI.SetActive(false);
     mindUI.SetActive(false);
     controlIndicatorUI.SetActive(false);
+
+    SubscribeToEvents();
+  }
+
+  private void OnDestroy()
+  {
+    UnsubscribeFromEvents();
   }
 
   public void Idle(bool encounterOver)
@@ -98,5 +107,53 @@ public class PlayerController : MonoBehaviour
       timerUI.value = x;
       yield return null;
     }
+  }
+  
+  //-------------------------------------------------------
+
+  private void SubscribeToEvents()
+  {
+    GameEngine.ShowingEnemyStartedEvent += ShowingEnemy;
+    GameEngine.SettingUpMindStartedEvent += SettingUpMind;
+    GameEngine.ThinkingOfPropertyStartedEvent += ThinkingOfProperty;
+    GameEngine.ShowingPropertyStartedEvent += ShowingProperty;
+    GameEngine.EvaluatingInputStartedEvent += EvaluatingInput;
+  }
+
+  private void UnsubscribeFromEvents()
+  {
+    GameEngine.ShowingEnemyStartedEvent -= ShowingEnemy;
+    GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
+    GameEngine.ThinkingOfPropertyStartedEvent -= ThinkingOfProperty;
+    GameEngine.ShowingPropertyStartedEvent -= ShowingProperty;
+    GameEngine.EvaluatingInputStartedEvent -= EvaluatingInput;
+  }
+
+  protected virtual void ShowingEnemy()
+  {
+    Idle(false);
+  }
+
+  protected virtual void SettingUpMind()
+  {
+    StartMind();
+  }
+
+  protected virtual void ThinkingOfProperty(bool encounterOver)
+  {
+    if (encounterOver)
+      Idle(true);
+    else
+      StartThought();
+  }
+
+  protected virtual void ShowingProperty(float enemyTimeOut, Action<InputHandler.InputState> callback)
+  {
+    EndThought(enemyTimeOut);
+  }
+
+  protected virtual void EvaluatingInput()
+  {
+    CancelTimer();
   }
 }

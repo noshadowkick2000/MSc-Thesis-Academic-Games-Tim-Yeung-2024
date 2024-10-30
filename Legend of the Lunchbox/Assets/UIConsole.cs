@@ -17,6 +17,8 @@ public class UIConsole : MonoBehaviour
     lines = new string[lineLimit];
     for(int i = 0; i < lines.Length; i++)
       lines[i] = "";
+    
+    Logger.Awake(this);
   }
 
   public void PrintToUI(string line)
@@ -32,5 +34,10 @@ public class UIConsole : MonoBehaviour
       lines[i] = lines[i-1];
     }
     lines[0] = line;
+  }
+
+  private void OnDestroy()
+  {
+    Logger.OnDestroy();
   }
 }
