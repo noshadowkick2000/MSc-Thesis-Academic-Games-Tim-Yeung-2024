@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1208625254596772437}
   - component: {fileID: 8981215305734170198}
   - component: {fileID: 5971247922937908861}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -116,7 +116,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4949076156074294554}
   - component: {fileID: 7611339501166079813}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: hammersound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
