@@ -2,13 +2,18 @@ using System;
 using Assets;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
-public class CameraController : MonoBehaviour 
+public class CameraController : MonoBehaviour
 {
+  [SerializeField] private Transform cameraTransform;
+  private Camera mainCamera;
   
   private void Awake()
   {
+    mainCamera = cameraTransform.GetComponent<Camera>();
+    
     SubscribeToEvents();
   }
 
@@ -16,6 +21,42 @@ public class CameraController : MonoBehaviour
   {
     UnSubscribeToEvents();
   }
+
+  private Coroutine bobbingCoroutine;
+  private void StartBobbingCamera()
+  {
+    bobbingCoroutine = StartCoroutine(BobbingCameraCoroutine());
+  }
+
+  private void StopBobbingCamera()
+  {
+    StopCoroutine(bobbingCoroutine);
+  }
+
+  private readonly float bobbingTime = 0.5f;
+  private readonly float bobbingOffset = 0.5f;
+  private Stopwatch stopwatch;
+  private IEnumerator BobbingCameraCoroutine()
+  {
+    Vector3 basePosition = cameraTransform.position;
+    stopwatch = Stopwatch.StartNew();
+    
+    while (true)
+    {
+      cameraTransform.position = basePosition + new Vector3(0, bobbingOffset * Mathf.Sin((2/bobbingTime) * Mathf.PI * (stopwatch.Elapsed.Milliseconds/1000f)), 0);
+      yield return null;
+    }
+  }
+
+  // private void OrthoCamera()
+  // {
+  //   mainCamera.orthographic = true;
+  // }
+  //
+  // private void PerspectiveCamera()
+  // {
+  //   mainCamera.orthographic = false;
+  // }
 
   private void SmoothToObject(Transform goal, float duration)
   {
@@ -28,25 +69,25 @@ public class CameraController : MonoBehaviour
   {
     Vector3 position = goal.position;
     Quaternion rotation = goal.rotation;
-    transform.position = position;
-    transform.rotation = rotation;
+    cameraTransform.position = position;
+    cameraTransform.rotation = rotation;
   }
 
   private IEnumerator TransitionCamera(Vector3 position, Quaternion rotation, float duration)
   {
-    Vector3 startingPos = transform.position;
-    Quaternion startingRot = transform.rotation;
+    Vector3 startingPos = cameraTransform.position;
+    Quaternion startingRot = cameraTransform.rotation;
 
     float startTime = Time.realtimeSinceStartup;
     while (Time.realtimeSinceStartup < startTime + duration)
     {
       float x = (Time.realtimeSinceStartup - startTime) / duration;
-      transform.position = Vector3.Lerp(startingPos, position, x);
-      transform.rotation = Quaternion.Lerp(startingRot, rotation, x);
+      cameraTransform.position = Vector3.Lerp(startingPos, position, x);
+      cameraTransform.rotation = Quaternion.Lerp(startingRot, rotation, x);
       yield return null;
     }
-    transform.position = position;
-    transform.rotation = rotation;
+    cameraTransform.position = position;
+    cameraTransform.rotation = rotation;
   }
 
   //-------------------------------------------------------
@@ -57,6 +98,7 @@ public class CameraController : MonoBehaviour
     GameEngine.StartingEncounterStartedEvent += StartingEncounter;
     GameEngine.SettingUpMindStartedEvent += SettingUpMind;
     GameEngine.ThinkingOfPropertyStartedEvent += ThinkingOfProperty;
+    GameEngine.EvaluatingEncounterStartedEvent += EvaluatingEncounter;
     GameEngine.EndingEncounterStartedEvent += EndingEncounter;
   }
   
@@ -66,28 +108,37 @@ public class CameraController : MonoBehaviour
     GameEngine.StartingEncounterStartedEvent -= StartingEncounter;
     GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
     GameEngine.ThinkingOfPropertyStartedEvent -= ThinkingOfProperty;
+    GameEngine.EvaluatingEncounterStartedEvent -= EvaluatingEncounter;
     GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
   }
 
   protected virtual void OnRail()
   {
     ImmediateToObject(LocationHolder.BaseCameraLocation);
+    StartBobbingCamera();
   }
 
   protected virtual void StartingEncounter(float encounterStartTime)
   {
+    StopBobbingCamera();
     SmoothToObject(LocationHolder.EnemyCameraLocation, encounterStartTime);
   }
 
   protected virtual void SettingUpMind()
   {
-    ImmediateToObject(LocationHolder.MindCameraLocation);
+    // ImmediateToObject(LocationHolder.MindCameraLocation);
+    // OrthoCamera();
   }
 
   protected virtual void ThinkingOfProperty(bool encounterOver)
   {
-    if (encounterOver)
-      ImmediateToObject(LocationHolder.EnemyCameraLocation);
+    // if (!encounterOver) return;
+    // ImmediateToObject(LocationHolder.EnemyCameraLocation);
+  }
+
+  protected virtual void EvaluatingEncounter()
+  {
+    // PerspectiveCamera();
   }
 
   protected virtual void EndingEncounter(float playerResetTime)
