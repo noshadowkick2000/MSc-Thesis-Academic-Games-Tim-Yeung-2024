@@ -109,7 +109,7 @@ public class TrialHandler : MonoBehaviour
   /// Spawns property
   /// </summary>
   /// <returns></returns>
-  public Transform SpawnProperty()
+  private Transform SpawnProperty()
   {
     int propid = encounters[encounterCounter].GetCurrentPropertyId();
     Transform property = objectDictionary[propid];
@@ -129,7 +129,7 @@ public class TrialHandler : MonoBehaviour
     return encounters[encounterCounter].EvaluateInput(input == InputHandler.InputState.Using);
   }
 
-  public void SkipProperty()
+  private void SkipProperty()
   {
     StartCoroutine(DeActivateProperty(InputHandler.InputState.None));
     encounters[encounterCounter].SkipProperty();
@@ -164,18 +164,20 @@ public class TrialHandler : MonoBehaviour
   public bool EncounterOver => encounters[encounterCounter].EncounterOver;
 
   /// <summary>
-  /// Kill encounter and return true if encounter was won
+  /// Return true if encounter was won
   /// </summary>
   /// <returns></returns>
-  public bool KillEncounter()
+  public bool WonEncounter()
   {
-    bool won = encounters[encounterCounter].EndEncounter();
+    return encounters[encounterCounter].EndEncounter();
+  }
+  
+  private void KillEncounter()
+  {
     int curEncounter = encounters[encounterCounter].GetEnemyId();
     Transform obj = objectDictionary[curEncounter];
     obj.gameObject.SetActive(false);
     encounterCounter++;
-
-    return won;
   }
 
   public bool LevelOver => encounterCounter >= encounters.Count;
@@ -188,6 +190,7 @@ public class TrialHandler : MonoBehaviour
     GameEngine.ShowingPropertyStartedEvent += ShowingProperty;
     GameEngine.TimedOutStartedEvent += TimedOut;
     GameEngine.AnswerCorrectStartedEvent += AnswerCorrect;
+    GameEngine.EndingEncounterStartedEvent += EndingEncounter;
   }
   
   private void UnSubscribeToEvents()
@@ -196,6 +199,7 @@ public class TrialHandler : MonoBehaviour
     GameEngine.ShowingPropertyStartedEvent -= ShowingProperty;
     GameEngine.TimedOutStartedEvent -= TimedOut;
     GameEngine.AnswerCorrectStartedEvent -= AnswerCorrect;
+    GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
   }
 
   protected virtual void StartingEncounter(float duration)
@@ -216,5 +220,10 @@ public class TrialHandler : MonoBehaviour
   protected virtual void AnswerCorrect()
   {
     DamageEncounter();
+  }
+
+  protected virtual void EndingEncounter(float duration)
+  {
+    KillEncounter();
   }
 }

@@ -53,7 +53,10 @@ namespace Assets
       LevelId = levelId;
       
       trialHandler = GetComponent<TrialHandler>();
-      
+    }
+
+    private void Start()
+    {
       // TODO temp
       OnRail();
     }
@@ -190,7 +193,7 @@ namespace Assets
     {
       EvaluatingEncounterStartedEvent?.Invoke();
       
-      bool won = trialHandler.KillEncounter();
+      bool won = trialHandler.WonEncounter();
 
       if (won)
         WonEncounter();
