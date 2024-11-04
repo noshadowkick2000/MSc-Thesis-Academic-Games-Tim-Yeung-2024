@@ -80,7 +80,7 @@ public class UIController : MonoBehaviour
         thoughtUI.SetActive(false);
         controlIndicatorUI.SetActive(true);
 
-        timerRoutine = StartCoroutine(AnimateTimer(timeOut));
+        // timerRoutine = StartCoroutine(AnimateTimer(timeOut));
     }
 
     private void ExitMind()

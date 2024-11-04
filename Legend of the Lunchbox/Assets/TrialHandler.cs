@@ -14,6 +14,9 @@ public class TrialHandler : MonoBehaviour
   private readonly List<Encounter> encounters = new List<Encounter>();
   private int encounterCounter = 0;
 
+  public delegate void PropertySpawnedEvent(Transform property);
+  public static event PropertySpawnedEvent OnPropertySpawnedEvent;
+
   private int GetId(string name)
   {
     return (name.Aggregate(0, (current, c) => (current * 31) + c));
@@ -209,7 +212,9 @@ public class TrialHandler : MonoBehaviour
 
   protected virtual void ShowingProperty(float enemyTimeOut, Action<InputHandler.InputState> callback )
   {
-    SpawnProperty().position = LocationHolder.PropertyLocation.position;
+    Transform newProperty = SpawnProperty();
+    newProperty.position = LocationHolder.PropertyLocation.position;
+    OnPropertySpawnedEvent?.Invoke(newProperty);
   }
 
   protected virtual void TimedOut()

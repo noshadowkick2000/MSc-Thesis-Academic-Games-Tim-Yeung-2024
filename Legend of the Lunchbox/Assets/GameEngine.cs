@@ -69,7 +69,6 @@ namespace Assets
     public delegate void StateChangeEvent();
     public delegate void StateChangeEventTimed(float duration);
     public delegate void StateChangeEventBooled(bool boolean);
-
     public delegate void StateChangeEventTimedCallback(float duration, Action<InputHandler.InputState> callback);
 
     public static event StateChangeEvent CutSceneStartedEvent;
