@@ -11,7 +11,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject thoughtUI;
     [SerializeField] private GameObject controlIndicatorUI;
     [SerializeField] private GameObject distractionUI;
-    [SerializeField] private Slider timerUI;
+    [SerializeField] private Image timerUI;
     
     void Awake()
     {
@@ -90,16 +90,19 @@ public class UIController : MonoBehaviour
 
     private void CancelTimer()
     {
+        timerUI.color = Color.clear;
         StopCoroutine(timerRoutine);
     }
 
     private IEnumerator AnimateTimer(float timeOut)
     {
         float startTime = Time.realtimeSinceStartup;
+        timerUI.color = Color.white;
+        Color newColor = timerUI.color;
         while (Time.realtimeSinceStartup < startTime + timeOut)
         {
-            float x = 1 - (Time.realtimeSinceStartup - startTime) / timeOut;
-            timerUI.value = x;
+            newColor.a = (Time.realtimeSinceStartup - startTime) / timeOut;
+            timerUI.color = newColor;
             yield return null;
         }
     }
