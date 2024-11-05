@@ -3,10 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using Assets;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PropertyTimer : MonoBehaviour
 {
-    [SerializeField] private float flickerWaitRatio = .8f;
+    [FormerlySerializedAs("flickerWaitRatio")] [SerializeField] private float waitRatio = .8f;
+    [SerializeField] private int stops = 10;
+    [SerializeField] private float stopRatio = .1f;
     
     private void Awake()
     {
@@ -41,28 +44,32 @@ public class PropertyTimer : MonoBehaviour
     private IEnumerator Flicker()
     {
         // Wait for a while before starting to flicker
-        yield return new WaitForSecondsRealtime((flickerWaitRatio * propertyDuration));
+        float visibleRatio = 1f - waitRatio;
+        
+        yield return new WaitForSecondsRealtime((visibleRatio * propertyDuration));
+        
+        float stopTime = propertyDuration * waitRatio * stopRatio / stops;
+        float visibleTimeTotal = propertyDuration * waitRatio * (1 - stopRatio);
 
-        float flickerHeight = (1 - flickerWaitRatio) * propertyDuration;
-        float startTimer = Time.realtimeSinceStartup;
-        while (true)
+        for (int i = stops; i > 0; i--)
         {
-            var x = (Time.realtimeSinceStartup - startTimer) / flickerHeight;
-            var y = (-flickerHeight * Mathf.Pow(x, 2) + 1) * .1f;
-            yield return new WaitForSecondsRealtime(currentProperty.gameObject.activeSelf ? y : y / 2);
-            currentProperty.gameObject.SetActive(!currentProperty.gameObject.activeSelf);
+            currentProperty.gameObject.SetActive(false);
+            yield return new WaitForSecondsRealtime(stopTime);
+            currentProperty.gameObject.SetActive(true);
+            float goTime = (Mathf.Pow(2, i) - Mathf.Pow(2, i - 1)) / Mathf.Pow(2, stops) * visibleTimeTotal;
+            yield return new WaitForSecondsRealtime(goTime);
         }
     }
 
     protected virtual void ShowingProperty(float duration, Action<InputHandler.InputState> callback)
     {
         propertyDuration = duration;
+        flickerRoutine = StartCoroutine(Flicker());
     }
 
     protected virtual void OnPropertySpawned(Transform property)
     {
         currentProperty = property;
-        flickerRoutine = StartCoroutine(Flicker());
     }
 
     protected virtual void TimedOut()
