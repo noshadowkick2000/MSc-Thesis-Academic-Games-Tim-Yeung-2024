@@ -1318,6 +1318,7 @@ GameObject:
   - component: {fileID: 959961338}
   - component: {fileID: 959961339}
   - component: {fileID: 959961340}
+  - component: {fileID: 959961341}
   m_Layer: 0
   m_Name: Gamecontroller
   m_TagString: Untagged
@@ -1488,6 +1489,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   feedbackUI: {fileID: 1092734212}
   feedbackAnimation: {fileID: 1092734214}
+--- !u!114 &959961341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 959961329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f44229f6f238564f87f97ba3df1cfbf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0

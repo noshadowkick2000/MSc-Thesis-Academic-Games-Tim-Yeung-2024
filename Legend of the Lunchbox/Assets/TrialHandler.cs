@@ -13,6 +13,8 @@ public class TrialHandler : MonoBehaviour
 {
   private readonly List<Encounter> encounters = new List<Encounter>();
   private int encounterCounter = 0;
+  
+  public delegate void SpawnEvent(Transform property);
 
   private int GetId(string name)
   {
@@ -82,12 +84,15 @@ public class TrialHandler : MonoBehaviour
     }
   }
   
+  public static event SpawnEvent OnObjectSpawnedEvent;
+  
   private void StartEncounter()
   {
     int curEncounter = encounters[encounterCounter].GetEnemyId();
     Transform obj = objectDictionary[curEncounter];
     obj.gameObject.SetActive(true);
     obj.position = LocationHolder.EnemyLocation.position;
+    OnObjectSpawnedEvent?.Invoke(obj);
   }
 
   public int GetCurrentEncounterId()
@@ -99,9 +104,8 @@ public class TrialHandler : MonoBehaviour
   {
     return encounters[encounterCounter].CurrentPropertyInfo();
   }
-
-  public delegate void PropertySpawnedEvent(Transform property);
-  public static event PropertySpawnedEvent OnPropertySpawnedEvent;
+  
+  public static event SpawnEvent OnPropertySpawnedEvent;
   
   private void SpawnProperty()
   {
