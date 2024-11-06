@@ -9,6 +9,7 @@ public class UIController : MonoBehaviour
 {
     [SerializeField] private GameObject mindUI;
     [SerializeField] private GameObject thoughtUI;
+    [SerializeField] private Sprite[] thoughtSprites;
     [SerializeField] private GameObject controlIndicatorUI;
     [SerializeField] private GameObject distractionUI;
     [SerializeField] private Image timerUI;
@@ -67,10 +68,30 @@ public class UIController : MonoBehaviour
             mindUI.SetActive(false);
     }
 
+    private Coroutine thoughtRoutine;
+
     private void StartThought() 
     { 
         thoughtUI.SetActive(true);
         controlIndicatorUI.SetActive(false);
+
+        thoughtRoutine = StartCoroutine(AnimateThought());
+    }
+
+    private IEnumerator AnimateThought()
+    {
+        Image img = thoughtUI.GetComponent<Image>();
+        int counter = 0;
+
+        while (true)
+        {
+            img.sprite = thoughtSprites[counter];
+            counter++;
+            if (counter == thoughtSprites.Length)
+                counter = 0;
+            
+            yield return new WaitForSecondsRealtime(.2f);
+        }
     }
 
     Coroutine timerRoutine;
@@ -80,6 +101,7 @@ public class UIController : MonoBehaviour
         thoughtUI.SetActive(false);
         controlIndicatorUI.SetActive(true);
 
+        StopCoroutine(thoughtRoutine);
         timerRoutine = StartCoroutine(AnimateTimer(timeOut));
     }
 
