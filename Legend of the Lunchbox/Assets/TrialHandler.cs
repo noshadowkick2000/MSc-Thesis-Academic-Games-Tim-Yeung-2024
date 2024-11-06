@@ -81,18 +81,13 @@ public class TrialHandler : MonoBehaviour
       objectDictionary.Add(GetId(obj.name), spawnedPrefab);
     }
   }
-
-
-  /// <summary>
-  /// Returns activated object and starts encounter
-  /// </summary>
-  /// <returns></returns>
-  private Transform StartEncounter()
+  
+  private void StartEncounter()
   {
     int curEncounter = encounters[encounterCounter].GetEnemyId();
     Transform obj = objectDictionary[curEncounter];
     obj.gameObject.SetActive(true);
-    return obj;
+    obj.position = LocationHolder.EnemyLocation.position;
   }
 
   public int GetCurrentEncounterId()
@@ -105,16 +100,16 @@ public class TrialHandler : MonoBehaviour
     return encounters[encounterCounter].CurrentPropertyInfo();
   }
 
-  /// <summary>
-  /// Spawns property
-  /// </summary>
-  /// <returns></returns>
-  private Transform SpawnProperty()
+  public delegate void PropertySpawnedEvent(Transform property);
+  public static event PropertySpawnedEvent OnPropertySpawnedEvent;
+  
+  private void SpawnProperty()
   {
     int propid = encounters[encounterCounter].GetCurrentPropertyId();
     Transform property = objectDictionary[propid];
     property.gameObject.SetActive(true);
-    return property;
+    property.position = LocationHolder.PropertyLocation.position;
+    OnPropertySpawnedEvent?.Invoke(property);
   }
 
   /// <summary>
@@ -204,12 +199,12 @@ public class TrialHandler : MonoBehaviour
 
   protected virtual void StartingEncounter(float duration)
   {
-    StartEncounter().position = LocationHolder.EnemyLocation.position;
+    StartEncounter();
   }
 
   protected virtual void ShowingProperty(float enemyTimeOut, Action<InputHandler.InputState> callback )
   {
-    SpawnProperty().position = LocationHolder.PropertyLocation.position;
+    SpawnProperty();
   }
 
   protected virtual void TimedOut()
