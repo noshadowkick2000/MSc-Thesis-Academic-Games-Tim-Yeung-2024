@@ -21,24 +21,33 @@ public class ObjectAnimator : MonoBehaviour
    {
       TrialHandler.OnObjectSpawnedEvent += ObjectSpawned;
       GameEngine.LostEncounterStartedEvent += LostEncounter;
+      GameEngine.WonEncounterStartedEvent += WonEncounter;
    }
 
    private void UnsubscribeFromEvents()
    {
       TrialHandler.OnObjectSpawnedEvent -= ObjectSpawned;
       GameEngine.LostEncounterStartedEvent -= LostEncounter;
+      GameEngine.WonEncounterStartedEvent -= WonEncounter;
    }
 
    private Rigidbody objectRb;
+   private GameObject face;
    protected virtual void ObjectSpawned(Transform objectTransform)
    {
       objectRb = objectTransform.GetComponent<Rigidbody>();
-      print(objectRb);
+      face = objectTransform.GetComponentInChildren<Animation>().gameObject;
+      
+      face.SetActive(false);
+   }
+
+   protected virtual void WonEncounter()
+   {
+      StartCoroutine(DelayedAnimation());
    }
    
    protected virtual void LostEncounter()
    {
-      print(objectRb + "start");
       StartCoroutine(DelayedPhysics());
    }
 
@@ -51,5 +60,12 @@ public class ObjectAnimator : MonoBehaviour
       objectRb.isKinematic = false;
       
       objectRb.AddTorque(randomVector, ForceMode.VelocityChange);
+   }
+
+   private IEnumerator DelayedAnimation()
+   {
+      yield return new WaitForSecondsRealtime(1f);
+      
+      face.SetActive(true);
    }
 }
