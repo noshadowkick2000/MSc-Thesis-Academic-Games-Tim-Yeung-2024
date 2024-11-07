@@ -42,8 +42,25 @@ namespace Assets
     // Connected components
     private TrialHandler trialHandler = null;
     
-    private int playerHealth;
-    private int friendHealth;
+    private int playerHealth = 4;
+    private int friendHealth = 0;
+
+    private void DamagePlayer()
+    {
+      if (friendHealth > 0)
+      {
+        friendHealth--;
+      }
+      else
+      {
+        playerHealth--;
+      }
+    }
+
+    private bool PlayerIsDead()
+    {
+      return playerHealth + friendHealth <= 0;
+    }
 
     private void Awake()
     {
@@ -212,7 +229,7 @@ namespace Assets
     {
       LostEncounterStartedEvent?.Invoke();
 
-      playerHealth--;
+      DamagePlayer();
       
       StartCoroutine(Timer(encounterStopTime, EndingEncounter));
     }
@@ -221,7 +238,7 @@ namespace Assets
     {
       EndingEncounterStartedEvent?.Invoke(playerResetTime);
 
-      if (playerHealth == 0)
+      if (PlayerIsDead())
       { 
         Logger.Log("Played died");
         StartCoroutine(Timer(playerResetTime, CutScene)); // TODO animations etc
