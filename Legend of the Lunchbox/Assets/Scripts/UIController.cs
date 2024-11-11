@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class UIController : MonoBehaviour
 {
     [SerializeField] private GameObject mindUI;
+    [SerializeField] private Image mindPanel;
     [SerializeField] private GameObject thoughtUI;
     [SerializeField] private Sprite[] thoughtSprites;
     [SerializeField] private GameObject controlIndicatorUI;
@@ -60,6 +61,7 @@ public class UIController : MonoBehaviour
             float x = (Time.realtimeSinceStartup - startTime) / duration;
             if (inverse) { x = 1 - x; }
             mt.localScale = new Vector3 (x, x, 1);
+            mindPanel.color = new Color(1, 1,1 , x);
             yield return null;
         }
 
