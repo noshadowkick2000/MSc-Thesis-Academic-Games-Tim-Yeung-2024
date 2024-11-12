@@ -24,7 +24,6 @@ public class TrialHandler : MonoBehaviour
   private void Awake()
   {
     LoadEncounters();
-    PrepareModels();
 
     SubscribeToEvents();
   }
@@ -48,20 +47,9 @@ public class TrialHandler : MonoBehaviour
     {
       foreach (XmlNode encounter in level.ChildNodes)
       {
-        Encounter enc = objectRoot.AddComponent<Encounter>();
-        int health = int.Parse(encounter.Attributes["health"].Value);
-        int enemyId = GetId(encounter.Attributes["enemy"].Value);
-        List<int> propertyIds = new List<int>();
-        List<bool> correctProperty = new List<bool>();
-        foreach (XmlNode node in encounter.ChildNodes)
-        {
-          //print(node.InnerText);
-          propertyIds.Add(GetId(node.InnerText));
-          correctProperty.Add(Convert.ToBoolean(node.Attributes["correct"].Value));
-        }
-        enc.Init(enemyId, health, propertyIds.ToArray(), correctProperty.ToArray());
-        Logger.Log($"Loaded encounter: {Environment.NewLine}{enc.ToString()}");
-        encounters.Add(enc);
+        if (encounter.Name == "encounter")
+          CreateEncounter(objectRoot, encounter);
+        
       }
 
       Logger.Log($"Finished loading successfully, {encounters.Count} encounters loaded");
@@ -73,14 +61,63 @@ public class TrialHandler : MonoBehaviour
     }
   }
 
+  private void CreateEncounter(Transform objectRoot, XmlNode encounter)
+  {
+    Encounter enc = objectRoot.AddComponent<Encounter>();
+    int health = int.Parse(encounter.Attributes["health"].Value);
+    int enemyId = GetId(encounter.Attributes["enemy"].Value);
+    int waitTimeMillis = int.Parse(encounter.Attributes["wait"].Value);
+    List<int> propertyIds = new List<int>();
+    List<bool> correctProperty = new List<bool>();
+    foreach (XmlNode node in encounter.ChildNodes)
+    {
+      //print(node.InnerText);
+      propertyIds.Add(GetId(node.InnerText));
+      correctProperty.Add(Convert.ToBoolean(node.Attributes["correct"].Value));
+    }
+    enc.Init(enemyId, health, propertyIds.ToArray(), correctProperty.ToArray(), waitTimeMillis/1000f);
+    Logger.Log($"Loaded encounter: {Environment.NewLine}{enc.ToString()}");
+    encounters.Add(enc);
+  }
+
+  private GameObject GetModel(int id)
+  {
+    foreach (var propobj in GameEngine.PropertiesAndObjects)
+    {
+      if (GetId(propobj.name) == id)
+        return propobj;
+    }
+
+    return null;
+  }
+
   private Dictionary<int, Transform> objectDictionary = new Dictionary<int, Transform>();
   private void PrepareModels()
   {
-    foreach (GameObject obj in GameEngine.PropertiesAndObjects)
+    void SpawnAddToDictionary(GameObject obj, int id)
     {
       Transform spawnedPrefab = Instantiate(obj, transform).transform;
       spawnedPrefab.gameObject.SetActive(false);
-      objectDictionary.Add(GetId(obj.name), spawnedPrefab);
+      objectDictionary.Add(id, spawnedPrefab);
+    }
+    
+    // Clear previous
+    if (objectDictionary.Count > 0)
+    {
+      foreach (var pair in objectDictionary)
+      {
+        Destroy(pair.Value.gameObject);
+      }
+      objectDictionary = new Dictionary<int, Transform>();
+    }
+    
+    // Add object gameobject
+    SpawnAddToDictionary(GetModel(GetCurrentEncounterId()), GetCurrentEncounterId());
+
+    // Add property gameobjects
+    foreach (var propertyId in encounters[encounterCounter].GetAllPropertyIds())
+    {
+      SpawnAddToDictionary(GetModel(propertyId), propertyId);
     }
   }
   
@@ -88,19 +125,23 @@ public class TrialHandler : MonoBehaviour
   
   private void StartEncounter()
   {
-    int curEncounter = encounters[encounterCounter].GetEnemyId();
-    Transform obj = objectDictionary[curEncounter];
+    Transform obj = objectDictionary[GetCurrentEncounterId()];
     obj.gameObject.SetActive(true);
     obj.position = LocationHolder.EnemyLocation.position;
     OnObjectSpawnedEvent?.Invoke(obj);
   }
 
-  public int GetCurrentEncounterId()
+  public float GetCurrentWaitTime()
+  {
+    return encounters[encounterCounter].GetWaitTime();
+  }
+
+  private int GetCurrentEncounterId()
   {
     return encounters[encounterCounter].GetEnemyId();
   }
 
-  public string GetCurrentPropertyInfo()
+  private string GetCurrentPropertyInfo()
   {
     return encounters[encounterCounter].CurrentPropertyInfo();
   }
@@ -173,8 +214,7 @@ public class TrialHandler : MonoBehaviour
   
   private void KillEncounter()
   {
-    int curEncounter = encounters[encounterCounter].GetEnemyId();
-    Transform obj = objectDictionary[curEncounter];
+    Transform obj = objectDictionary[GetCurrentEncounterId()];
     obj.gameObject.SetActive(false);
     encounterCounter++;
   }
@@ -203,6 +243,7 @@ public class TrialHandler : MonoBehaviour
 
   protected virtual void StartingEncounter(float duration)
   {
+    PrepareModels();
     StartEncounter();
   }
 

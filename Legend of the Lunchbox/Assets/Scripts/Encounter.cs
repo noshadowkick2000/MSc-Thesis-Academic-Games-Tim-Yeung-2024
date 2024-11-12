@@ -13,11 +13,23 @@ public class Encounter : MonoBehaviour
   {
     return enemyId;
   }
+
+  private float waitTime;
+
+  public float GetWaitTime()
+  {
+    return waitTime;
+  }
+  
   private int startingHealth;
   private int health;
-
-  // Properties are given numerical identifiers, enemy compares id to their weakness list
+  
   private int[] propertyIds;
+
+  public int[] GetAllPropertyIds()
+  {
+    return propertyIds;
+  }
   private bool[] validProperty;
   private int currentProperty = 0;
   
@@ -26,12 +38,14 @@ public class Encounter : MonoBehaviour
     //engine = FindObjectOfType<GameEngine>();
   }
 
-  public void Init(int enemyId, int startingHealth, int[] propertyIds, bool[] validProperty)
+  public void Init(int enemyId, int startingHealth, int[] propertyIds, bool[] validProperty, float waitTime)
   {
     this.enemyId = enemyId;
     this.startingHealth = startingHealth;
     this.propertyIds = propertyIds;
     this.validProperty = validProperty;
+    this.waitTime = waitTime;
+    
     health = startingHealth;
   }
 
