@@ -14,8 +14,8 @@ namespace Assets
   public class GameEngine : MonoBehaviour
   {
     [Header("Experimental Variables")]
-    [SerializeField] private float minimumWalkTime = 2.0f;
-    [SerializeField] private float maximumWalkTime = 8.0f;
+    // [SerializeField] private float minimumWalkTime = 2.0f;
+    // [SerializeField] private float maximumWalkTime = 8.0f;
     [SerializeField] private float encounterStartTime = 0.5f;
     [SerializeField] private float enemyShowTime = 3.0f;
     [SerializeField] private float mindStartTime = 1.0f;
@@ -124,7 +124,7 @@ namespace Assets
     {     
       OnRailStartedEvent?.Invoke();
 
-      float duration = Random.Range(minimumWalkTime, maximumWalkTime);
+      float duration = trialHandler.GetCurrentWaitTime();
       StartCoroutine(Timer(duration, StartingEncounter));
     }
 
