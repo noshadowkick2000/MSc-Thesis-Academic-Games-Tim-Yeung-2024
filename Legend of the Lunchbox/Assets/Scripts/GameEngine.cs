@@ -93,7 +93,7 @@ namespace Assets
     public static event StateChangeEvent OnRailStartedEvent;
     public static event StateChangeEventTimed StartingEncounterStartedEvent;
     public static event StateChangeEvent ShowingEnemyStartedEvent;
-    public static event StateChangeEvent SettingUpMindStartedEvent;
+    public static event StateChangeEventTimed SettingUpMindStartedEvent;
     public static event StateChangeEventBooled ThinkingOfPropertyStartedEvent;
     public static event StateChangeEventTimedCallback ShowingPropertyStartedEvent;
     public static event StateChangeEvent EvaluatingInputStartedEvent;
@@ -144,7 +144,7 @@ namespace Assets
 
     private void SettingUpMind()
     {
-      SettingUpMindStartedEvent?.Invoke();
+      SettingUpMindStartedEvent?.Invoke(mindStartTime);
       
       StartCoroutine(Timer(mindStartTime, ThinkingOfProperty));
     }
