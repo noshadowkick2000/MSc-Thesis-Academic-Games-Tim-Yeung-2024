@@ -59,7 +59,7 @@ public class EnvironmentHandler : MonoBehaviour
     private void SpawnTerrain(bool first)
     {
         int newId = lastId;
-        while (newId == lastId)
+        while (newId == lastId && environmentTerrains.Length > 1)
             newId = Random.Range(0, environmentTerrains.Length);
         lastId = newId;
         
@@ -67,7 +67,7 @@ public class EnvironmentHandler : MonoBehaviour
             loadedTerrains.Add(Instantiate(environmentTerrains[newId], spawnPosition + Vector3.back * spawnGap, Quaternion.identity, transform));
         loadedTerrains.Add(Instantiate(environmentTerrains[newId], loadedTerrains.Last().transform.position + Vector3.forward * spawnGap, Quaternion.identity, transform));
     }
-
+    
     private void Update()
     {
         if (!moving)
@@ -83,7 +83,7 @@ public class EnvironmentHandler : MonoBehaviour
         
         if (Vector3.Distance(loadedTerrains.Last().transform.position, spawnPosition) >= spawnGap)
             SpawnTerrain(false);
-
+    
         foreach (var despawnTerrain in despawnTerrains)
         {
             loadedTerrains.Remove(despawnTerrain);
