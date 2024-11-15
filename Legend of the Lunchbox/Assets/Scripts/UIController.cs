@@ -3,12 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using Assets;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
     [SerializeField] private GameObject mindUI;
     [SerializeField] private Image mindPanel;
+    [SerializeField] private Color spotColor;
+    [SerializeField] private GameObject spotLight;
+    [SerializeField] private Material spotLightMaterial;
     [SerializeField] private GameObject thoughtUI;
     [SerializeField] private Sprite[] thoughtSprites;
     [SerializeField] private GameObject controlIndicatorUI;
@@ -20,6 +24,7 @@ public class UIController : MonoBehaviour
         thoughtUI.SetActive(false);
         mindUI.SetActive(false);
         controlIndicatorUI.SetActive(false);
+        spotLight.SetActive(false);
         
         SubscribeToEvents();
     }
@@ -34,46 +39,58 @@ public class UIController : MonoBehaviour
         if (encounterOver) 
         {
             controlIndicatorUI.SetActive(false);
-            StartCoroutine(AnimateCanvas(true)); 
+            StartCoroutine(AnimateCanvas(true, .5f)); 
         }
         thoughtUI?.SetActive(false);
     }
 
-    private void StartMind()
+    private void StartMind(float duration)
     {
         distractionUI.SetActive(false);
-        StartCoroutine(AnimateCanvas(false));
+        StartCoroutine(AnimateCanvas(false, duration));
     }
     
-    private IEnumerator AnimateCanvas(bool inverse) 
+    private IEnumerator AnimateCanvas(bool inverse, float duration) 
     {
         if (!inverse)
+        {
             mindUI.SetActive(true);
+            // spotLight.SetActive(true);
+        }
 
-        RectTransform mt = mindUI.GetComponent<RectTransform>();
-        mt.localScale = inverse ? Vector3.one : Vector3.zero;
-
-        float duration = 0.5f; //TODO make this dependent on start time GameEngine
-
+        // RectTransform mt = mindUI.GetComponent<RectTransform>();
+        mindPanel.color = inverse ? Color.black : Color.clear;
+        // mt.localScale = inverse ? Vector3.one : Vector3.zero;
+        // spotLightMaterial.color = Color.clear;  
+        
         float startTime = Time.realtimeSinceStartup;
         while (Time.realtimeSinceStartup < startTime + duration)
         {
             float x = (Time.realtimeSinceStartup - startTime) / duration;
             if (inverse) { x = 1 - x; }
-            mt.localScale = new Vector3 (x, x, 1);
-            mindPanel.color = new Color(1, 1,1 , x);
+            // mt.localScale = new Vector3 (x, x, 1);
+            mindPanel.color = new Color(0, 0,0 , x);
+            // Color sc = new Color(spotColor.r, spotColor.g, spotColor.b, x);
+            // spotLightMaterial.color = sc;
             yield return null;
         }
 
-        mt.localScale = inverse ? Vector3.zero : Vector3.one;
+        mindPanel.color = inverse ? Color.clear : Color.black;
+        // mt.localScale = inverse ? Vector3.zero : Vector3.one;
+        spotLightMaterial.color = spotColor;
         if (inverse)
+        {
             mindUI.SetActive(false);
+            spotLight.SetActive(false);
+        }
     }
 
     private Coroutine thoughtRoutine;
 
     private void StartThought() 
     { 
+        //TODO spotlights searching around effect
+        
         thoughtUI.SetActive(true);
         controlIndicatorUI.SetActive(false);
 
@@ -151,9 +168,9 @@ public class UIController : MonoBehaviour
         GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
     }
     
-    protected virtual void SettingUpMind()
+    protected virtual void SettingUpMind(float duration)
     {
-        StartMind();
+        StartMind(duration);
     }
     
     protected virtual void ThinkingOfProperty(bool encounterOver)
@@ -167,10 +184,12 @@ public class UIController : MonoBehaviour
     protected virtual void ShowingProperty(float enemyTimeOut, Action<InputHandler.InputState> callback)
     {
         EndThought(enemyTimeOut);
+        spotLight.SetActive(true);
     }
 
     protected virtual void EvaluatingInput()
     {
+        spotLight.SetActive(false);
         CancelTimer();
     }
 
