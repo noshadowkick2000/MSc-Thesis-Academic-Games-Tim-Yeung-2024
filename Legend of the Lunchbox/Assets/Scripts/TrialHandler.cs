@@ -197,9 +197,9 @@ public class TrialHandler : MonoBehaviour
     while (Time.realtimeSinceStartup < startTime + duration)
     {
       float x = (Time.realtimeSinceStartup - startTime) / duration;
-      float y = (-4f * Mathf.Pow(x - .5f, 2) + 1f) * .2f;
-      property.localScale = new Vector3(startScale.x + y, startScale.y + y, startScale.z + y);
-      property.localRotation = Quaternion.Slerp(startRotation, randomRotation, x);
+      float y = x < .5 ? 4 * x * x * x : 1 - Mathf.Pow(-2 * x + 2, 3) / 2;
+      property.localScale = new Vector3(startScale.x * y, startScale.y * y, startScale.z * y);
+      property.localRotation = Quaternion.Lerp(randomRotation, startRotation, y);
       // property.position += new Vector3(input == InputHandler.InputState.Using ? movement : -movement, 0, 0);
       yield return null;
     }

@@ -75,7 +75,7 @@ public class MainCameraController : CameraController
     GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
   }
 
-  protected virtual void OnRail()
+  protected virtual void OnRail(float duration)
   {
     ImmediateToObject(LocationHolder.BaseCameraLocation);
     StartBobbingCamera();
