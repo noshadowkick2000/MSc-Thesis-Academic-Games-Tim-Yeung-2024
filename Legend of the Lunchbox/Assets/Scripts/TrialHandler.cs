@@ -8,6 +8,7 @@ using System.Xml;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Windows;
+using Random = UnityEngine.Random;
 
 public class TrialHandler : MonoBehaviour
 {
@@ -154,7 +155,7 @@ public class TrialHandler : MonoBehaviour
     Transform property = objectDictionary[propid];
     property.gameObject.SetActive(true);
     property.position = LocationHolder.PropertyLocation.position;
-    // StartCoroutine(ActivateProperty(property));
+    StartCoroutine(ActivateProperty(property));
     OnPropertySpawnedEvent?.Invoke(property);
   }
 
@@ -182,26 +183,30 @@ public class TrialHandler : MonoBehaviour
     encounters[encounterCounter].SkipProperty();
   }
 
-  // private IEnumerator ActivateProperty(Transform property)
-  // {
-  //   float duration = .2f;
-  //   float movement = 0.02f;
-  //
-  //   Vector3 startScale = property.localScale;
-  //   property.localScale = Vector3.zero;
-  //   
-  //   float startTime = Time.realtimeSinceStartup;
-  //   while (Time.realtimeSinceStartup < startTime + duration)
-  //   {
-  //     float x = (Time.realtimeSinceStartup - startTime) / duration;
-  //     float y = (-4f * Mathf.Pow(x - .5f, 2) + 1f) * .2f;
-  //     property.localScale = new Vector3(startScale.x + y, startScale.y + y, startScale.z + y);
-  //     // property.position += new Vector3(input == InputHandler.InputState.Using ? movement : -movement, 0, 0);
-  //     yield return null;
-  //   }
-  //   
-  //   property.localScale = startScale;
-  // }
+  private IEnumerator ActivateProperty(Transform property)
+  {
+    float duration = .2f;
+    float movement = 0.02f;
+  
+    Vector3 startScale = property.localScale;
+    Quaternion startRotation = property.localRotation;
+    Quaternion randomRotation = Quaternion.Euler(Random.Range(1f, 20f), 0, Random.Range(10f, 20f)); 
+    property.localScale = Vector3.zero;
+    
+    float startTime = Time.realtimeSinceStartup;
+    while (Time.realtimeSinceStartup < startTime + duration)
+    {
+      float x = (Time.realtimeSinceStartup - startTime) / duration;
+      float y = (-4f * Mathf.Pow(x - .5f, 2) + 1f) * .2f;
+      property.localScale = new Vector3(startScale.x + y, startScale.y + y, startScale.z + y);
+      property.localRotation = Quaternion.Slerp(startRotation, randomRotation, x);
+      // property.position += new Vector3(input == InputHandler.InputState.Using ? movement : -movement, 0, 0);
+      yield return null;
+    }
+    
+    property.localScale = startScale;
+    property.localRotation = startRotation;
+  }
 
   // private IEnumerator DeActivateProperty(InputHandler.InputState input)
   // {
