@@ -1426,7 +1426,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   environmentTerrains:
   - {fileID: 7064647509236346092, guid: bbcb1063879f4bc42bde4d4316504483, type: 3}
-  speedMultiplier: 0.1
+  discoverable: {fileID: 6244440265376870119, guid: 80c0d3ca878c9eb4996d4477dc2752f4, type: 3}
+  speedMultiplier: 1
   spawnPosition: {x: -25, y: 0, z: 60}
   spawnGap: 60
   despawnZ: -60

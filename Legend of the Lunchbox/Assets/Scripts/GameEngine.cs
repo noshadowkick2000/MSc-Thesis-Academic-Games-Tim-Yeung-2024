@@ -91,7 +91,7 @@ namespace Assets
     public delegate void StateChangeEventTimedCallback(float duration, Action<InputHandler.InputState> callback);
 
     public static event StateChangeEvent CutSceneStartedEvent;
-    public static event StateChangeEvent OnRailStartedEvent;
+    public static event StateChangeEventTimed OnRailStartedEvent;
     public static event StateChangeEventTimed StartingEncounterStartedEvent;
     public static event StateChangeEvent ShowingEnemyStartedEvent;
     public static event StateChangeEventTimed SettingUpMindStartedEvent;
@@ -122,10 +122,11 @@ namespace Assets
     }
 
     private void OnRail()
-    {     
-      OnRailStartedEvent?.Invoke();
-
+    { 
       float duration = trialHandler.GetCurrentWaitTime();
+      
+      OnRailStartedEvent?.Invoke(duration);
+      
       StartCoroutine(Timer(duration, StartingEncounter));
     }
 

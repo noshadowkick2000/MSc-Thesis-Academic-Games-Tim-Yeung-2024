@@ -10,6 +10,7 @@ using Random = UnityEngine.Random;
 public class EnvironmentHandler : MonoBehaviour
 {
     [SerializeField] private GameObject[] environmentTerrains;
+    [SerializeField] private GameObject discoverable;
     [SerializeField] private float speedMultiplier;
     [SerializeField] private Vector3 spawnPosition;
     [SerializeField] private float spawnGap;
@@ -19,6 +20,8 @@ public class EnvironmentHandler : MonoBehaviour
 
     private List<GameObject> loadedTerrains = new List<GameObject>();
     private List<GameObject> despawnTerrains = new List<GameObject>();
+
+    private GameObject spawnedDiscoverable;
     
     private void Awake()
     {
@@ -44,14 +47,17 @@ public class EnvironmentHandler : MonoBehaviour
         GameEngine.StartingEncounterStartedEvent -= StartingEncounter;
     }
     
-    protected virtual void OnRail()
+    protected virtual void OnRail(float duration)
     {
         moving = true;
+        spawnedDiscoverable = Instantiate(discoverable, new Vector3(Random.Range(-.3f, .3f), .2f, duration * speedMultiplier + LocationHolder.EnemyLocation.position.z), Quaternion.identity, loadedTerrains.Last().transform);
     }
 
     protected virtual void StartingEncounter(float encounterStartTime)
     {
         moving = false;
+        
+        // spawnedDiscoverable // TODO DISCOVERABLE DESPAWNS AND OBJECT RISES FROM OUT OF FRAME
     }
 
     private bool moving;
@@ -75,7 +81,7 @@ public class EnvironmentHandler : MonoBehaviour
         
         foreach (var terrain in loadedTerrains)
         {
-            terrain.transform.position += Vector3.back * speedMultiplier;
+            terrain.transform.position += Time.deltaTime * speedMultiplier * Vector3.back;
             
             if (terrain.transform.position.z < despawnZ)
                 despawnTerrains.Add(terrain);
