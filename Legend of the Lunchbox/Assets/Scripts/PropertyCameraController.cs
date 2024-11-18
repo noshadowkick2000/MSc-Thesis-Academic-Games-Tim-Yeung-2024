@@ -22,12 +22,14 @@ public class PropertyCameraController : CameraController
     {
         GameEngine.StartingEncounterStartedEvent += StartingEncounter;
         GameEngine.ShowingPropertyStartedEvent += ShowingProperty;
+        GameEngine.EvaluatingInputStartedEvent += EvaluatingInput;
     }
   
     private void UnSubscribeToEvents()
     {
         GameEngine.StartingEncounterStartedEvent -= StartingEncounter;
         GameEngine.ShowingPropertyStartedEvent -= ShowingProperty;
+        GameEngine.EvaluatingInputStartedEvent -= EvaluatingInput;
     }
 
     protected virtual void StartingEncounter(float duration)
@@ -35,9 +37,15 @@ public class PropertyCameraController : CameraController
         ImmediateToObject(start);
     }
 
+    private Coroutine cameraRoutine;
     protected virtual void ShowingProperty(float duration, Action<InputHandler.InputState> callback)
     {
         ImmediateToObject(start);
-        SmoothToObject(LocationHolder.MindCameraLocation, duration);
+        cameraRoutine = SmoothToObject(LocationHolder.MindCameraLocation, duration);
+    }
+
+    protected virtual void EvaluatingInput()
+    {
+        StopCoroutine(cameraRoutine);
     }
 }

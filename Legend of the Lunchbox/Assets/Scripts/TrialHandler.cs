@@ -154,6 +154,7 @@ public class TrialHandler : MonoBehaviour
     Transform property = objectDictionary[propid];
     property.gameObject.SetActive(true);
     property.position = LocationHolder.PropertyLocation.position;
+    // StartCoroutine(ActivateProperty(property));
     OnPropertySpawnedEvent?.Invoke(property);
   }
 
@@ -165,36 +166,65 @@ public class TrialHandler : MonoBehaviour
   /// <returns></returns>
   public bool EvaluateProperty(InputHandler.InputState input)
   {
-    StartCoroutine(DeActivateProperty(input)); // Fix
+    // StartCoroutine(DeActivateProperty(input)); // Fix
+    int propid = encounters[encounterCounter].GetCurrentPropertyId();
+    objectDictionary[propid].gameObject.SetActive(false);
+    
     return encounters[encounterCounter].EvaluateInput(input == InputHandler.InputState.Using);
   }
 
   private void SkipProperty()
   {
-    StartCoroutine(DeActivateProperty(InputHandler.InputState.None));
+    // StartCoroutine(DeActivateProperty(InputHandler.InputState.None));
+    int propid = encounters[encounterCounter].GetCurrentPropertyId();
+    objectDictionary[propid].gameObject.SetActive(false);
+    
     encounters[encounterCounter].SkipProperty();
   }
 
-  private IEnumerator DeActivateProperty(InputHandler.InputState input)
-  {
-    int propid = encounters[encounterCounter].GetCurrentPropertyId();
-    Transform property = objectDictionary[propid];
+  // private IEnumerator ActivateProperty(Transform property)
+  // {
+  //   float duration = .2f;
+  //   float movement = 0.02f;
+  //
+  //   Vector3 startScale = property.localScale;
+  //   property.localScale = Vector3.zero;
+  //   
+  //   float startTime = Time.realtimeSinceStartup;
+  //   while (Time.realtimeSinceStartup < startTime + duration)
+  //   {
+  //     float x = (Time.realtimeSinceStartup - startTime) / duration;
+  //     float y = (-4f * Mathf.Pow(x - .5f, 2) + 1f) * .2f;
+  //     property.localScale = new Vector3(startScale.x + y, startScale.y + y, startScale.z + y);
+  //     // property.position += new Vector3(input == InputHandler.InputState.Using ? movement : -movement, 0, 0);
+  //     yield return null;
+  //   }
+  //   
+  //   property.localScale = startScale;
+  // }
 
-    float duration = 0.5f; // TODO DEPEND ON OTHER TIMINGS
-    float movement = 0.02f;
-
-    float startTime = Time.realtimeSinceStartup;
-    while (Time.realtimeSinceStartup < startTime + duration)
-    {
-      float x = 1 - (Time.realtimeSinceStartup - startTime) / duration;
-      property.localScale = new Vector3(x, x, x);
-      if (input != InputHandler.InputState.None)
-        property.position += new Vector3(input == InputHandler.InputState.Using ? movement : -movement, 0, 0);
-      yield return null;
-    }
-
-    property.gameObject.SetActive(false);
-  }
+  // private IEnumerator DeActivateProperty(InputHandler.InputState input)
+  // {
+  //   int propid = encounters[encounterCounter].GetCurrentPropertyId();
+  //   Transform property = objectDictionary[propid];
+  //
+  //   float startY = property.position.y;
+  //
+  //   float duration = 0.5f; // TODO DEPEND ON OTHER TIMINGS
+  //   float movement = 0.02f;
+  //
+  //   float startTime = Time.realtimeSinceStartup;
+  //   while (Time.realtimeSinceStartup < startTime + duration)
+  //   {
+  //     float x = 1 - (Time.realtimeSinceStartup - startTime) / duration;
+  //     // property.localScale = new Vector3(x, x, x);
+  //     if (input != InputHandler.InputState.None)
+  //       property.position = new Vector3(input == InputHandler.InputState.Using ? property.position.x + movement * x : property.position.y - movement * x, startY + (-4 * MathF.Pow(x - .25f, 2) + .25f), 0);
+  //     yield return null;
+  //   }
+  //
+  //   property.gameObject.SetActive(false);
+  // }
 
   public void DamageEncounter()
   {
