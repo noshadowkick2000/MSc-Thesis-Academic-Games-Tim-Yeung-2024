@@ -21,14 +21,14 @@ public class PropertyCameraController : CameraController
     private void SubscribeToEvents()
     {
         GameEngine.StartingEncounterStartedEvent += StartingEncounter;
-        GameEngine.ShowingPropertyStartedEvent += ShowingProperty;
+        GameEngine.ThinkingOfPropertyStartedEvent += ShowingProperty;
         GameEngine.EvaluatingInputStartedEvent += EvaluatingInput;
     }
   
     private void UnSubscribeToEvents()
     {
         GameEngine.StartingEncounterStartedEvent -= StartingEncounter;
-        GameEngine.ShowingPropertyStartedEvent -= ShowingProperty;
+        GameEngine.ThinkingOfPropertyStartedEvent -= ShowingProperty;
         GameEngine.EvaluatingInputStartedEvent -= EvaluatingInput;
     }
 
@@ -38,10 +38,10 @@ public class PropertyCameraController : CameraController
     }
 
     private Coroutine cameraRoutine;
-    protected virtual void ShowingProperty(float duration, Action<InputHandler.InputState> callback)
+    protected virtual void ShowingProperty(float duration, bool encounterOver)
     {
         ImmediateToObject(start);
-        cameraRoutine = SmoothToObject(LocationHolder.MindCameraLocation, duration);
+        cameraRoutine = SmoothToObject(LocationHolder.MindCameraLocation, duration, true);
     }
 
     protected virtual void EvaluatingInput()

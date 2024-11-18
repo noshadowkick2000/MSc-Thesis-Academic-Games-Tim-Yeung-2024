@@ -84,7 +84,7 @@ public class MainCameraController : CameraController
   protected virtual void StartingEncounter(float encounterStartTime)
   {
     StopBobbingCamera();
-    SmoothToObject(LocationHolder.EnemyCameraLocation, encounterStartTime);
+    SmoothToObject(LocationHolder.EnemyCameraLocation, encounterStartTime, true);
   }
 
   protected virtual void SettingUpMind(float duration)
@@ -92,13 +92,13 @@ public class MainCameraController : CameraController
     // ImmediateToObject(LocationHolder.MindCameraLocation);
     // OrthoCamera();
     
-    SmoothToObject(LocationHolder.EnemyLocation, duration);
+    SmoothToObject(LocationHolder.EnemyLocation, duration, true);
   }
 
   protected virtual void ThinkingOfProperty(float duration, bool encounterOver)
   {
     if (!encounterOver) return;
-    SmoothToObject(LocationHolder.EnemyCameraLocation, .5f);
+    SmoothToObject(LocationHolder.EnemyCameraLocation, .5f, true);
   }
 
   protected virtual void EvaluatingEncounter()
@@ -108,6 +108,6 @@ public class MainCameraController : CameraController
 
   protected virtual void EndingEncounter(float playerResetTime)
   {
-    SmoothToObject(LocationHolder.BaseCameraLocation, playerResetTime);
+    SmoothToObject(LocationHolder.BaseCameraLocation, playerResetTime, true);
   }
 }

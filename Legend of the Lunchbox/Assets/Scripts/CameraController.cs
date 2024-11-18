@@ -6,11 +6,11 @@ public class CameraController : MonoBehaviour
 {
     [SerializeField] protected Transform cameraTransform;
     
-    protected Coroutine SmoothToObject(Transform goal, float duration)
+    protected Coroutine SmoothToObject(Transform goal, float duration, bool ease)
     {
         Vector3 position = goal.position;
         Quaternion rotation = goal.rotation;
-        return StartCoroutine(TransitionCamera(position, rotation, duration));
+        return StartCoroutine(TransitionCamera(position, rotation, duration, ease));
     }
 
     protected void ImmediateToObject(Transform goal)
@@ -21,7 +21,7 @@ public class CameraController : MonoBehaviour
         cameraTransform.rotation = rotation;
     }
 
-    protected IEnumerator TransitionCamera(Vector3 position, Quaternion rotation, float duration)
+    protected IEnumerator TransitionCamera(Vector3 position, Quaternion rotation, float duration, bool ease)
     {
         Vector3 startingPos = cameraTransform.position;
         Quaternion startingRot = cameraTransform.rotation;
@@ -30,6 +30,9 @@ public class CameraController : MonoBehaviour
         while (Time.realtimeSinceStartup < startTime + duration)
         {
             float x = (Time.realtimeSinceStartup - startTime) / duration;
+            if (ease)
+                x = x < .5 ? 4 * x * x * x : 1 - Mathf.Pow(-2 * x + 2, 3) / 2;
+                // x = x < .5 ? 16 * x * x * x * x * x : 1 - Mathf.Pow(-2 * x + 2, 5) / 2;
             cameraTransform.position = Vector3.Lerp(startingPos, position, x);
             cameraTransform.rotation = Quaternion.Lerp(startingRot, rotation, x);
             yield return null;
