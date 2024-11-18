@@ -95,15 +95,15 @@ public class MainCameraController : CameraController
     SmoothToObject(LocationHolder.EnemyLocation, duration);
   }
 
-  protected virtual void ThinkingOfProperty(bool encounterOver)
+  protected virtual void ThinkingOfProperty(float duration, bool encounterOver)
   {
-    // if (!encounterOver) return;
-    // ImmediateToObject(LocationHolder.EnemyCameraLocation);
+    if (!encounterOver) return;
+    SmoothToObject(LocationHolder.EnemyCameraLocation, .5f);
   }
 
   protected virtual void EvaluatingEncounter()
   {
-    ImmediateToObject(LocationHolder.EnemyCameraLocation);
+    
   }
 
   protected virtual void EndingEncounter(float playerResetTime)

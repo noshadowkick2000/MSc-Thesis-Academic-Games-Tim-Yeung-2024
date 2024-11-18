@@ -6,11 +6,11 @@ public class CameraController : MonoBehaviour
 {
     [SerializeField] protected Transform cameraTransform;
     
-    protected void SmoothToObject(Transform goal, float duration)
+    protected Coroutine SmoothToObject(Transform goal, float duration)
     {
         Vector3 position = goal.position;
         Quaternion rotation = goal.rotation;
-        StartCoroutine(TransitionCamera(position, rotation, duration));
+        return StartCoroutine(TransitionCamera(position, rotation, duration));
     }
 
     protected void ImmediateToObject(Transform goal)

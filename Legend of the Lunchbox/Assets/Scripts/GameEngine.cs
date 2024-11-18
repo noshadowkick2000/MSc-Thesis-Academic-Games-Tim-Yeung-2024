@@ -86,6 +86,7 @@ namespace Assets
     public delegate void StateChangeEvent();
     public delegate void StateChangeEventTimed(float duration);
     public delegate void StateChangeEventBooled(bool boolean);
+    public delegate void StateChangeEventTimedBooled(float duration, bool boolean);
 
     public delegate void StateChangeEventTimedCallback(float duration, Action<InputHandler.InputState> callback);
 
@@ -94,7 +95,7 @@ namespace Assets
     public static event StateChangeEventTimed StartingEncounterStartedEvent;
     public static event StateChangeEvent ShowingEnemyStartedEvent;
     public static event StateChangeEventTimed SettingUpMindStartedEvent;
-    public static event StateChangeEventBooled ThinkingOfPropertyStartedEvent;
+    public static event StateChangeEventTimedBooled ThinkingOfPropertyStartedEvent;
     public static event StateChangeEventTimedCallback ShowingPropertyStartedEvent;
     public static event StateChangeEvent EvaluatingInputStartedEvent;
     public static event StateChangeEvent TimedOutStartedEvent;
@@ -151,7 +152,7 @@ namespace Assets
     
     private void ThinkingOfProperty()
     {
-      ThinkingOfPropertyStartedEvent?.Invoke(trialHandler.EncounterOver);
+      ThinkingOfPropertyStartedEvent?.Invoke(pullingTime, trialHandler.EncounterOver);
       
       if (trialHandler.EncounterOver)
         EvaluatingEncounter();

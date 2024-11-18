@@ -1252,7 +1252,7 @@ MonoBehaviour:
   encounterStartTime: 0.5
   enemyShowTime: 2
   mindStartTime: 1
-  pullingTime: 1
+  pullingTime: 2
   enemyTimeOut: 4
   feedbackTime: 2
   encounterStopTime: 5
@@ -1688,7 +1688,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1037296048
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2164,13 +2164,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1216379608}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.58778524, y: 0, z: 0, w: 0.809017}
+  m_LocalRotation: {x: 0.5021146, y: 0, z: 0, w: 0.86480117}
   m_LocalPosition: {x: 0, y: 3, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 440006231}
-  m_LocalEulerAnglesHint: {x: 72, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 60.28, y: 0, z: 0}
 --- !u!114 &1216379610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2208,8 +2208,8 @@ Light:
   m_Color: {r: 1, g: 0.9896055, b: 0.8726415, a: 1}
   m_Intensity: 15
   m_Range: 4
-  m_SpotAngle: 28.809048
-  m_InnerSpotAngle: 20.61113
+  m_SpotAngle: 44.291416
+  m_InnerSpotAngle: 36.0935
   m_CookieSize: 10
   m_Shadows:
     m_Type: 0

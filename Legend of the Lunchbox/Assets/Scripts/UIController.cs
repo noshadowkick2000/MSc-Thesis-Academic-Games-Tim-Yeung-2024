@@ -156,6 +156,7 @@ public class UIController : MonoBehaviour
         GameEngine.ThinkingOfPropertyStartedEvent += ThinkingOfProperty;
         GameEngine.ShowingPropertyStartedEvent += ShowingProperty;
         GameEngine.EvaluatingInputStartedEvent += EvaluatingInput;
+        GameEngine.TimedOutStartedEvent += TimedOut;
         GameEngine.EndingEncounterStartedEvent += EndingEncounter;
     }
 
@@ -165,6 +166,7 @@ public class UIController : MonoBehaviour
         GameEngine.ThinkingOfPropertyStartedEvent -= ThinkingOfProperty;
         GameEngine.ShowingPropertyStartedEvent -= ShowingProperty;
         GameEngine.EvaluatingInputStartedEvent -= EvaluatingInput;
+        GameEngine.TimedOutStartedEvent -= TimedOut;
         GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
     }
     
@@ -173,12 +175,15 @@ public class UIController : MonoBehaviour
         StartMind(duration);
     }
     
-    protected virtual void ThinkingOfProperty(bool encounterOver)
+    protected virtual void ThinkingOfProperty(float duration, bool encounterOver)
     {
         if (encounterOver)
             Idle(true);
         else
+        {
+            // spotLight.SetActive(true);
             StartThought();
+        }
     }
 
     protected virtual void ShowingProperty(float enemyTimeOut, Action<InputHandler.InputState> callback)
@@ -191,6 +196,11 @@ public class UIController : MonoBehaviour
     {
         spotLight.SetActive(false);
         CancelTimer();
+    }
+
+    protected virtual void TimedOut()
+    {
+        spotLight.SetActive(false);
     }
 
     protected virtual void EndingEncounter(float duration)
