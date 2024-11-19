@@ -30,12 +30,12 @@ public class ProgressUI : MonoBehaviour
         GameEngine.StartingEncounterStartedEvent -= StartingEncounter;
     }
 
-    private void OnRail(float duration)
+    private void OnRail()
     {
         
     }
 
-    private void StartingEncounter(float duration)
+    private void StartingEncounter()
     {
         
     }

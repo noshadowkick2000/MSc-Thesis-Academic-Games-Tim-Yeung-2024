@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 
-public class MainCameraController : CameraController
+public class MainCameraController : ObjectMover
 {
   private void Awake()
   {
@@ -33,12 +33,12 @@ public class MainCameraController : CameraController
   private Stopwatch stopwatch;
   private IEnumerator BobbingCameraCoroutine()
   {
-    Vector3 basePosition = cameraTransform.position;
+    Vector3 basePosition = mainObject.position;
     stopwatch = Stopwatch.StartNew();
     
     while (true)
     {
-      cameraTransform.position = basePosition + new Vector3(0, bobbingOffset * Mathf.Sin((2/bobbingTime) * Mathf.PI * (stopwatch.Elapsed.Milliseconds/1000f)), 0);
+      mainObject.position = basePosition + new Vector3(0, bobbingOffset * Mathf.Sin((2/bobbingTime) * Mathf.PI * (stopwatch.Elapsed.Milliseconds/1000f)), 0);
       yield return null;
     }
   }
@@ -75,27 +75,27 @@ public class MainCameraController : CameraController
     GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
   }
 
-  protected virtual void OnRail(float duration)
+  protected virtual void OnRail()
   {
     ImmediateToObject(LocationHolder.BaseCameraLocation);
     StartBobbingCamera();
   }
 
-  protected virtual void StartingEncounter(float encounterStartTime)
+  protected virtual void StartingEncounter()
   {
     StopBobbingCamera();
-    SmoothToObject(LocationHolder.EnemyCameraLocation, encounterStartTime, true);
+    SmoothToObject(LocationHolder.EnemyCameraLocation, GameEngine.EncounterStartTime, true);
   }
 
-  protected virtual void SettingUpMind(float duration)
+  protected virtual void SettingUpMind()
   {
     // ImmediateToObject(LocationHolder.MindCameraLocation);
     // OrthoCamera();
     
-    SmoothToObject(LocationHolder.EnemyLocation, duration, true);
+    SmoothToObject(LocationHolder.EnemyLocation, GameEngine.MindStartTime, true);
   }
 
-  protected virtual void ThinkingOfProperty(float duration, bool encounterOver)
+  protected virtual void ThinkingOfProperty(bool encounterOver)
   {
     if (!encounterOver) return;
     SmoothToObject(LocationHolder.EnemyCameraLocation, .5f, true);
@@ -106,8 +106,8 @@ public class MainCameraController : CameraController
     
   }
 
-  protected virtual void EndingEncounter(float playerResetTime)
+  protected virtual void EndingEncounter()
   {
-    SmoothToObject(LocationHolder.BaseCameraLocation, playerResetTime, true);
+    SmoothToObject(LocationHolder.BaseCameraLocation, GameEngine.playerReset, true);
   }
 }

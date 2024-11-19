@@ -47,17 +47,19 @@ public class EnvironmentHandler : MonoBehaviour
         GameEngine.StartingEncounterStartedEvent -= StartingEncounter;
     }
     
-    protected virtual void OnRail(float duration)
+    // NOTE THAT ON THE FIRST SPAWN, THE PLACEMENT OF THE DISCOVERABLE IS INACCURATE, BUT SUBSEQUENT SPAWNS WILL BE ACCURATE
+    protected virtual void OnRail()
     {
         moving = true;
-        spawnedDiscoverable = Instantiate(discoverable, new Vector3(Random.Range(-.3f, .3f), .2f, duration * speedMultiplier + LocationHolder.EnemyLocation.position.z), Quaternion.identity, loadedTerrains.Last().transform);
+        spawnedDiscoverable = Instantiate(discoverable, new Vector3(0, .2f, (GameEngine.RailDuration) * speedMultiplier + LocationHolder.EnemyLocation.position.z), Quaternion.identity, loadedTerrains.Last().transform);
     }
 
-    protected virtual void StartingEncounter(float encounterStartTime)
+    protected virtual void StartingEncounter()
     {
         moving = false;
         
         // spawnedDiscoverable // TODO DISCOVERABLE DESPAWNS AND OBJECT RISES FROM OUT OF FRAME
+        Destroy(spawnedDiscoverable);
     }
 
     private bool moving;

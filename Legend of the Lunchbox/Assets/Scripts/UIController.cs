@@ -200,25 +200,25 @@ public class UIController : MonoBehaviour
         GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
     }
     
-    protected virtual void SettingUpMind(float duration)
+    protected virtual void SettingUpMind()
     {
-        StartMind(duration);
+        StartMind(GameEngine.MindStartTime);
     }
     
-    protected virtual void ThinkingOfProperty(float duration, bool encounterOver)
+    protected virtual void ThinkingOfProperty(bool encounterOver)
     {
         if (encounterOver)
             Idle(true);
         else
         {
             spotLight.SetActive(false);
-            StartThought(duration);
+            StartThought(GameEngine.PullingTime);
         }
     }
 
-    protected virtual void ShowingProperty(float enemyTimeOut, Action<InputHandler.InputState> callback)
+    protected virtual void ShowingProperty(Action<InputHandler.InputState> callback)
     {
-        EndThought(enemyTimeOut);
+        EndThought(GameEngine.EnemyTimeOut);
         // spotLight.SetActive(true);
     }
 
@@ -233,7 +233,7 @@ public class UIController : MonoBehaviour
         // spotLight.SetActive(false);
     }
 
-    protected virtual void EndingEncounter(float duration)
+    protected virtual void EndingEncounter()
     {
         ExitMind();
     }

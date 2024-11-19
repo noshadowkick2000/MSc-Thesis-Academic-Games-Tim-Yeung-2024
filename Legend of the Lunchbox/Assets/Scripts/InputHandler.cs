@@ -56,7 +56,7 @@ public class InputHandler : MonoBehaviour
         GameEngine.TimedOutStartedEvent -= TimedOut;
     }
 
-    protected virtual void ShowingProperty(float enemyTimeOut, Action<InputState> callback)
+    protected virtual void ShowingProperty(Action<InputState> callback)
     {
         acceptingInput = true;
         inputCallback = callback;
