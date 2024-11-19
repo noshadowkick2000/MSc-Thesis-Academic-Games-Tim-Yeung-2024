@@ -16,14 +16,35 @@ namespace Assets
     [Header("Experimental Variables")]
     // [SerializeField] private float minimumWalkTime = 2.0f;
     // [SerializeField] private float maximumWalkTime = 8.0f;
-    [SerializeField] private float encounterStartTime = 0.5f;
-    [SerializeField] private float enemyShowTime = 3.0f;
-    [SerializeField] private float mindStartTime = 1.0f;
-    [SerializeField] private float pullingTime = 0.5f;
-    [SerializeField] private float enemyTimeOut = 4.0f;
-    [SerializeField] private float feedbackTime = 2.0f;
-    [SerializeField] private float encounterStopTime = 2f;
-    [SerializeField] private float playerResetTime = 2f;
+    // [SerializeField] private float encounterStartTime = 0.5f;
+    // [SerializeField] private float enemyShowTime = 3.0f;
+    // [SerializeField] private float mindStartTime = 1.0f;
+    // [SerializeField] private float pullingTime = 0.5f;
+    // [SerializeField] private float enemyTimeOut = 4.0f;
+    // [SerializeField] private float feedbackTime = 2.0f;
+    // [SerializeField] private float encounterStopTime = 2f;
+    // [SerializeField] private float playerResetTime = 2f;
+    
+    // TODO load these in in a separate config loader from xml or sth
+    private static float encounterStartTime = 0.5f;
+    public static float EncounterStartTime => encounterStartTime;
+    private static float enemyShowTime = 2f;
+    public static float EnemyShowTime => enemyShowTime;
+    private static float mindStartTime = .5f;
+    public static float MindStartTime => mindStartTime;
+    private static float pullingTime = 2f;
+    public static float PullingTime => pullingTime;
+    private static float enemyTimeOut = 4.0f;
+    public static float EnemyTimeOut => enemyTimeOut;
+    private static float feedbackTime = 2.0f;
+    public static float FeedbackTime => feedbackTime;
+    private static float encounterStopTime = 5f;
+    public static float EncounterStopTime => encounterStopTime;
+    private static float playerResetTime = 2f;
+    public static float playerReset => playerResetTime;
+    private static float railDuration;
+    public static float RailDuration => railDuration;
+    
 
     [Header("Assets")]
     [SerializeField] private GameObject[] propertiesAndObjects;
@@ -74,8 +95,7 @@ namespace Assets
 
     private void Start()
     {
-      // TODO temp
-      OnRail();
+      Invoke(nameof(OnRail), 2f);
     }
 
     private void OnDestroy()
@@ -84,19 +104,19 @@ namespace Assets
     }
 
     public delegate void StateChangeEvent();
-    public delegate void StateChangeEventTimed(float duration);
+    // public delegate void StateChangeEventTimed(float duration);
     public delegate void StateChangeEventBooled(bool boolean);
-    public delegate void StateChangeEventTimedBooled(float duration, bool boolean);
-
-    public delegate void StateChangeEventTimedCallback(float duration, Action<InputHandler.InputState> callback);
+    // public delegate void StateChangeEventTimedBooled(float duration, bool boolean);
+    // public delegate void StateChangeEventTimedCallback(float duration, Action<InputHandler.InputState> callback);
+    public delegate void StateChangeEventCallback(Action<InputHandler.InputState> callback);
 
     public static event StateChangeEvent CutSceneStartedEvent;
-    public static event StateChangeEventTimed OnRailStartedEvent;
-    public static event StateChangeEventTimed StartingEncounterStartedEvent;
+    public static event StateChangeEvent OnRailStartedEvent;
+    public static event StateChangeEvent StartingEncounterStartedEvent;
     public static event StateChangeEvent ShowingEnemyStartedEvent;
-    public static event StateChangeEventTimed SettingUpMindStartedEvent;
-    public static event StateChangeEventTimedBooled ThinkingOfPropertyStartedEvent;
-    public static event StateChangeEventTimedCallback ShowingPropertyStartedEvent;
+    public static event StateChangeEvent SettingUpMindStartedEvent;
+    public static event StateChangeEventBooled ThinkingOfPropertyStartedEvent;
+    public static event StateChangeEventCallback ShowingPropertyStartedEvent;
     public static event StateChangeEvent EvaluatingInputStartedEvent;
     public static event StateChangeEvent TimedOutStartedEvent;
     public static event StateChangeEvent AnswerWrongStartedEvent;
@@ -104,7 +124,7 @@ namespace Assets
     public static event StateChangeEvent EvaluatingEncounterStartedEvent;
     public static event StateChangeEvent WonEncounterStartedEvent;
     public static event StateChangeEvent LostEncounterStartedEvent;
-    public static event StateChangeEventTimed EndingEncounterStartedEvent;
+    public static event StateChangeEvent EndingEncounterStartedEvent;
 
     private IEnumerator Timer(float duration, Action nextState)
     {
@@ -123,16 +143,16 @@ namespace Assets
 
     private void OnRail()
     { 
-      float duration = trialHandler.GetCurrentWaitTime();
+      railDuration = trialHandler.GetCurrentWaitTime();
       
-      OnRailStartedEvent?.Invoke(duration);
+      OnRailStartedEvent?.Invoke();
       
-      StartCoroutine(Timer(duration, StartingEncounter));
+      StartCoroutine(Timer(railDuration, StartingEncounter));
     }
 
     private void StartingEncounter()
     {
-      StartingEncounterStartedEvent?.Invoke(encounterStartTime);
+      StartingEncounterStartedEvent?.Invoke();
 
       StartCoroutine(Timer(encounterStartTime, ShowingEnemy));
     }
@@ -146,14 +166,14 @@ namespace Assets
 
     private void SettingUpMind()
     {
-      SettingUpMindStartedEvent?.Invoke(mindStartTime);
+      SettingUpMindStartedEvent?.Invoke();
       
       StartCoroutine(Timer(mindStartTime, ThinkingOfProperty));
     }
     
     private void ThinkingOfProperty()
     {
-      ThinkingOfPropertyStartedEvent?.Invoke(pullingTime, trialHandler.EncounterOver);
+      ThinkingOfPropertyStartedEvent?.Invoke(trialHandler.EncounterOver);
       
       if (trialHandler.EncounterOver)
         EvaluatingEncounter();
@@ -164,7 +184,7 @@ namespace Assets
     Coroutine timerRoutine;
     private void ShowingProperty()
     {
-      ShowingPropertyStartedEvent?.Invoke(enemyTimeOut, InputAvailable);
+      ShowingPropertyStartedEvent?.Invoke(InputAvailable);
       
       timerRoutine = StartCoroutine(Timer(enemyTimeOut, TimedOut));
     }
@@ -238,7 +258,7 @@ namespace Assets
 
     private void EndingEncounter()
     {
-      EndingEncounterStartedEvent?.Invoke(playerResetTime);
+      EndingEncounterStartedEvent?.Invoke();
 
       if (PlayerIsDead())
       { 

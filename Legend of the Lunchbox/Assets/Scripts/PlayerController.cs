@@ -58,12 +58,12 @@ public class PlayerController : MonoBehaviour
     Idle();
   }
 
-  protected virtual void SettingUpMind(float duration)
+  protected virtual void SettingUpMind()
   {
     StartMind();
   }
 
-  protected virtual void ThinkingOfProperty(float duration, bool encounterOver)
+  protected virtual void ThinkingOfProperty(bool encounterOver)
   {
     if (encounterOver)
       Idle();

@@ -34,7 +34,7 @@ public class FeedbackUI : MonoBehaviour
         feedbackAnimation.Play("feedbackIncorrect");
     }
 
-    private void RemoveFeedback(float duration, bool boolean)
+    private void RemoveFeedback(bool boolean)
     {
         feedbackUI.SetActive(false);
     }

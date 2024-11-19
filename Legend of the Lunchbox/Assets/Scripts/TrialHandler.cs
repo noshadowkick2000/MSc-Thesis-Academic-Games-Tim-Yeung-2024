@@ -186,7 +186,7 @@ public class TrialHandler : MonoBehaviour
   private IEnumerator ActivateProperty(Transform property)
   {
     float duration = .2f;
-    float movement = 0.02f;
+    // float movement = 0.02f;
   
     Vector3 startScale = property.localScale;
     Quaternion startRotation = property.localRotation;
@@ -197,7 +197,7 @@ public class TrialHandler : MonoBehaviour
     while (Time.realtimeSinceStartup < startTime + duration)
     {
       float x = (Time.realtimeSinceStartup - startTime) / duration;
-      float y = x < .5 ? 4 * x * x * x : 1 - Mathf.Pow(-2 * x + 2, 3) / 2;
+      float y = MathT.EasedT(x);
       property.localScale = new Vector3(startScale.x * y, startScale.y * y, startScale.z * y);
       property.localRotation = Quaternion.Lerp(randomRotation, startRotation, y);
       // property.position += new Vector3(input == InputHandler.InputState.Using ? movement : -movement, 0, 0);
@@ -276,13 +276,13 @@ public class TrialHandler : MonoBehaviour
     GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
   }
 
-  protected virtual void StartingEncounter(float duration)
+  protected virtual void StartingEncounter()
   {
     PrepareModels();
     StartEncounter();
   }
 
-  protected virtual void ShowingProperty(float enemyTimeOut, Action<InputHandler.InputState> callback )
+  protected virtual void ShowingProperty(Action<InputHandler.InputState> callback )
   {
     SpawnProperty();
   }
@@ -297,7 +297,7 @@ public class TrialHandler : MonoBehaviour
     DamageEncounter();
   }
 
-  protected virtual void EndingEncounter(float duration)
+  protected virtual void EndingEncounter()
   {
     KillEncounter();
   }

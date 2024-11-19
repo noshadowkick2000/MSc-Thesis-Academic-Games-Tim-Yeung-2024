@@ -1258,7 +1258,7 @@ MonoBehaviour:
   encounterStopTime: 5
   playerResetTime: 2
   propertiesAndObjects:
-  - {fileID: 4169179525858281255, guid: e936b7a71ced8e149a0f189ca5b27309, type: 3}
+  - {fileID: 3325396727792927804, guid: 6f08ed87df57ca14796085a27df20763, type: 3}
   - {fileID: 6806196982842212982, guid: 6e6ed93ea61d317409380b46386ac984, type: 3}
   - {fileID: 4271499101438882681, guid: 94313708d07f35448831f0c3db0fb208, type: 3}
   logFolderInDocs: LotL
@@ -1385,7 +1385,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e339d245d6c0094b906ad3d5535c318, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraTransform: {fileID: 963194228}
+  mainObject: {fileID: 963194228}
 --- !u!114 &959961340
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1412,6 +1412,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f44229f6f238564f87f97ba3df1cfbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainObject: {fileID: 0}
 --- !u!114 &959961342
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1427,7 +1428,7 @@ MonoBehaviour:
   environmentTerrains:
   - {fileID: 7064647509236346092, guid: bbcb1063879f4bc42bde4d4316504483, type: 3}
   discoverable: {fileID: 6244440265376870119, guid: 80c0d3ca878c9eb4996d4477dc2752f4, type: 3}
-  speedMultiplier: 1
+  speedMultiplier: 5
   spawnPosition: {x: -25, y: 0, z: 60}
   spawnGap: 60
   despawnZ: -60
@@ -1456,7 +1457,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c55d3d9f5b55654d8576900ade8ab6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraTransform: {fileID: 1176913553}
+  mainObject: {fileID: 1176913553}
   start: {fileID: 1748360439}
 --- !u!1 &963194225
 GameObject:
@@ -2710,7 +2711,7 @@ Transform:
   m_GameObject: {fileID: 2014651454}
   serializedVersion: 2
   m_LocalRotation: {x: 0.10452846, y: -0, z: -0, w: 0.9945219}
-  m_LocalPosition: {x: 0, y: 1, z: 0.5}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

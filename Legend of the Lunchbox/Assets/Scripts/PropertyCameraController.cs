@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Assets;
 using UnityEngine;
 
-public class PropertyCameraController : CameraController
+public class PropertyCameraController : ObjectMover
 {
     [SerializeField] private Transform start;
     
@@ -32,16 +32,16 @@ public class PropertyCameraController : CameraController
         GameEngine.EvaluatingInputStartedEvent -= EvaluatingInput;
     }
 
-    protected virtual void StartingEncounter(float duration)
+    protected virtual void StartingEncounter()
     {
         ImmediateToObject(start);
     }
 
     private Coroutine cameraRoutine;
-    protected virtual void ShowingProperty(float duration, bool encounterOver)
+    protected virtual void ShowingProperty(bool encounterOver)
     {
         ImmediateToObject(start);
-        cameraRoutine = SmoothToObject(LocationHolder.MindCameraLocation, duration, true);
+        cameraRoutine = SmoothToObject(LocationHolder.MindCameraLocation, GameEngine.EnemyTimeOut, true);
     }
 
     protected virtual void EvaluatingInput()
