@@ -12,6 +12,8 @@ public class EnvironmentHandler : MonoBehaviour
     [SerializeField] private GameObject[] environmentTerrains;
     [SerializeField] private GameObject discoverable;
     [SerializeField] private float speedMultiplier;
+    [SerializeField] private int maxTiles = 3;
+    public float SpeedMultiplier => speedMultiplier;
     [SerializeField] private Vector3 spawnPosition;
     [SerializeField] private float spawnGap;
     [SerializeField] private float despawnZ;
@@ -63,6 +65,7 @@ public class EnvironmentHandler : MonoBehaviour
     }
 
     private bool moving;
+    public bool Moving => moving;
 
     private void SpawnTerrain(bool first)
     {
@@ -70,9 +73,14 @@ public class EnvironmentHandler : MonoBehaviour
         while (newId == lastId && environmentTerrains.Length > 1)
             newId = Random.Range(0, environmentTerrains.Length);
         lastId = newId;
-        
+
         if (first)
-            loadedTerrains.Add(Instantiate(environmentTerrains[newId], spawnPosition + Vector3.back * spawnGap, Quaternion.identity, transform));
+        {
+            for (int i = maxTiles; i > 0; i--)
+            {
+                loadedTerrains.Add(Instantiate(environmentTerrains[newId], spawnPosition + spawnGap * i * Vector3.back, Quaternion.identity, transform));
+            }
+        }
         loadedTerrains.Add(Instantiate(environmentTerrains[newId], loadedTerrains.Last().transform.position + Vector3.forward * spawnGap, Quaternion.identity, transform));
     }
     

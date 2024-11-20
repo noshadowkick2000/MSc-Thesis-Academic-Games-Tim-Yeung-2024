@@ -1230,6 +1230,8 @@ GameObject:
   - component: {fileID: 959961342}
   - component: {fileID: 959961343}
   - component: {fileID: 959961344}
+  - component: {fileID: 959961345}
+  - component: {fileID: 959961346}
   m_Layer: 0
   m_Name: Gamecontroller
   m_TagString: Untagged
@@ -1249,14 +1251,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4699e469c746f943a034079f95e34c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  encounterStartTime: 0.5
-  enemyShowTime: 2
-  mindStartTime: 0.5
-  pullingTime: 2
-  enemyTimeOut: 4
-  feedbackTime: 2
-  encounterStopTime: 5
-  playerResetTime: 2
   propertiesAndObjects:
   - {fileID: 3325396727792927804, guid: 6f08ed87df57ca14796085a27df20763, type: 3}
   - {fileID: 6806196982842212982, guid: 6e6ed93ea61d317409380b46386ac984, type: 3}
@@ -1429,7 +1423,7 @@ MonoBehaviour:
   - {fileID: 7064647509236346092, guid: bbcb1063879f4bc42bde4d4316504483, type: 3}
   discoverable: {fileID: 6244440265376870119, guid: 80c0d3ca878c9eb4996d4477dc2752f4, type: 3}
   speedMultiplier: 5
-  spawnPosition: {x: -25, y: 0, z: 60}
+  spawnPosition: {x: -25, y: 0, z: 120}
   spawnGap: 60
   despawnZ: -60
 --- !u!114 &959961343
@@ -1444,7 +1438,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7649cc84310e8a43ad2ef7c908a459e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
+  speed: -1
 --- !u!114 &959961344
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1459,6 +1453,43 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainObject: {fileID: 1176913553}
   start: {fileID: 1748360439}
+--- !u!114 &959961345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 959961329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5fe8d2b620186844b6babd77c766887, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  environmentHandler: {fileID: 959961342}
+  duration: 6
+  windTemplates:
+  - {fileID: 5119195082016459512, guid: d2078d4e4888da747a4ded974952bf18, type: 3}
+  - {fileID: 5119195082016459512, guid: d2078d4e4888da747a4ded974952bf18, type: 3}
+  - {fileID: 2983298141742680501, guid: 378833063b1432541bcb317ef6aaf0c5, type: 3}
+  - {fileID: 2983298141742680501, guid: 378833063b1432541bcb317ef6aaf0c5, type: 3}
+  - {fileID: 2983298141742680501, guid: 378833063b1432541bcb317ef6aaf0c5, type: 3}
+  minTimeDelay: 2
+  maxTimeDelay: 5
+  minPosition: {x: -2, y: 1, z: 10}
+  maxPosition: {x: 0, y: 3, z: 20}
+--- !u!114 &959961346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 959961329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 872036d99bc98ab44b5dd7f8dda8e4a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  volumeProfile: {fileID: 11400000, guid: 31ef6464bd3a639449e243608ff47651, type: 2}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
