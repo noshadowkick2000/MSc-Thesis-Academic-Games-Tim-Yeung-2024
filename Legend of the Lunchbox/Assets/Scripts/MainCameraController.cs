@@ -28,17 +28,29 @@ public class MainCameraController : ObjectMover
     StopCoroutine(bobbingCoroutine);
   }
 
-  private readonly float bobbingTime = 0.5f;
-  private readonly float bobbingOffset = 0.05f;
+  private readonly float bobbingTime = 0.2f;
+  private readonly float bobbingOffset = 0.1f;
   private Stopwatch stopwatch;
   private IEnumerator BobbingCameraCoroutine()
   {
     Vector3 basePosition = mainObject.position;
     stopwatch = Stopwatch.StartNew();
-    
+
+    float startTime = Time.realtimeSinceStartup;
+    bool negativeMovement = false;
     while (true)
     {
-      mainObject.position = basePosition + new Vector3(0, bobbingOffset * Mathf.Sin((2/bobbingTime) * Mathf.PI * (stopwatch.Elapsed.Milliseconds/1000f)), 0);
+      float x = (Time.realtimeSinceStartup - startTime) / bobbingTime;
+      if (x >= 1f)
+      {
+        startTime = Time.realtimeSinceStartup;
+        x = 0;
+        negativeMovement = !negativeMovement;
+      }
+
+      float y = negativeMovement ? 1 - MathT.EasedT(x) : Mathf.Sin(x * .5f * MathF.PI);
+      
+      mainObject.position = basePosition + new Vector3(0, bobbingOffset * y, 0);
       yield return null;
     }
   }

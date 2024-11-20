@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = System.Random;
 
 public class MathT : MonoBehaviour
 {
@@ -17,5 +18,19 @@ public class MathT : MonoBehaviour
     public static float EasedT(float t)
     {
         return t < .5 ? 4 * t * t * t : 1 - Mathf.Pow(-2 * t + 2, 3) / 2;;
+    }
+    
+    public static T[] Shuffle<T> (T[] array)
+    {
+        Random rng = new System.Random();
+        
+        int n = array.Length;
+        while (n > 1) 
+        {
+            int k = rng.Next(n--);
+            (array[n], array[k]) = (array[k], array[n]);
+        }
+
+        return array;
     }
 }

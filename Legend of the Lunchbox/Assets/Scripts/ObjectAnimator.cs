@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Assets;
+using Unity.Mathematics;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -50,6 +51,8 @@ public class ObjectAnimator : ObjectMover
    {
       Vector3 startScale = mainObject.localScale;
       mainObject.localScale = Vector3.zero;
+      Quaternion startRotation = quaternion.Euler(0, -90, 0);
+      Quaternion targetRotation = Quaternion.Euler(0, 30, 0);
     
       float startTime = Time.realtimeSinceStartup;
       while (Time.realtimeSinceStartup < startTime + GameEngine.EncounterStartTime)
@@ -57,10 +60,12 @@ public class ObjectAnimator : ObjectMover
          float x = (Time.realtimeSinceStartup - startTime) / GameEngine.EncounterStartTime;
          float y = MathT.EasedT(x);
          mainObject.localScale = new Vector3(startScale.x * y, startScale.y * y, startScale.z * y);
+         mainObject.rotation = Quaternion.Lerp(startRotation, targetRotation, y);
          yield return null;
       }
     
       mainObject.localScale = startScale;
+      mainObject.rotation = targetRotation;
    }
 
    protected virtual void WonEncounter()
