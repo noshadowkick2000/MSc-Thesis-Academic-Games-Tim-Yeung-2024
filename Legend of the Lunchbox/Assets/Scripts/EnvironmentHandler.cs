@@ -7,7 +7,7 @@ using Assets;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class EnvironmentHandler : MonoBehaviour
+public class EnvironmentHandler : ObjectMover
 {
     [SerializeField] private GameObject[] environmentTerrains;
     [SerializeField] private GameObject discoverable;
@@ -41,15 +41,18 @@ public class EnvironmentHandler : MonoBehaviour
     {
         GameEngine.OnRailStartedEvent += OnRail;
         GameEngine.StartingEncounterStartedEvent += StartingEncounter;
+        GameEngine.ShowingEnemyStartedEvent += ShowingEnemy;
+        GameEngine.LevelOverStartedEvent += LevelOver;
     }
     
     private void UnSubscribeToEvents()
     {
         GameEngine.OnRailStartedEvent -= OnRail;
         GameEngine.StartingEncounterStartedEvent -= StartingEncounter;
+        GameEngine.ShowingEnemyStartedEvent -= ShowingEnemy;
+        GameEngine.LevelOverStartedEvent -= LevelOver;
     }
     
-    // NOTE THAT ON THE FIRST SPAWN, THE PLACEMENT OF THE DISCOVERABLE IS INACCURATE, BUT SUBSEQUENT SPAWNS WILL BE ACCURATE
     protected virtual void OnRail()
     {
         moving = true;
@@ -59,9 +62,18 @@ public class EnvironmentHandler : MonoBehaviour
     protected virtual void StartingEncounter()
     {
         moving = false;
-        
-        // spawnedDiscoverable // TODO DISCOVERABLE DESPAWNS AND OBJECT RISES FROM OUT OF FRAME
+        mainObject = spawnedDiscoverable.transform;
+        SmoothToObject(LocationHolder.EnemyLocation, GameEngine.EncounterStartTime, true);
+    }
+
+    protected virtual void ShowingEnemy()
+    {
         Destroy(spawnedDiscoverable);
+    }
+
+    protected virtual void LevelOver()
+    {
+        moving = true;
     }
 
     private bool moving;

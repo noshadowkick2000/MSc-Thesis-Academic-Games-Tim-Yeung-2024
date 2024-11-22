@@ -190,7 +190,7 @@ public class TrialHandler : MonoBehaviour
   
     Vector3 startScale = property.localScale;
     Quaternion startRotation = property.localRotation;
-    Quaternion randomRotation = Quaternion.Euler(Random.Range(1f, 20f), 0, Random.Range(10f, 20f)); 
+    Quaternion randomRotation = Quaternion.Euler(Random.Range(20f, 30f), 0, Random.Range(20f, 30f)); 
     property.localScale = Vector3.zero;
     
     float startTime = Time.realtimeSinceStartup;

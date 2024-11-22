@@ -28,7 +28,7 @@ namespace Assets
     // TODO load these in in a separate config loader from xml or sth
     private static float encounterStartTime = 0.5f;
     public static float EncounterStartTime => encounterStartTime;
-    private static float enemyShowTime = 2f;
+    private static float enemyShowTime = 3f;
     public static float EnemyShowTime => enemyShowTime;
     private static float mindStartTime = .5f;
     public static float MindStartTime => mindStartTime;
@@ -42,8 +42,12 @@ namespace Assets
     public static float EncounterStopTime => encounterStopTime;
     private static float playerResetTime = 2f;
     public static float playerReset => playerResetTime;
+    private static float levelOverTime = 3f;
+    public static float LevelOverTime => levelOverTime;
+    
     private static float railDuration;
     public static float RailDuration => railDuration;
+    
     
 
     [Header("Assets")]
@@ -125,6 +129,7 @@ namespace Assets
     public static event StateChangeEvent WonEncounterStartedEvent;
     public static event StateChangeEvent LostEncounterStartedEvent;
     public static event StateChangeEvent EndingEncounterStartedEvent;
+    public static event StateChangeEvent LevelOverStartedEvent;
 
     private IEnumerator Timer(float duration, Action nextState)
     {
@@ -138,7 +143,6 @@ namespace Assets
       CutSceneStartedEvent?.Invoke();
       
       // TODO remove
-      SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
     }
 
     private void OnRail()
@@ -266,9 +270,19 @@ namespace Assets
         StartCoroutine(Timer(playerResetTime, CutScene)); // TODO animations etc
       }
       else if (trialHandler.LevelOver)
-        StartCoroutine(Timer(playerResetTime, CutScene));
+        StartCoroutine(Timer(playerResetTime, LevelOver));
       else
         StartCoroutine(Timer(playerResetTime, OnRail));
+    }
+
+    private void LevelOver()
+    {
+      LevelOverStartedEvent?.Invoke();
+    }
+
+    private void LoadNext()
+    {
+      SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
     }
   }
 }

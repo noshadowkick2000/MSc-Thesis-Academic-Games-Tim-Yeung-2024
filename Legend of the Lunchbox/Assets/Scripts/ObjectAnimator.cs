@@ -21,6 +21,7 @@ public class ObjectAnimator : ObjectMover
    private void SubscribeToEvents()
    {
       TrialHandler.OnObjectSpawnedEvent += ObjectSpawned;
+      GameEngine.ShowingEnemyStartedEvent += ShowingEnemy;
       GameEngine.LostEncounterStartedEvent += LostEncounter;
       GameEngine.WonEncounterStartedEvent += WonEncounter;
    }
@@ -28,6 +29,7 @@ public class ObjectAnimator : ObjectMover
    private void UnsubscribeFromEvents()
    {
       TrialHandler.OnObjectSpawnedEvent -= ObjectSpawned;
+      GameEngine.ShowingEnemyStartedEvent -= ShowingEnemy;
       GameEngine.LostEncounterStartedEvent -= LostEncounter;
       GameEngine.WonEncounterStartedEvent -= WonEncounter;
    }
@@ -41,23 +43,30 @@ public class ObjectAnimator : ObjectMover
       
       face.SetActive(false);
       mainObject = objectTransform;
+      mainObject.gameObject.SetActive(false);
       
-      ImmediateToObject(LocationHolder.EnemyLocation.position + Vector3.down, mainObject.transform.rotation);
-      SmoothToObject(LocationHolder.EnemyLocation, GameEngine.EncounterStartTime, true);
+      // ImmediateToObject(LocationHolder.EnemyLocation.position + Vector3.down, mainObject.transform.rotation);
+      // SmoothToObject(LocationHolder.EnemyLocation, GameEngine.EncounterStartTime, true);
+      // StartCoroutine(GrowObject());
+   }
+
+   protected virtual void ShowingEnemy()
+   {
       StartCoroutine(GrowObject());
    }
 
    private IEnumerator GrowObject()
    {
+      mainObject.gameObject.SetActive(true);
       Vector3 startScale = mainObject.localScale;
       mainObject.localScale = Vector3.zero;
       Quaternion startRotation = quaternion.Euler(0, -90, 0);
       Quaternion targetRotation = Quaternion.Euler(0, 30, 0);
     
       float startTime = Time.realtimeSinceStartup;
-      while (Time.realtimeSinceStartup < startTime + GameEngine.EncounterStartTime)
+      while (Time.realtimeSinceStartup < startTime + (GameEngine.EnemyShowTime/4f))
       {
-         float x = (Time.realtimeSinceStartup - startTime) / GameEngine.EncounterStartTime;
+         float x = (Time.realtimeSinceStartup - startTime) / (GameEngine.EnemyShowTime/4f);
          float y = MathT.EasedT(x);
          mainObject.localScale = new Vector3(startScale.x * y, startScale.y * y, startScale.z * y);
          mainObject.rotation = Quaternion.Lerp(startRotation, targetRotation, y);

@@ -30,11 +30,9 @@ public class MainCameraController : ObjectMover
 
   private readonly float bobbingTime = 0.2f;
   private readonly float bobbingOffset = 0.1f;
-  private Stopwatch stopwatch;
   private IEnumerator BobbingCameraCoroutine()
   {
     Vector3 basePosition = mainObject.position;
-    stopwatch = Stopwatch.StartNew();
 
     float startTime = Time.realtimeSinceStartup;
     bool negativeMovement = false;
@@ -55,6 +53,26 @@ public class MainCameraController : ObjectMover
     }
   }
 
+  // private readonly float shakingTime = 0.2f;
+  // private IEnumerator ShakeRoutine()
+  // {
+  //   Vector3 basePosition = mainObject.position;
+  //   Vector3 offset = Vector3.zero;
+  //
+  //   float startTime = Time.realtimeSinceStartup;
+  //   float x = 0;
+  //   
+  //   while (x < 1f)
+  //   {
+  //     x = (Time.realtimeSinceStartup - startTime) / shakingTime;
+  //     offset = new Vector3((Mathf.PerlinNoise1D(x) - .5f) * 2, (Mathf.PerlinNoise1D(x / 2) - .5f) * 2, 0);
+  //     mainObject.position = basePosition + offset;
+  //     yield return null;
+  //   }
+  //   
+  //   // mainObject.position = basePosition;
+  // }
+
   // private void OrthoCamera()
   // {
   //   mainCamera.orthographic = true;
@@ -73,8 +91,9 @@ public class MainCameraController : ObjectMover
     GameEngine.StartingEncounterStartedEvent += StartingEncounter;
     GameEngine.SettingUpMindStartedEvent += SettingUpMind;
     GameEngine.ThinkingOfPropertyStartedEvent += ThinkingOfProperty;
-    GameEngine.EvaluatingEncounterStartedEvent += EvaluatingEncounter;
+    GameEngine.LostEncounterStartedEvent += LostEncounter;
     GameEngine.EndingEncounterStartedEvent += EndingEncounter;
+    GameEngine.LevelOverStartedEvent += LevelOver;
   }
   
   private void UnSubscribeToEvents()
@@ -83,8 +102,9 @@ public class MainCameraController : ObjectMover
     GameEngine.StartingEncounterStartedEvent -= StartingEncounter;
     GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
     GameEngine.ThinkingOfPropertyStartedEvent -= ThinkingOfProperty;
-    GameEngine.EvaluatingEncounterStartedEvent -= EvaluatingEncounter;
+    GameEngine.LostEncounterStartedEvent -= LostEncounter;
     GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
+    GameEngine.LevelOverStartedEvent -= LevelOver;
   }
 
   protected virtual void OnRail()
@@ -96,6 +116,7 @@ public class MainCameraController : ObjectMover
   protected virtual void StartingEncounter()
   {
     StopBobbingCamera();
+    ImmediateToObject(LocationHolder.DiscoverableCameraLocation);
     SmoothToObject(LocationHolder.EnemyCameraLocation, GameEngine.EncounterStartTime, true);
   }
 
@@ -110,16 +131,21 @@ public class MainCameraController : ObjectMover
   protected virtual void ThinkingOfProperty(bool encounterOver)
   {
     if (!encounterOver) return;
-    SmoothToObject(LocationHolder.EnemyCameraLocation, .5f, true);
+    SmoothToObject(LocationHolder.EnemyCameraLocation, GameEngine.playerReset, true);
   }
 
-  protected virtual void EvaluatingEncounter()
+  protected virtual void LostEncounter()
   {
-    
+    // StartCoroutine(ShakeRoutine());
   }
 
   protected virtual void EndingEncounter()
   {
     SmoothToObject(LocationHolder.BaseCameraLocation, GameEngine.playerReset, true);
+  }
+
+  protected virtual void LevelOver()
+  {
+    OnRail();
   }
 }
