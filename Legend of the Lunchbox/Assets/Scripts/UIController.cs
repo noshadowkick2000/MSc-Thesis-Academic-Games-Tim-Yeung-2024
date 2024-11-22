@@ -17,6 +17,9 @@ public class UIController : MonoBehaviour
     [SerializeField] private Sprite[] thoughtSprites;
     [SerializeField] private GameObject controlIndicatorUI;
     [SerializeField] private GameObject distractionUI;
+    [SerializeField] private GameObject endScreen;
+    [SerializeField] private Transform stencil;
+    [SerializeField] private GameObject flashBang;
     // [SerializeField] private Image timerUI;
     
     void Awake()
@@ -25,6 +28,9 @@ public class UIController : MonoBehaviour
         mindUI.SetActive(false);
         controlIndicatorUI.SetActive(false);
         spotLight.SetActive(false);
+        flashBang.SetActive(false);
+
+        StartCoroutine(AnimatePinhole(true));
         
         SubscribeToEvents();
     }
@@ -182,22 +188,38 @@ public class UIController : MonoBehaviour
     
     private void SubscribeToEvents()
     {
+        GameEngine.ShowingEnemyStartedEvent += ShowingEnemy;
         GameEngine.SettingUpMindStartedEvent += SettingUpMind;
         GameEngine.ThinkingOfPropertyStartedEvent += ThinkingOfProperty;
         GameEngine.ShowingPropertyStartedEvent += ShowingProperty;
         GameEngine.EvaluatingInputStartedEvent += EvaluatingInput;
         GameEngine.TimedOutStartedEvent += TimedOut;
         GameEngine.EndingEncounterStartedEvent += EndingEncounter;
+        GameEngine.LevelOverStartedEvent += LevelOver;
     }
 
     private void UnsubscribeFromEvents()
     {
+        GameEngine.ShowingEnemyStartedEvent += ShowingEnemy;
         GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
         GameEngine.ThinkingOfPropertyStartedEvent -= ThinkingOfProperty;
         GameEngine.ShowingPropertyStartedEvent -= ShowingProperty;
         GameEngine.EvaluatingInputStartedEvent -= EvaluatingInput;
         GameEngine.TimedOutStartedEvent -= TimedOut;
         GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
+        GameEngine.LevelOverStartedEvent -= LevelOver;
+    }
+
+    protected virtual void ShowingEnemy()
+    {
+        flashBang.SetActive(true);
+        StartCoroutine(FlashOff());
+    }
+
+    private IEnumerator FlashOff()
+    {
+        yield return new WaitForSecondsRealtime(.1f);
+        flashBang.SetActive(false);
     }
     
     protected virtual void SettingUpMind()
@@ -236,5 +258,31 @@ public class UIController : MonoBehaviour
     protected virtual void EndingEncounter()
     {
         ExitMind();
+    }
+
+    protected virtual void LevelOver()
+    {
+        StartCoroutine(AnimatePinhole(false));
+        endScreen.SetActive(true);
+    }
+
+    private IEnumerator AnimatePinhole(bool opening)
+    {
+        stencil.localScale = opening ? Vector3.zero : Vector3.one;
+        
+        float startTime = Time.realtimeSinceStartup;
+
+        while (Time.realtimeSinceStartup < startTime + GameEngine.LevelOverTime)
+        {
+            float x = ((Time.realtimeSinceStartup - startTime) / GameEngine.LevelOverTime);
+            if (!opening)
+                x = 1 - x;
+            stencil.localScale = new Vector3(x, x, 0);
+            yield return null;
+        }
+        
+        stencil.localScale = opening ? Vector3.one : Vector3.zero;
+        if (opening)
+            endScreen.SetActive(false);
     }
 }

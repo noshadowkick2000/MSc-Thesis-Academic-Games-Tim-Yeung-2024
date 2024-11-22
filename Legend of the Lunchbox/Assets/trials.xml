@@ -27,13 +27,13 @@
             <property correct="true">hammering</property>
             <property correct="true">hammersound</property>
         </encounter>
-        <encounter enemy="hammer" health="2" wait="6000">
+        <!-- <encounter enemy="hammer" health="2" wait="6000">
             <property correct="true">hammering</property>
             <property correct="true">hammersound</property>
         </encounter>
         <encounter enemy="hammer" health="2" wait="8000">
             <property correct="true">hammering</property>
             <property correct="true">hammersound</property>
-        </encounter>
+        </encounter> -->
     </level>
 </root>
