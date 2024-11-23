@@ -88,6 +88,7 @@ public class MainCameraController : ObjectMover
   private void SubscribeToEvents()
   {
     GameEngine.OnRailStartedEvent += OnRail;
+    GameEngine.StartingBreakStartedEvent += StartingBreak;
     GameEngine.StartingEncounterStartedEvent += StartingEncounter;
     GameEngine.SettingUpMindStartedEvent += SettingUpMind;
     GameEngine.ThinkingOfPropertyStartedEvent += ThinkingOfProperty;
@@ -99,6 +100,7 @@ public class MainCameraController : ObjectMover
   private void UnSubscribeToEvents()
   {
     GameEngine.OnRailStartedEvent -= OnRail;
+    GameEngine.StartingBreakStartedEvent -= StartingBreak;
     GameEngine.StartingEncounterStartedEvent -= StartingEncounter;
     GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
     GameEngine.ThinkingOfPropertyStartedEvent -= ThinkingOfProperty;
@@ -111,6 +113,11 @@ public class MainCameraController : ObjectMover
   {
     ImmediateToObject(LocationHolder.BaseCameraLocation);
     StartBobbingCamera();
+  }
+
+  protected virtual void StartingBreak()
+  {
+    StopBobbingCamera();
   }
 
   protected virtual void StartingEncounter()

@@ -50,7 +50,8 @@ public class TrialHandler : MonoBehaviour
       {
         if (encounter.Name == "encounter")
           CreateEncounter(objectRoot, encounter);
-        
+        else if (encounter.Name == "break")
+          CreateBreak(objectRoot, encounter);
       }
 
       Logger.Log($"Finished loading successfully, {encounters.Count} encounters loaded");
@@ -78,6 +79,16 @@ public class TrialHandler : MonoBehaviour
     }
     enc.Init(enemyId, health, propertyIds.ToArray(), correctProperty.ToArray(), waitTimeMillis/1000f);
     Logger.Log($"Loaded encounter: {Environment.NewLine}{enc.ToString()}");
+    encounters.Add(enc);
+  }
+  
+  private void CreateBreak(Transform objectRoot, XmlNode encounter)
+  {
+    Encounter enc = objectRoot.AddComponent<Encounter>();
+    int health = int.Parse(encounter.Attributes["health"].Value);
+    int waitTimeMillis = int.Parse(encounter.Attributes["wait"].Value);
+    enc.Init(health, waitTimeMillis/1000f);
+    Logger.Log($"Loaded break");
     encounters.Add(enc);
   }
 
@@ -146,6 +157,11 @@ public class TrialHandler : MonoBehaviour
     }
 
     return wt;
+  }
+
+  public bool EncounterIsObject()
+  {
+    return encounters[encounterCounter].IsObject;
   }
 
   private int GetCurrentEncounterId()
@@ -271,6 +287,7 @@ public class TrialHandler : MonoBehaviour
 
   private void SubscribeToEvents()
   {
+    GameEngine.StartingBreakStartedEvent += StartingBreak;
     GameEngine.StartingEncounterStartedEvent += StartingEncounter;
     GameEngine.ShowingPropertyStartedEvent += ShowingProperty;
     GameEngine.TimedOutStartedEvent += TimedOut;
@@ -280,11 +297,17 @@ public class TrialHandler : MonoBehaviour
   
   private void UnSubscribeToEvents()
   {
+    GameEngine.StartingBreakStartedEvent -= StartingBreak;
     GameEngine.StartingEncounterStartedEvent -= StartingEncounter;
     GameEngine.ShowingPropertyStartedEvent -= ShowingProperty;
     GameEngine.TimedOutStartedEvent -= TimedOut;
     GameEngine.AnswerCorrectStartedEvent -= AnswerCorrect;
     GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
+  }
+
+  protected virtual void StartingBreak()
+  {
+    encounterCounter++;
   }
 
   protected virtual void StartingEncounter()

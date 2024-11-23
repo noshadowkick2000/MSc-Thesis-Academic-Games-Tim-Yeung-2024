@@ -68,6 +68,8 @@ namespace Assets
     private TrialHandler trialHandler = null;
     
     private int playerHealth = 4;
+    public int TotalHealth => playerHealth + friendHealth;
+    public int MaxHealth = 6;
     private int friendHealth = 0;
 
     private void DamagePlayer()
@@ -117,6 +119,7 @@ namespace Assets
     public static event StateChangeEvent CutSceneStartedEvent;
     public static event StateChangeEvent OnRailStartedEvent;
     public static event StateChangeEvent StartingEncounterStartedEvent;
+    public static event StateChangeEvent StartingBreakStartedEvent;
     public static event StateChangeEvent ShowingEnemyStartedEvent;
     public static event StateChangeEvent SettingUpMindStartedEvent;
     public static event StateChangeEventBooled ThinkingOfPropertyStartedEvent;
@@ -151,7 +154,17 @@ namespace Assets
       
       OnRailStartedEvent?.Invoke();
       
-      StartCoroutine(Timer(railDuration, StartingEncounter));
+      if (trialHandler.EncounterIsObject())
+        StartCoroutine(Timer(railDuration, StartingEncounter));
+      else
+        StartCoroutine(Timer(railDuration, StartingBreak));
+    }
+
+    private void StartingBreak()
+    {
+      StartingBreakStartedEvent?.Invoke();
+
+      StartCoroutine(Timer(playerResetTime, OnRail));
     }
 
     private void StartingEncounter()
@@ -253,9 +266,9 @@ namespace Assets
 
     private void LostEncounter()
     {
-      LostEncounterStartedEvent?.Invoke();
-
       DamagePlayer();
+      
+      LostEncounterStartedEvent?.Invoke();
       
       StartCoroutine(Timer(encounterStopTime, EndingEncounter));
     }
