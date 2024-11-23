@@ -137,6 +137,17 @@ public class TrialHandler : MonoBehaviour
     return encounters[encounterCounter].GetWaitTime();
   }
 
+  public float GetTotalWaitTime()
+  {
+    float wt = 0;
+    foreach (var encounter in encounters)
+    {
+      wt += encounter.GetWaitTime();
+    }
+
+    return wt;
+  }
+
   private int GetCurrentEncounterId()
   {
     return encounters[encounterCounter].GetEnemyId();
