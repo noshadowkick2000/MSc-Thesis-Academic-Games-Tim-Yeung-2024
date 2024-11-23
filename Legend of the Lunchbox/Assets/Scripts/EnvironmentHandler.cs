@@ -40,6 +40,7 @@ public class EnvironmentHandler : ObjectMover
     private void SubscribeToEvents()
     {
         GameEngine.OnRailStartedEvent += OnRail;
+        GameEngine.StartingBreakStartedEvent += StartingBreak;
         GameEngine.StartingEncounterStartedEvent += StartingEncounter;
         GameEngine.ShowingEnemyStartedEvent += ShowingEnemy;
         GameEngine.LevelOverStartedEvent += LevelOver;
@@ -48,6 +49,7 @@ public class EnvironmentHandler : ObjectMover
     private void UnSubscribeToEvents()
     {
         GameEngine.OnRailStartedEvent -= OnRail;
+        GameEngine.StartingBreakStartedEvent -= StartingBreak;
         GameEngine.StartingEncounterStartedEvent -= StartingEncounter;
         GameEngine.ShowingEnemyStartedEvent -= ShowingEnemy;
         GameEngine.LevelOverStartedEvent -= LevelOver;
@@ -59,6 +61,11 @@ public class EnvironmentHandler : ObjectMover
         spawnedDiscoverable = Instantiate(discoverable, new Vector3(0, .2f, (GameEngine.RailDuration) * speedMultiplier + LocationHolder.EnemyLocation.position.z), Quaternion.identity, loadedTerrains.Last().transform);
     }
 
+    protected virtual void StartingBreak()
+    {
+        moving = false;
+    }
+    
     protected virtual void StartingEncounter()
     {
         moving = false;

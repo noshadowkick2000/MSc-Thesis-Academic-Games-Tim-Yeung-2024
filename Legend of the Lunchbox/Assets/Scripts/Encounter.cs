@@ -7,6 +7,9 @@ using UnityEngine;
 
 public class Encounter : MonoBehaviour
 {
+  private bool isObject;
+  public bool IsObject => isObject;
+  
   //private GameEngine engine;
   private int enemyId;
   public int GetEnemyId()
@@ -37,6 +40,16 @@ public class Encounter : MonoBehaviour
   {
     //engine = FindObjectOfType<GameEngine>();
   }
+  
+  public void Init(int startingHealth, float waitTime)
+  {
+    this.startingHealth = startingHealth;
+    this.waitTime = waitTime;
+    
+    health = startingHealth;
+
+    isObject = false;
+  }
 
   public void Init(int enemyId, int startingHealth, int[] propertyIds, bool[] validProperty, float waitTime)
   {
@@ -47,6 +60,8 @@ public class Encounter : MonoBehaviour
     this.waitTime = waitTime;
     
     health = startingHealth;
+
+    isObject = true;
   }
 
   public override string ToString()
