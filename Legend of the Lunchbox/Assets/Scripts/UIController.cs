@@ -20,14 +20,14 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject endScreen;
     [SerializeField] private Transform stencil;
     [SerializeField] private GameObject flashBang;
-    // [SerializeField] private Image timerUI;
+    [SerializeField] private Image timerUI;
     
     void Awake()
     {
         thoughtUI.SetActive(false);
         mindUI.SetActive(false);
         controlIndicatorUI.SetActive(false);
-        spotLight.SetActive(false);
+        // spotLight.SetActive(false);
         flashBang.SetActive(false);
 
         StartCoroutine(AnimatePinhole(true));
@@ -87,7 +87,7 @@ public class UIController : MonoBehaviour
         if (inverse)
         {
             mindUI.SetActive(false);
-            spotLight.SetActive(false);
+            // spotLight.SetActive(false);
         }
     }
 
@@ -97,11 +97,11 @@ public class UIController : MonoBehaviour
     { 
         //TODO spotlights searching around effect
         
-        // thoughtUI.SetActive(true);
+        thoughtUI.SetActive(true);
         controlIndicatorUI.SetActive(false);
 
-        // thoughtRoutine = StartCoroutine(AnimateThought());
-        StartCoroutine(DelayedSpotlight(duration));
+        thoughtRoutine = StartCoroutine(AnimateThought());
+        // StartCoroutine(DelayedSpotlight(duration));
     }
 
     private IEnumerator DelayedSpotlight(float duration)
@@ -130,10 +130,10 @@ public class UIController : MonoBehaviour
 
     private void EndThought(float timeOut) 
     { 
-        // thoughtUI.SetActive(false);
+        thoughtUI.SetActive(false);
         controlIndicatorUI.SetActive(true);
 
-        // StopCoroutine(thoughtRoutine);
+        StopCoroutine(thoughtRoutine);
         timerRoutine = StartCoroutine(AnimateTimer(timeOut));
     }
 
@@ -150,38 +150,43 @@ public class UIController : MonoBehaviour
 
     private IEnumerator AnimateTimer(float timeOut)
     {
-        // float startTime = Time.realtimeSinceStartup;
+        float startTime = Time.realtimeSinceStartup;
         // timerUI.color = Color.white;
         // Color newColor = timerUI.color;
-        // while (Time.realtimeSinceStartup < startTime + timeOut)
-        // {
-        //     newColor.a = (Time.realtimeSinceStartup - startTime) / timeOut;
-        //     timerUI.color = newColor;
-        //     yield return null;
-        // }
-        
-        // Wait for a while before starting to flicker
-        float waitRatio = .3f; // TODO implement that in game engine, the time for the timeout is the experimental max time, plus a certain margin that's a percentage of that time, and use that time here
-        int stops = 4;
-        float stopRatio = .1f;
-        
-        float visibleRatio = 1f - waitRatio;
-        
-        yield return new WaitForSecondsRealtime((visibleRatio * timeOut));
-        
-        float stopTime = timeOut * waitRatio * stopRatio / stops;
-        float visibleTimeTotal = timeOut * waitRatio * (1 - stopRatio);
-
-        for (int i = stops; i > 0; i--)
+        timerUI.fillAmount = 0;
+        while (Time.realtimeSinceStartup < startTime + timeOut)
         {
-            spotLight.SetActive(false);
-            yield return new WaitForSecondsRealtime(stopTime);
-            spotLight.SetActive(true);
-            float goTime = (Mathf.Pow(2, i) - Mathf.Pow(2, i - 1)) / Mathf.Pow(2, stops) * visibleTimeTotal;
-            yield return new WaitForSecondsRealtime(goTime);
+            timerUI.fillAmount = (Time.realtimeSinceStartup - startTime) / timeOut;
+            // newColor.a = (Time.realtimeSinceStartup - startTime) / timeOut;
+            // timerUI.color = newColor;
+            yield return null;
         }
-        
-        spotLight.SetActive(false);
+
+        timerUI.fillAmount = 1;
+
+        // Wait for a while before starting to flicker
+
+        // float waitRatio = .3f; // TODO implement that in game engine, the time for the timeout is the experimental max time, plus a certain margin that's a percentage of that time, and use that time here
+        // int stops = 4;
+        // float stopRatio = .1f;
+        //
+        // float visibleRatio = 1f - waitRatio;
+        //
+        // yield return new WaitForSecondsRealtime((visibleRatio * timeOut));
+        //
+        // float stopTime = timeOut * waitRatio * stopRatio / stops;
+        // float visibleTimeTotal = timeOut * waitRatio * (1 - stopRatio);
+        //
+        // for (int i = stops; i > 0; i--)
+        // {
+        //     spotLight.SetActive(false);
+        //     yield return new WaitForSecondsRealtime(stopTime);
+        //     spotLight.SetActive(true);
+        //     float goTime = (Mathf.Pow(2, i) - Mathf.Pow(2, i - 1)) / Mathf.Pow(2, stops) * visibleTimeTotal;
+        //     yield return new WaitForSecondsRealtime(goTime);
+        // }
+        //
+        // spotLight.SetActive(false);
     }
     
     //-----------------------------------------------------
@@ -233,7 +238,7 @@ public class UIController : MonoBehaviour
             Idle(true);
         else
         {
-            spotLight.SetActive(false);
+            // spotLight.SetActive(false);
             StartThought(GameEngine.PullingTime);
         }
     }
@@ -246,7 +251,7 @@ public class UIController : MonoBehaviour
 
     protected virtual void EvaluatingInput()
     {
-        spotLight.SetActive(false);
+        // spotLight.SetActive(false);
         CancelTimer();
     }
 
