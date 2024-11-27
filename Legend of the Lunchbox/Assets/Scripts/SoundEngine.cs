@@ -107,8 +107,8 @@ public class SoundEngine : MonoBehaviour
 
     protected virtual void ThinkingOfProperty(bool encounterOver)
     {
-        if (!encounterOver) 
-            oneShotPlayer.PlayOneShot(spotLight);
+        // if (!encounterOver) 
+        //     oneShotPlayer.PlayOneShot(spotLight);
     }
     
     protected virtual void ShowingProperty(Action<InputHandler.InputState> callback)

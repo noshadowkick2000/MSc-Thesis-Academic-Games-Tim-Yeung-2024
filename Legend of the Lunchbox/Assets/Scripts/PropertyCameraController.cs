@@ -40,12 +40,12 @@ public class PropertyCameraController : ObjectMover
     private Coroutine cameraRoutine;
     protected virtual void ShowingProperty(bool encounterOver)
     {
-        ImmediateToObject(start);
-        cameraRoutine = SmoothToObject(LocationHolder.MindCameraLocation, GameEngine.EnemyTimeOut, true);
+        // ImmediateToObject(start);
+        // cameraRoutine = SmoothToObject(LocationHolder.MindCameraLocation, GameEngine.EnemyTimeOut, true);
     }
 
     protected virtual void EvaluatingInput()
     {
-        StopCoroutine(cameraRoutine);
+        // StopCoroutine(cameraRoutine);
     }
 }
