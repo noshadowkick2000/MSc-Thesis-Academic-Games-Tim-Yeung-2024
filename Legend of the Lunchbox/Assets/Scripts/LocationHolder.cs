@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class LocationHolder : MonoBehaviour
 {
@@ -14,9 +15,10 @@ public class LocationHolder : MonoBehaviour
   [SerializeField] private Transform discoverableCameraLocation;
   public static Transform DiscoverableCameraLocation;
   
+  [FormerlySerializedAs("enemyLocation")]
   [Header("Enemy Positions")]
-  [SerializeField] private Transform enemyLocation;
-  public static Transform EnemyLocation;
+  [SerializeField] private Transform discoverableLocation;
+  public static Transform DiscoverableLocation;
 
   [Header("Property Positions")]
   [SerializeField] private Transform propertyLocation;
@@ -34,7 +36,7 @@ public class LocationHolder : MonoBehaviour
     MindCameraLocation = mindCameraLocation;
     EnemyCameraLocation = enemyCameraLocation;
     DiscoverableCameraLocation = discoverableCameraLocation;
-    EnemyLocation = enemyLocation;
+    DiscoverableLocation = discoverableLocation;
     PropertyLocation = propertyLocation;
   }
 }

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 9035811718795024917}
   - component: {fileID: 2365615567005056250}
   - component: {fileID: 5366773299057927881}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Eyesback
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -117,7 +117,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3561043059490951479}
   - component: {fileID: 6382811542607856625}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Line (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -256,7 +256,7 @@ GameObject:
   - component: {fileID: 5877009229269460379}
   - component: {fileID: 1588382950380384723}
   - component: {fileID: 2249498367818730520}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: EyesFront
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -360,7 +360,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4641079005757835489}
   - component: {fileID: 5913479222286090891}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Line (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -496,7 +496,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1166682817926150713}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: hammer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -531,7 +531,7 @@ GameObject:
   - component: {fileID: 891606796206770875}
   - component: {fileID: 2905408709331138092}
   - component: {fileID: 3409313685310826680}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Eyesback (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -639,7 +639,7 @@ GameObject:
   - component: {fileID: 1480579238921518669}
   - component: {fileID: 8906538621263120169}
   - component: {fileID: 2179842686763286668}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: hammer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -770,7 +770,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8105255264401055259}
   - component: {fileID: 2645797378620942245}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Face
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -824,7 +824,7 @@ GameObject:
   - component: {fileID: 325507710926198086}
   - component: {fileID: 7730548474258589770}
   - component: {fileID: 2900553486403576940}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: EyesFront (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

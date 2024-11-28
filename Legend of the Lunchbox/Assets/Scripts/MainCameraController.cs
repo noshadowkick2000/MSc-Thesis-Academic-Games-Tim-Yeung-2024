@@ -91,7 +91,7 @@ public class MainCameraController : ObjectMover
     GameEngine.StartingBreakStartedEvent += StartingBreak;
     GameEngine.StartingEncounterStartedEvent += StartingEncounter;
     GameEngine.SettingUpMindStartedEvent += SettingUpMind;
-    GameEngine.ThinkingOfPropertyStartedEvent += ThinkingOfProperty;
+    GameEngine.EvaluatingEncounterStartedEvent += EvaluatingEncounter;
     GameEngine.LostEncounterStartedEvent += LostEncounter;
     GameEngine.EndingEncounterStartedEvent += EndingEncounter;
     GameEngine.LevelOverStartedEvent += LevelOver;
@@ -103,7 +103,7 @@ public class MainCameraController : ObjectMover
     GameEngine.StartingBreakStartedEvent -= StartingBreak;
     GameEngine.StartingEncounterStartedEvent -= StartingEncounter;
     GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
-    GameEngine.ThinkingOfPropertyStartedEvent -= ThinkingOfProperty;
+    GameEngine.EvaluatingEncounterStartedEvent -= EvaluatingEncounter;
     GameEngine.LostEncounterStartedEvent -= LostEncounter;
     GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
     GameEngine.LevelOverStartedEvent -= LevelOver;
@@ -132,12 +132,11 @@ public class MainCameraController : ObjectMover
     // ImmediateToObject(LocationHolder.MindCameraLocation);
     // OrthoCamera();
     
-    SmoothToObject(LocationHolder.EnemyLocation, GameEngine.MindStartTime, true);
+    SmoothToObject(LocationHolder.DiscoverableLocation, GameEngine.MindStartTime, true);
   }
 
-  protected virtual void ThinkingOfProperty(bool encounterOver)
+  protected virtual void EvaluatingEncounter()
   {
-    if (!encounterOver) return;
     SmoothToObject(LocationHolder.EnemyCameraLocation, GameEngine.playerReset, true);
   }
 

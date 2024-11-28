@@ -2,14 +2,20 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Assets;
+using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class PropertyCameraController : ObjectMover
 {
-    [SerializeField] private Transform start;
-    
+    [SerializeField] private float minRotation;
+    [SerializeField] private float maxRotation;
+
+    public static Transform PropertyCamTransform { get; private set; }
+
     private void Awake()
     {
+        PropertyCamTransform = mainObject;
         SubscribeToEvents();
     }
 
@@ -21,31 +27,32 @@ public class PropertyCameraController : ObjectMover
     private void SubscribeToEvents()
     {
         GameEngine.StartingEncounterStartedEvent += StartingEncounter;
-        GameEngine.ThinkingOfPropertyStartedEvent += ShowingProperty;
-        GameEngine.EvaluatingInputStartedEvent += EvaluatingInput;
+        GameEngine.MovingToPropertyStartedEvent += MovingToProperty;
+        GameEngine.MovingToEnemyStartedEvent += MovingToEnemy;
     }
   
     private void UnSubscribeToEvents()
     {
         GameEngine.StartingEncounterStartedEvent -= StartingEncounter;
-        GameEngine.ThinkingOfPropertyStartedEvent -= ShowingProperty;
-        GameEngine.EvaluatingInputStartedEvent -= EvaluatingInput;
+        GameEngine.MovingToPropertyStartedEvent -= MovingToProperty;
+        GameEngine.MovingToEnemyStartedEvent -= MovingToEnemy;
     }
 
     protected virtual void StartingEncounter()
     {
-        ImmediateToObject(start);
+        ImmediateToObject(LocationHolder.MindCameraLocation);
     }
 
     private Coroutine cameraRoutine;
-    protected virtual void ShowingProperty(bool encounterOver)
+    protected virtual void MovingToProperty(TrialHandler.PropertyType propertyType)
     {
-        // ImmediateToObject(start);
-        // cameraRoutine = SmoothToObject(LocationHolder.MindCameraLocation, GameEngine.EnemyTimeOut, true);
+        int mult = propertyType == TrialHandler.PropertyType.SOUND ? 1 : -1;
+        Quaternion randomRotation = Quaternion.Euler(Random.Range(-maxRotation, maxRotation), mult * Random.Range(minRotation, maxRotation), 0);
+        cameraRoutine = SmoothToObject(mainObject.position, randomRotation, GameEngine.MindPropertyTransitionTime, true);
     }
 
-    protected virtual void EvaluatingInput()
+    protected virtual void MovingToEnemy()
     {
-        // StopCoroutine(cameraRoutine);
+        SmoothToObject(LocationHolder.MindCameraLocation, GameEngine.MindPropertyTransitionTime, true);
     }
 }

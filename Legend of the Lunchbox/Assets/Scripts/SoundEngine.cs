@@ -51,7 +51,6 @@ public class SoundEngine : MonoBehaviour
         GameEngine.OnRailStartedEvent += OnRail;
         GameEngine.StartingEncounterStartedEvent += StartingEncounter;
         GameEngine.SettingUpMindStartedEvent += SettingUpMind;
-        GameEngine.ThinkingOfPropertyStartedEvent += ThinkingOfProperty;
         GameEngine.ShowingPropertyStartedEvent += ShowingProperty;
         GameEngine.LostEncounterStartedEvent += WonEncounter;
         GameEngine.LostEncounterStartedEvent += LostEncounter;
@@ -64,7 +63,6 @@ public class SoundEngine : MonoBehaviour
         GameEngine.OnRailStartedEvent -= OnRail;
         GameEngine.StartingEncounterStartedEvent -= StartingEncounter;
         GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
-        GameEngine.ThinkingOfPropertyStartedEvent -= ThinkingOfProperty;
         GameEngine.ShowingPropertyStartedEvent -= ShowingProperty;
         GameEngine.LostEncounterStartedEvent -= WonEncounter;
         GameEngine.LostEncounterStartedEvent -= LostEncounter;
