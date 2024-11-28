@@ -13,6 +13,13 @@ public class ObjectMover : MonoBehaviour
         Quaternion rotation = goal.rotation;
         return StartCoroutine(TransitionObject(position, rotation, duration, ease));
     }
+    
+    protected Coroutine SmoothToObject(Vector3 goalPosition, Quaternion goalRotation, float duration, bool ease)
+    {
+        Vector3 position = goalPosition;
+        Quaternion rotation = goalRotation;
+        return StartCoroutine(TransitionObject(position, rotation, duration, ease));
+    }
 
     protected void ImmediateToObject(Transform goal)
     {

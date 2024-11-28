@@ -7,9 +7,8 @@ using UnityEngine;
 
 public class Encounter : MonoBehaviour
 {
-  private bool isObject;
-  public bool IsObject => isObject;
-  
+  public bool IsObject { get; private set; }
+
   //private GameEngine engine;
   private int enemyId;
   public int GetEnemyId()
@@ -28,6 +27,7 @@ public class Encounter : MonoBehaviour
   private int health;
   
   private int[] propertyIds;
+  private TrialHandler.PropertyType[] propertyTypes;
 
   public int[] GetAllPropertyIds()
   {
@@ -48,20 +48,21 @@ public class Encounter : MonoBehaviour
     
     health = startingHealth;
 
-    isObject = false;
+    IsObject = false;
   }
 
-  public void Init(int enemyId, int startingHealth, int[] propertyIds, bool[] validProperty, float waitTime)
+  public void Init(int enemyId, int startingHealth, int[] propertyIds, bool[] validProperty, TrialHandler.PropertyType[] propertyTypes, float waitTime)
   {
     this.enemyId = enemyId;
     this.startingHealth = startingHealth;
     this.propertyIds = propertyIds;
     this.validProperty = validProperty;
+    this.propertyTypes = propertyTypes;
     this.waitTime = waitTime;
     
     health = startingHealth;
 
-    isObject = true;
+    IsObject = true;
   }
 
   public override string ToString()
@@ -89,6 +90,8 @@ public class Encounter : MonoBehaviour
   }
 
   public int GetCurrentPropertyId() { return propertyIds[currentProperty]; }
+  
+  public TrialHandler.PropertyType GetCurrentPropertyType() { return propertyTypes[currentProperty]; }
 
   public bool EncounterOver => currentProperty >= propertyIds.Length;
 

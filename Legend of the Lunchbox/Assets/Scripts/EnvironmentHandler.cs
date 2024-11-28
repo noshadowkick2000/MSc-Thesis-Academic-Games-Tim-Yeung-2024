@@ -57,20 +57,20 @@ public class EnvironmentHandler : ObjectMover
     
     protected virtual void OnRail()
     {
-        moving = true;
-        spawnedDiscoverable = Instantiate(discoverable, new Vector3(0, .2f, (GameEngine.RailDuration) * speedMultiplier + LocationHolder.EnemyLocation.position.z), Quaternion.identity, loadedTerrains.Last().transform);
+        Moving = true;
+        spawnedDiscoverable = Instantiate(discoverable, new Vector3(0, .2f, (GameEngine.RailDuration) * speedMultiplier + (LocationHolder.DiscoverableLocation.position.z)), Quaternion.identity, loadedTerrains.Last().transform);
     }
 
     protected virtual void StartingBreak()
     {
-        moving = false;
+        Moving = false;
     }
     
     protected virtual void StartingEncounter()
     {
-        moving = false;
+        Moving = false;
         mainObject = spawnedDiscoverable.transform;
-        SmoothToObject(LocationHolder.EnemyLocation, GameEngine.EncounterStartTime, true);
+        SmoothToObject(LocationHolder.EnemyCameraLocation, GameEngine.EncounterStartTime, true);
     }
 
     protected virtual void ShowingEnemy()
@@ -80,11 +80,10 @@ public class EnvironmentHandler : ObjectMover
 
     protected virtual void LevelOver()
     {
-        moving = true;
+        Moving = true;
     }
 
-    private bool moving;
-    public bool Moving => moving;
+    public bool Moving { get; private set; }
 
     private void SpawnTerrain(bool first)
     {
@@ -105,7 +104,7 @@ public class EnvironmentHandler : ObjectMover
     
     private void Update()
     {
-        if (!moving)
+        if (!Moving)
             return;
         
         foreach (var terrain in loadedTerrains)

@@ -27,10 +27,9 @@ public class UIController : MonoBehaviour
         thoughtUI.SetActive(false);
         mindUI.SetActive(false);
         controlIndicatorUI.SetActive(false);
-        // spotLight.SetActive(false);
         flashBang.SetActive(false);
 
-        StartCoroutine(AnimatePinhole(true));
+        StartPinhole(true, GameEngine.LevelOverTime);
         
         SubscribeToEvents();
     }
@@ -40,68 +39,33 @@ public class UIController : MonoBehaviour
         UnsubscribeFromEvents();
     }
 
-    private void Idle(bool encounterOver)
+    private void Idle()
     {
-        if (encounterOver) 
-        {
-            controlIndicatorUI.SetActive(false);
-            StartCoroutine(AnimateCanvas(true, .5f)); 
-        }
-        thoughtUI?.SetActive(false);
+        controlIndicatorUI.SetActive(false);
+        mindUI.SetActive(false);
+        thoughtUI.SetActive(false);
     }
 
     private void StartMind(float duration)
     {
         distractionUI.SetActive(false);
-        StartCoroutine(AnimateCanvas(false, duration));
-    }
-    
-    private IEnumerator AnimateCanvas(bool inverse, float duration) 
-    {
-        if (!inverse)
-        {
-            mindUI.SetActive(true);
-            // spotLight.SetActive(true);
-        }
-
-        // RectTransform mt = mindUI.GetComponent<RectTransform>();
-        mindPanel.color = inverse ? Color.black : Color.clear;
-        // mt.localScale = inverse ? Vector3.one : Vector3.zero;
-        // spotLightMaterial.color = Color.clear;  
-        
-        float startTime = Time.realtimeSinceStartup;
-        while (Time.realtimeSinceStartup < startTime + duration)
-        {
-            float x = (Time.realtimeSinceStartup - startTime) / duration;
-            if (inverse) { x = 1 - x; }
-            // mt.localScale = new Vector3 (x, x, 1);
-            mindPanel.color = new Color(0, 0,0 , x);
-            // Color sc = new Color(spotColor.r, spotColor.g, spotColor.b, x);
-            // spotLightMaterial.color = sc;
-            yield return null;
-        }
-
-        mindPanel.color = inverse ? Color.clear : Color.black;
-        // mt.localScale = inverse ? Vector3.zero : Vector3.one;
-        spotLightMaterial.color = spotColor;
-        if (inverse)
-        {
-            mindUI.SetActive(false);
-            // spotLight.SetActive(false);
-        }
     }
 
     private Coroutine thoughtRoutine;
 
     private void StartThought(float duration) 
-    { 
-        //TODO spotlights searching around effect
-        
+    {
         thoughtUI.SetActive(true);
         controlIndicatorUI.SetActive(false);
 
         thoughtRoutine = StartCoroutine(AnimateThought());
-        // StartCoroutine(DelayedSpotlight(duration));
+    }
+    
+    private void StartPinhole(bool opening, float duration)
+    {
+        StartCoroutine(AnimatePinhole(opening, duration));
+        if (!opening)
+            endScreen.SetActive(true);
     }
 
     private IEnumerator DelayedSpotlight(float duration)
@@ -144,73 +108,48 @@ public class UIController : MonoBehaviour
 
     private void CancelTimer()
     {
-        // timerUI.color = Color.clear;
         StopCoroutine(timerRoutine);
     }
 
     private IEnumerator AnimateTimer(float timeOut)
     {
         float startTime = Time.realtimeSinceStartup;
-        // timerUI.color = Color.white;
-        // Color newColor = timerUI.color;
         timerUI.fillAmount = 0;
         while (Time.realtimeSinceStartup < startTime + timeOut)
         {
             timerUI.fillAmount = (Time.realtimeSinceStartup - startTime) / timeOut;
-            // newColor.a = (Time.realtimeSinceStartup - startTime) / timeOut;
-            // timerUI.color = newColor;
             yield return null;
         }
 
         timerUI.fillAmount = 1;
-
-        // Wait for a while before starting to flicker
-
-        // float waitRatio = .3f; // TODO implement that in game engine, the time for the timeout is the experimental max time, plus a certain margin that's a percentage of that time, and use that time here
-        // int stops = 4;
-        // float stopRatio = .1f;
-        //
-        // float visibleRatio = 1f - waitRatio;
-        //
-        // yield return new WaitForSecondsRealtime((visibleRatio * timeOut));
-        //
-        // float stopTime = timeOut * waitRatio * stopRatio / stops;
-        // float visibleTimeTotal = timeOut * waitRatio * (1 - stopRatio);
-        //
-        // for (int i = stops; i > 0; i--)
-        // {
-        //     spotLight.SetActive(false);
-        //     yield return new WaitForSecondsRealtime(stopTime);
-        //     spotLight.SetActive(true);
-        //     float goTime = (Mathf.Pow(2, i) - Mathf.Pow(2, i - 1)) / Mathf.Pow(2, stops) * visibleTimeTotal;
-        //     yield return new WaitForSecondsRealtime(goTime);
-        // }
-        //
-        // spotLight.SetActive(false);
     }
-    
-    //-----------------------------------------------------
-    
+
     private void SubscribeToEvents()
     {
         GameEngine.ShowingEnemyStartedEvent += ShowingEnemy;
         GameEngine.SettingUpMindStartedEvent += SettingUpMind;
+        GameEngine.ShowingEnemyInMindStartedEvent += ShowingEnemyInMind;
         GameEngine.ThinkingOfPropertyStartedEvent += ThinkingOfProperty;
         GameEngine.ShowingPropertyStartedEvent += ShowingProperty;
         GameEngine.EvaluatingInputStartedEvent += EvaluatingInput;
         GameEngine.TimedOutStartedEvent += TimedOut;
+        GameEngine.MovingToEnemyStartedEvent += MovingToEnemy;
+        GameEngine.EvaluatingEncounterStartedEvent += EvaluatingEncounter;
         GameEngine.EndingEncounterStartedEvent += EndingEncounter;
         GameEngine.LevelOverStartedEvent += LevelOver;
     }
 
     private void UnsubscribeFromEvents()
     {
-        GameEngine.ShowingEnemyStartedEvent += ShowingEnemy;
+        GameEngine.ShowingEnemyStartedEvent -= ShowingEnemy;
         GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
+        GameEngine.ShowingEnemyInMindStartedEvent -= ShowingEnemyInMind;
         GameEngine.ThinkingOfPropertyStartedEvent -= ThinkingOfProperty;
         GameEngine.ShowingPropertyStartedEvent -= ShowingProperty;
         GameEngine.EvaluatingInputStartedEvent -= EvaluatingInput;
         GameEngine.TimedOutStartedEvent -= TimedOut;
+        GameEngine.MovingToEnemyStartedEvent -= MovingToEnemy;
+        GameEngine.EvaluatingEncounterStartedEvent -= EvaluatingEncounter;
         GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
         GameEngine.LevelOverStartedEvent -= LevelOver;
     }
@@ -230,34 +169,43 @@ public class UIController : MonoBehaviour
     protected virtual void SettingUpMind()
     {
         StartMind(GameEngine.MindStartTime);
+        
+        StartPinhole(false, GameEngine.MindStartTime);
     }
     
-    protected virtual void ThinkingOfProperty(bool encounterOver)
-    {
-        if (encounterOver)
-            Idle(true);
-        else
-        {
-            // spotLight.SetActive(false);
-            StartThought(GameEngine.PullingTime);
-        }
+    protected virtual void ThinkingOfProperty()
+    { 
+        StartThought(GameEngine.PullingTime);
     }
 
     protected virtual void ShowingProperty(Action<InputHandler.InputState> callback)
     {
         EndThought(GameEngine.EnemyTimeOut);
-        // spotLight.SetActive(true);
     }
 
     protected virtual void EvaluatingInput()
     {
-        // spotLight.SetActive(false);
         CancelTimer();
     }
 
     protected virtual void TimedOut()
     {
-        // spotLight.SetActive(false);
+    }
+
+    protected virtual void MovingToEnemy()
+    {
+        controlIndicatorUI.SetActive(false);
+    }
+
+    protected virtual void ShowingEnemyInMind()
+    {
+        mindUI.SetActive(true);
+    }
+
+    protected virtual void EvaluatingEncounter()
+    {
+        Idle();
+        StartPinhole(true, GameEngine.playerReset);
     }
 
     protected virtual void EndingEncounter()
@@ -267,19 +215,18 @@ public class UIController : MonoBehaviour
 
     protected virtual void LevelOver()
     {
-        StartCoroutine(AnimatePinhole(false));
-        endScreen.SetActive(true);
+        StartPinhole(false, GameEngine.LevelOverTime);
     }
 
-    private IEnumerator AnimatePinhole(bool opening)
+    private IEnumerator AnimatePinhole(bool opening, float duration)
     {
         stencil.localScale = opening ? Vector3.zero : Vector3.one;
         
         float startTime = Time.realtimeSinceStartup;
 
-        while (Time.realtimeSinceStartup < startTime + GameEngine.LevelOverTime)
+        while (Time.realtimeSinceStartup < startTime + duration)
         {
-            float x = ((Time.realtimeSinceStartup - startTime) / GameEngine.LevelOverTime);
+            float x = ((Time.realtimeSinceStartup - startTime) / duration);
             if (!opening)
                 x = 1 - x;
             stencil.localScale = new Vector3(x, x, 0);

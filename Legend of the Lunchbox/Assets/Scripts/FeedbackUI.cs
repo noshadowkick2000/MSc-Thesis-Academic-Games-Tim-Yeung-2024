@@ -34,7 +34,7 @@ public class FeedbackUI : MonoBehaviour
         feedbackAnimation.Play("feedbackIncorrect");
     }
 
-    private void RemoveFeedback(bool boolean)
+    private void RemoveFeedback()
     {
         feedbackUI.SetActive(false);
     }
@@ -45,13 +45,15 @@ public class FeedbackUI : MonoBehaviour
     {
         GameEngine.AnswerCorrectStartedEvent += ShowPositiveFeedback;
         GameEngine.AnswerWrongStartedEvent += ShowNegativeFeedback;
-        GameEngine.ThinkingOfPropertyStartedEvent += RemoveFeedback;
+        GameEngine.ShowingEnemyInMindStartedEvent += RemoveFeedback;
+        GameEngine.EvaluatingEncounterStartedEvent += RemoveFeedback;
     }
     
     private void UnSubscribeToEvents()
     {
         GameEngine.AnswerCorrectStartedEvent -= ShowPositiveFeedback;
         GameEngine.AnswerWrongStartedEvent -= ShowNegativeFeedback;
-        GameEngine.ThinkingOfPropertyStartedEvent -= RemoveFeedback;
+        GameEngine.ShowingEnemyInMindStartedEvent -= RemoveFeedback;
+        GameEngine.EvaluatingEncounterStartedEvent -= RemoveFeedback;
     }
 }

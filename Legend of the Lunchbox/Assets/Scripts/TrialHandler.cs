@@ -71,13 +71,15 @@ public class TrialHandler : MonoBehaviour
     int waitTimeMillis = int.Parse(encounter.Attributes["wait"].Value);
     List<int> propertyIds = new List<int>();
     List<bool> correctProperty = new List<bool>();
+    List<PropertyType> propertyTypes = new List<PropertyType>();
     foreach (XmlNode node in encounter.ChildNodes)
     {
       //print(node.InnerText);
       propertyIds.Add(GetId(node.InnerText));
       correctProperty.Add(Convert.ToBoolean(node.Attributes["correct"].Value));
+      propertyTypes.Add((PropertyType)int.Parse(node.Attributes["type"].Value));
     }
-    enc.Init(enemyId, health, propertyIds.ToArray(), correctProperty.ToArray(), waitTimeMillis/1000f);
+    enc.Init(enemyId, health, propertyIds.ToArray(), correctProperty.ToArray(), propertyTypes.ToArray(), waitTimeMillis/1000f);
     Logger.Log($"Loaded encounter: {Environment.NewLine}{enc.ToString()}");
     encounters.Add(enc);
   }
@@ -139,7 +141,7 @@ public class TrialHandler : MonoBehaviour
   {
     Transform obj = objectDictionary[GetCurrentEncounterId()];
     obj.gameObject.SetActive(true);
-    obj.position = LocationHolder.EnemyLocation.position;
+    obj.position = LocationHolder.PropertyLocation.position;
     OnObjectSpawnedEvent?.Invoke(obj);
   }
 
@@ -157,6 +159,17 @@ public class TrialHandler : MonoBehaviour
     }
 
     return wt;
+  }
+
+  public enum PropertyType
+  {
+    ACTION,
+    SOUND
+  }
+
+  public PropertyType GetCurrentEncounterType()
+  {
+    return encounters[encounterCounter].GetCurrentPropertyType();
   }
 
   public bool EncounterIsObject()
@@ -181,7 +194,10 @@ public class TrialHandler : MonoBehaviour
     int propid = encounters[encounterCounter].GetCurrentPropertyId();
     Transform property = objectDictionary[propid];
     property.gameObject.SetActive(true);
-    property.position = LocationHolder.PropertyLocation.position;
+    float offset = Vector3.Distance(LocationHolder.PropertyLocation.position, LocationHolder.MindCameraLocation.position);
+    property.position = (offset * PropertyCameraController.PropertyCamTransform.forward) + LocationHolder.MindCameraLocation.position;
+    property.rotation = PropertyCameraController.PropertyCamTransform.rotation;
+    // property.Rotate(PropertyCameraController.PropertyCamTransform.up, 180);
     StartCoroutine(ActivateProperty(property));
     OnPropertySpawnedEvent?.Invoke(property);
   }
@@ -213,11 +229,10 @@ public class TrialHandler : MonoBehaviour
   private IEnumerator ActivateProperty(Transform property)
   {
     float duration = .2f;
-    // float movement = 0.02f;
   
     Vector3 startScale = property.localScale;
-    Quaternion startRotation = property.localRotation;
-    Quaternion randomRotation = Quaternion.Euler(Random.Range(20f, 30f), 0, Random.Range(20f, 30f)); 
+    Quaternion startRotation = property.rotation;
+    Quaternion randomRotation = property.rotation * Quaternion.Euler(Random.Range(20f, 30f), 0, Random.Range(20f, 30f)); 
     property.localScale = Vector3.zero;
     
     float startTime = Time.realtimeSinceStartup;
@@ -226,13 +241,12 @@ public class TrialHandler : MonoBehaviour
       float x = (Time.realtimeSinceStartup - startTime) / duration;
       float y = MathT.EasedT(x);
       property.localScale = new Vector3(startScale.x * y, startScale.y * y, startScale.z * y);
-      property.localRotation = Quaternion.Lerp(randomRotation, startRotation, y);
-      // property.position += new Vector3(input == InputHandler.InputState.Using ? movement : -movement, 0, 0);
+      property.rotation = Quaternion.Lerp(randomRotation, startRotation, y);
       yield return null;
     }
     
     property.localScale = startScale;
-    property.localRotation = startRotation;
+    property.rotation = startRotation;
   }
 
   // private IEnumerator DeActivateProperty(InputHandler.InputState input)
@@ -316,7 +330,7 @@ public class TrialHandler : MonoBehaviour
     StartEncounter();
   }
 
-  protected virtual void ShowingProperty(Action<InputHandler.InputState> callback )
+  protected virtual void ShowingProperty(Action<InputHandler.InputState> callback)
   {
     SpawnProperty();
   }
