@@ -22,7 +22,7 @@ namespace Assets
 
     public static float EnemyMindShowTime { get; } = 2f;
 
-    public static float MindPropertyTransitionTime { get; } = 2f;
+    public static float MindPropertyTransitionTime { get; } = 3f;
 
     public static float PullingTime { get; } = 2f;
 
@@ -100,7 +100,7 @@ namespace Assets
 
     public delegate void StateChangeEvent();
     public delegate void StateChangeEventTyped(TrialHandler.PropertyType propertyType);
-    public delegate void StateChangeEventBooled(bool boolean);
+    public delegate void StateChangeEventInput(InputHandler.InputState input);
     public delegate void StateChangeEventCallback(Action<InputHandler.InputState> callback);
 
     public static event StateChangeEvent CutSceneStartedEvent;
@@ -113,7 +113,7 @@ namespace Assets
     public static event StateChangeEventTyped MovingToPropertyStartedEvent;
     public static event StateChangeEvent ThinkingOfPropertyStartedEvent;
     public static event StateChangeEventCallback ShowingPropertyStartedEvent;
-    public static event StateChangeEvent EvaluatingInputStartedEvent;
+    public static event StateChangeEventInput EvaluatingInputStartedEvent;
     public static event StateChangeEvent TimedOutStartedEvent;
     public static event StateChangeEvent AnswerWrongStartedEvent;
     public static event StateChangeEvent AnswerCorrectStartedEvent;
@@ -218,7 +218,7 @@ namespace Assets
 
     private void EvaluatingInput(InputHandler.InputState input)
     {
-      EvaluatingInputStartedEvent?.Invoke();
+      EvaluatingInputStartedEvent?.Invoke(input);
       
       StopCoroutine(timerRoutine);
       timerRoutine = null;

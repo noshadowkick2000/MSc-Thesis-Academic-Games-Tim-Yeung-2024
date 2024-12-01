@@ -195,9 +195,7 @@ public class TrialHandler : MonoBehaviour
     Transform property = objectDictionary[propid];
     property.gameObject.SetActive(true);
     float offset = Vector3.Distance(LocationHolder.PropertyLocation.position, LocationHolder.MindCameraLocation.position);
-    property.position = (offset * PropertyCameraController.PropertyCamTransform.forward) + LocationHolder.MindCameraLocation.position;
-    property.rotation = PropertyCameraController.PropertyCamTransform.rotation;
-    // property.Rotate(PropertyCameraController.PropertyCamTransform.up, 180);
+    property.position = (offset * PropertyCameraController.PropertyCamTransform.forward) + PropertyCameraController.PropertyCamTransform.position;
     StartCoroutine(ActivateProperty(property));
     OnPropertySpawnedEvent?.Invoke(property);
   }
@@ -210,18 +208,18 @@ public class TrialHandler : MonoBehaviour
   /// <returns></returns>
   public bool EvaluateProperty(InputHandler.InputState input)
   {
-    // StartCoroutine(DeActivateProperty(input)); // Fix
-    int propid = encounters[encounterCounter].GetCurrentPropertyId();
-    objectDictionary[propid].gameObject.SetActive(false);
+    StartCoroutine(DeActivateProperty(input)); // Fix
+    // int propid = encounters[encounterCounter].GetCurrentPropertyId();
+    // objectDictionary[propid].gameObject.SetActive(false);
     
-    return encounters[encounterCounter].EvaluateInput(input == InputHandler.InputState.Using);
+    return encounters[encounterCounter].EvaluateInput(input == InputHandler.InputState.USING);
   }
 
   private void SkipProperty()
   {
-    // StartCoroutine(DeActivateProperty(InputHandler.InputState.None));
-    int propid = encounters[encounterCounter].GetCurrentPropertyId();
-    objectDictionary[propid].gameObject.SetActive(false);
+    StartCoroutine(DeActivateProperty(InputHandler.InputState.NONE));
+    // int propid = encounters[encounterCounter].GetCurrentPropertyId();
+    // objectDictionary[propid].gameObject.SetActive(false);
     
     encounters[encounterCounter].SkipProperty();
   }
@@ -249,28 +247,37 @@ public class TrialHandler : MonoBehaviour
     property.rotation = startRotation;
   }
 
-  // private IEnumerator DeActivateProperty(InputHandler.InputState input)
-  // {
-  //   int propid = encounters[encounterCounter].GetCurrentPropertyId();
-  //   Transform property = objectDictionary[propid];
-  //
-  //   float startY = property.position.y;
-  //
-  //   float duration = 0.5f; // TODO DEPEND ON OTHER TIMINGS
-  //   float movement = 0.02f;
-  //
-  //   float startTime = Time.realtimeSinceStartup;
-  //   while (Time.realtimeSinceStartup < startTime + duration)
-  //   {
-  //     float x = 1 - (Time.realtimeSinceStartup - startTime) / duration;
-  //     // property.localScale = new Vector3(x, x, x);
-  //     if (input != InputHandler.InputState.None)
-  //       property.position = new Vector3(input == InputHandler.InputState.Using ? property.position.x + movement * x : property.position.y - movement * x, startY + (-4 * MathF.Pow(x - .25f, 2) + .25f), 0);
-  //     yield return null;
-  //   }
-  //
-  //   property.gameObject.SetActive(false);
-  // }
+  private IEnumerator DeActivateProperty(InputHandler.InputState input)
+  {
+    int propid = encounters[encounterCounter].GetCurrentPropertyId();
+    Transform property = objectDictionary[propid];
+    float duration = GameEngine.MindPropertyTransitionTime / 2;
+
+    if (input != InputHandler.InputState.USING)
+    {
+      Vector3 basePosition = property.position;
+      
+      float movement = Random.Range(0.02f, 0.06f);
+      float direction = Random.Range(0, 2) == 0 ? -1 : 1;
+
+      float startTime = Time.realtimeSinceStartup;
+      while (Time.realtimeSinceStartup < startTime + duration)
+      {
+        float x = (Time.realtimeSinceStartup - startTime) / duration;
+        // property.localScale = new Vector3(x, x, x);
+        if (input != InputHandler.InputState.NONE)
+          property.position = basePosition +
+                              new Vector3(property.position.x + direction * movement * x, (-4 * MathF.Pow(x - .25f, 2) + .25f), 0);
+        yield return null;
+      }
+    }
+    else
+    {
+      yield return new WaitForSecondsRealtime(duration);
+    }
+
+    property.gameObject.SetActive(false);
+  }
 
   public void DamageEncounter()
   {

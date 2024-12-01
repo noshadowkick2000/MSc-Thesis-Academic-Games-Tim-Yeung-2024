@@ -71,19 +71,21 @@ public class PostProcessController : MonoBehaviour
         float duration = .5f;
         float startTime = Time.realtimeSinceStartup;
         float x = 0;
+        float saturationStart = ca.saturation.value;
+        float saturationGoal = saturationStart - 20f;
 
         while (x < 1)
         {
             x = (Time.realtimeSinceStartup - startTime) / duration;
 
             ld.intensity.Override((1-x) * Mathf.Sin(x * 6 * Mathf.PI));
+            ca.saturation.Override(x * saturationGoal + (1-x) * saturationStart);
             
             yield return null;
         }
 
         ld.intensity.Override(0);
-        ca.saturation.Override(ca.saturation.value-20f);
-        
+        ca.saturation.Override(saturationGoal);
     }
 
     private void Init()

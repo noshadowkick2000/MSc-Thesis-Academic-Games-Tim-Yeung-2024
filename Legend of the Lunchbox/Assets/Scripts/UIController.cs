@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Assets;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -14,6 +15,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject spotLight;
     [SerializeField] private Material spotLightMaterial;
     [SerializeField] private GameObject thoughtUI;
+    [SerializeField] private TextMeshProUGUI thoughtWords;
     [SerializeField] private Sprite[] thoughtSprites;
     [SerializeField] private GameObject controlIndicatorUI;
     [SerializeField] private GameObject distractionUI;
@@ -53,10 +55,23 @@ public class UIController : MonoBehaviour
 
     private Coroutine thoughtRoutine;
 
-    private void StartThought(float duration) 
+    private void StartThought(TrialHandler.PropertyType propertyType) 
     {
         thoughtUI.SetActive(true);
         controlIndicatorUI.SetActive(false);
+        thoughtWords.text = "Hmm.. ";
+
+        switch (propertyType)
+        {
+            case TrialHandler.PropertyType.ACTION:
+                thoughtWords.text += "how would this be used?";
+                break;
+            case TrialHandler.PropertyType.SOUND:
+                thoughtWords.text += "what would this sound like?";
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(propertyType), propertyType, null);
+        }
 
         thoughtRoutine = StartCoroutine(AnimateThought());
     }
@@ -68,25 +83,54 @@ public class UIController : MonoBehaviour
             endScreen.SetActive(true);
     }
 
-    private IEnumerator DelayedSpotlight(float duration)
-    {
-        yield return new WaitForSecondsRealtime(duration / 4f);
-        spotLight.SetActive(true);
-    }
-
     private IEnumerator AnimateThought()
     {
-        Image img = thoughtUI.GetComponent<Image>();
-        int counter = 0;
+        // Image img = thoughtUI.GetComponent<Image>();
+        // int counter = 0;
+        //
+        // while (true)
+        // {
+        //     img.sprite = thoughtSprites[counter];
+        //     counter++;
+        //     if (counter == thoughtSprites.Length)
+        //         counter = 0;
+        //     
+        //     yield return new WaitForSecondsRealtime(.2f);
+        // }
 
-        while (true)
+        float startTime = Time.realtimeSinceStartup;
+        float x = 0;
+        float y;
+        float power = 16f;
+        Color a = Color.white; 
+
+        while (x < 1)
         {
-            img.sprite = thoughtSprites[counter];
-            counter++;
-            if (counter == thoughtSprites.Length)
-                counter = 0;
-            
-            yield return new WaitForSecondsRealtime(.2f);
+            y = x < .5f ? 1 - Mathf.Pow(x-1, power) : 1 - Mathf.Pow(x, power);
+            a.a = y;
+            thoughtWords.color = a;
+            x = (Time.realtimeSinceStartup - startTime) / GameEngine.MindPropertyTransitionTime;
+
+            yield return null;
+        }
+
+        startTime = Time.realtimeSinceStartup;
+        x = 0;
+        thoughtWords.text = ".";
+
+        while (x < 1)
+        {
+            y = x < .5f ? 1 - Mathf.Pow(x-1, power) : 1 - Mathf.Pow(x, power);
+            a.a = y;
+            thoughtWords.color = a;
+            x = (Time.realtimeSinceStartup - startTime) / GameEngine.PullingTime;
+
+            if (x > .66f)
+                thoughtWords.text = "...";
+            else if (x > .33f)
+                thoughtWords.text = "..";
+
+            yield return null;
         }
     }
 
@@ -129,7 +173,7 @@ public class UIController : MonoBehaviour
         GameEngine.ShowingEnemyStartedEvent += ShowingEnemy;
         GameEngine.SettingUpMindStartedEvent += SettingUpMind;
         GameEngine.ShowingEnemyInMindStartedEvent += ShowingEnemyInMind;
-        GameEngine.ThinkingOfPropertyStartedEvent += ThinkingOfProperty;
+        GameEngine.MovingToPropertyStartedEvent += MovingToProperty;
         GameEngine.ShowingPropertyStartedEvent += ShowingProperty;
         GameEngine.EvaluatingInputStartedEvent += EvaluatingInput;
         GameEngine.TimedOutStartedEvent += TimedOut;
@@ -144,7 +188,7 @@ public class UIController : MonoBehaviour
         GameEngine.ShowingEnemyStartedEvent -= ShowingEnemy;
         GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
         GameEngine.ShowingEnemyInMindStartedEvent -= ShowingEnemyInMind;
-        GameEngine.ThinkingOfPropertyStartedEvent -= ThinkingOfProperty;
+        GameEngine.MovingToPropertyStartedEvent -= MovingToProperty;
         GameEngine.ShowingPropertyStartedEvent -= ShowingProperty;
         GameEngine.EvaluatingInputStartedEvent -= EvaluatingInput;
         GameEngine.TimedOutStartedEvent -= TimedOut;
@@ -173,9 +217,9 @@ public class UIController : MonoBehaviour
         StartPinhole(false, GameEngine.MindStartTime);
     }
     
-    protected virtual void ThinkingOfProperty()
+    protected virtual void MovingToProperty(TrialHandler.PropertyType propertyType)
     { 
-        StartThought(GameEngine.PullingTime);
+        StartThought(propertyType);
     }
 
     protected virtual void ShowingProperty(Action<InputHandler.InputState> callback)
@@ -183,7 +227,7 @@ public class UIController : MonoBehaviour
         EndThought(GameEngine.EnemyTimeOut);
     }
 
-    protected virtual void EvaluatingInput()
+    protected virtual void EvaluatingInput(InputHandler.InputState input)
     {
         CancelTimer();
     }

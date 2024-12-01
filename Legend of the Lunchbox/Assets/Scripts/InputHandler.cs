@@ -8,13 +8,13 @@ public class InputHandler : MonoBehaviour
 {
     public enum InputState
     {
-        None,
-        Using,
-        Discarding
+        NONE,
+        USING,
+        DISCARDING
     }
     
     bool acceptingInput = false;
-    private static InputState input = InputState.None;
+    private static InputState _input = InputState.NONE;
     private Action<InputState> inputCallback;
         
     private void Awake()
@@ -29,14 +29,15 @@ public class InputHandler : MonoBehaviour
     
     private void Update()
     {
-        input = InputState.None;
-        if (Input.GetButtonDown("Use")) { input = InputState.Using; }
-        if (Input.GetButtonDown("Discard")) { input = InputState.Discarding; }
-        if (input != InputState.None) { Logger.Log($"Input: {input.ToString()}"); }
+        _input = InputState.NONE;
+        if (Input.GetButtonDown("Use")) { _input = InputState.USING; }
+        if (Input.GetButtonDown("Discard")) { _input = InputState.DISCARDING; }
+        if (_input != InputState.NONE) { Logger.Log($"Input: {_input.ToString()}"); }
 
-        if (acceptingInput && input != InputState.None)
+        if (acceptingInput && _input != InputState.NONE)
         {
-            inputCallback?.Invoke(input);
+            inputCallback?.Invoke(_input);
+            acceptingInput = false;
         }
     }
     
@@ -45,14 +46,12 @@ public class InputHandler : MonoBehaviour
     private void SubscribeToEvents()
     {
         GameEngine.ShowingPropertyStartedEvent += ShowingProperty;
-        GameEngine.EvaluatingInputStartedEvent += EvaluatingInput;
         GameEngine.TimedOutStartedEvent += TimedOut;
     }
     
     private void UnSubscribeToEvents()
     {
         GameEngine.ShowingPropertyStartedEvent -= ShowingProperty;
-        GameEngine.EvaluatingInputStartedEvent -= EvaluatingInput;
         GameEngine.TimedOutStartedEvent -= TimedOut;
     }
 
@@ -60,11 +59,6 @@ public class InputHandler : MonoBehaviour
     {
         acceptingInput = true;
         inputCallback = callback;
-    }
-
-    protected virtual void EvaluatingInput()
-    {
-        acceptingInput = false;
     }
 
     protected virtual void TimedOut()
