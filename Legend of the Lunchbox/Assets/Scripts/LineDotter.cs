@@ -73,7 +73,7 @@ public class LineDotter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        mat.mainTextureOffset = new Vector2(Time.time, 0);
+        // mat.mainTextureOffset = new Vector2(Time.time, 0);
 
         if (!followingCam) return;
         

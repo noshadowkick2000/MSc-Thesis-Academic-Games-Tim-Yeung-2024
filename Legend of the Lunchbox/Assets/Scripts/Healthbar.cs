@@ -56,11 +56,37 @@ public class Healthbar : MonoBehaviour
 
     protected virtual void EndingEncounter()
     {
-        healthBar.SetActive(true);
     }
 
     protected virtual void LostEncounter()
     {
-        liquidScript.fillAmount = CalculateFill();
+        healthBar.SetActive(true);
+
+        StartCoroutine(AnimateBar());
+    }
+
+    private IEnumerator AnimateBar()
+    {
+        yield return new WaitForSecondsRealtime(GameEngine.playerReset / 4);
+        
+        float startTime = Time.realtimeSinceStartup;
+        float x = 0;
+
+        float start = liquidScript.fillAmount;
+        float goal = CalculateFill();
+
+        Quaternion startPos = healthBar.transform.rotation;
+        
+        while (x < 1)
+        {
+            liquidScript.fillAmount = x * goal + (1-x) * start;
+            healthBar.transform.rotation = startPos * Quaternion.Euler(0, 0, Mathf.PerlinNoise1D(Time.realtimeSinceStartup) * .1f);
+            x = (Time.realtimeSinceStartup - startTime) / GameEngine.playerReset / 2;
+
+            yield return null;
+        }
+        
+        healthBar.transform.rotation = startPos;
+        liquidScript.fillAmount = goal;
     }
 }
