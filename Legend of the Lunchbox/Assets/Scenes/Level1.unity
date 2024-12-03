@@ -2356,9 +2356,9 @@ MonoBehaviour:
   - {fileID: 2983298141742680501, guid: 378833063b1432541bcb317ef6aaf0c5, type: 3}
   - {fileID: 2983298141742680501, guid: 378833063b1432541bcb317ef6aaf0c5, type: 3}
   - {fileID: 2983298141742680501, guid: 378833063b1432541bcb317ef6aaf0c5, type: 3}
-  minTimeDelay: 2
-  maxTimeDelay: 5
-  minPosition: {x: -2, y: 1, z: 10}
+  minTimeDelay: 4
+  maxTimeDelay: 6
+  minPosition: {x: -2, y: 1, z: 18}
   maxPosition: {x: 0, y: 3, z: 20}
 --- !u!114 &959961346
 MonoBehaviour:

@@ -27,7 +27,6 @@ public class BreakHandler : ObjectMover
     {
         GameEngine.StartingBreakStartedEvent += StartingBreak;
         GameEngine.BreakingBadStartedEvent += BreakingBad;
-        GameEngine.EvaluatingBreakStartedEvent += EvaluatingBreak;
         GameEngine.WonBreakStartedEvent += WonBreak;
         GameEngine.EndingBreakStartedEvent += EndingBreak;
         GameEngine.OnRailStartedEvent += OnRail;
@@ -37,7 +36,6 @@ public class BreakHandler : ObjectMover
     {
         GameEngine.StartingBreakStartedEvent -= StartingBreak;
         GameEngine.BreakingBadStartedEvent -= BreakingBad;
-        GameEngine.EvaluatingBreakStartedEvent -= EvaluatingBreak;
         GameEngine.WonBreakStartedEvent -= WonBreak;
         GameEngine.EndingBreakStartedEvent -= EndingBreak;
         GameEngine.OnRailStartedEvent -= OnRail;
@@ -55,19 +53,17 @@ public class BreakHandler : ObjectMover
     }
 
     bool breaking = false;
-    protected virtual void BreakingBad(Action<InputHandler.InputState> callback)
+    protected virtual void BreakingBad()
     {
         breaking = true;
     }
 
-    protected virtual void EvaluatingBreak()
-    {
-        breaking = false;
-    }
 
     protected virtual void WonBreak()
     {
+        breaking = false;
         print("WON");
+        p.RemoveCap();
     }
 
     protected virtual void EndingBreak()
@@ -86,7 +82,6 @@ public class BreakHandler : ObjectMover
     {
         if (!breaking) return;
         
-        p.SetCap(InputHandler.InputAverage);
         mainObject.position = Vector3.Lerp(LocationHolder.PropertyLocation.position, LocationHolder.MindCameraLocation.position, InputHandler.InputAverage / 2);
         mainObject.rotation = Quaternion.Euler(0, 0, (Mathf.PingPong(Time.realtimeSinceStartup * 10f, 2) - 1f) * (60f * InputHandler.InputAverage));
     }

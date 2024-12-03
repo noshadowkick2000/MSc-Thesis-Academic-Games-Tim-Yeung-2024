@@ -62,7 +62,6 @@ public class InputHandler : MonoBehaviour
 
             if (InputAverage > inputThreshold)
             {
-                inputCallback?.Invoke(InputState.USING);
                 acceptingInput = InputType.NONE;
             }
         }
@@ -86,10 +85,9 @@ public class InputHandler : MonoBehaviour
         GameEngine.EndingBreakStartedEvent -= EndingBreak;
     }
 
-    protected virtual void BreakingBad(Action<InputState> callback)
+    protected virtual void BreakingBad()
     {
         acceptingInput = InputType.RAPID;
-        inputCallback = callback;
     }
 
     protected virtual void EndingBreak()

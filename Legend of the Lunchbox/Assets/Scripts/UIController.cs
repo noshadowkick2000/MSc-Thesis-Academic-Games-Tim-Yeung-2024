@@ -202,7 +202,7 @@ public class UIController : MonoBehaviour
         GameEngine.LevelOverStartedEvent -= LevelOver;
     }
 
-    protected virtual void BreakingBad(Action<InputHandler.InputState> callback)
+    protected virtual void BreakingBad()
     {
         ShowingEnemy();
         SettingUpMind();
