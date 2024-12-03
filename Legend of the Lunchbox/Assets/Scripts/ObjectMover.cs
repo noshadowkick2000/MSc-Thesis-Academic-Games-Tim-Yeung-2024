@@ -53,6 +53,22 @@ public class ObjectMover : MonoBehaviour
       
         mainObject.rotation = baseRot;
     }
+
+    protected IEnumerator Nod(float duration, float maxOffset, float repetitions, bool vertical)
+    {
+        Vector3 start = mainObject.position;
+
+        float startTime = Time.realtimeSinceStartup;
+        float x = 0;
+        
+        while (x < 1)
+        {
+            float y = Mathf.Sin((MathT.EasedT(x) * repetitions * Mathf.PI));
+            mainObject.position = start + new Vector3(vertical ? 0 : maxOffset * y, vertical ? maxOffset * y : 0, 0);
+            x = (Time.realtimeSinceStartup - startTime) / duration;
+            yield return null;
+        }
+    }
     
     protected IEnumerator GrowObject()
     {

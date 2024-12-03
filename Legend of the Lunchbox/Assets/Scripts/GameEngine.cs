@@ -22,7 +22,7 @@ namespace Assets
 
     public static float EnemyMindShowTime { get; } = 2f;
 
-    public static float MindPropertyTransitionTime { get; } = 3f;
+    public static float MindPropertyTransitionTime { get; } = 5f;
 
     public static float PullingTime { get; } = 2f;
 
@@ -34,8 +34,8 @@ namespace Assets
 
     public static float PlayerReset { get; } = 2f;
     
-    public static float BreakTimeOut { get; } = 8f;
-    public static float WonBreakTime { get; } = 2f;
+    public static float BreakTimeOut { get; } = 5f;
+    public static float WonBreakTime { get; } = 4f;
 
     public static float LevelOverTime { get; } = 3f;
 
@@ -110,7 +110,7 @@ namespace Assets
     public static event StateChangeEvent OnRailStartedEvent;
     public static event StateChangeEvent StartingEncounterStartedEvent;
     public static event StateChangeEvent StartingBreakStartedEvent;
-    public static event StateChangeEventCallback BreakingBadStartedEvent;
+    public static event StateChangeEvent BreakingBadStartedEvent;
     public static event StateChangeEvent ShowingEnemyStartedEvent;
     public static event StateChangeEvent SettingUpMindStartedEvent;
     public static event StateChangeEvent ShowingEnemyInMindStartedEvent;
@@ -123,7 +123,6 @@ namespace Assets
     public static event StateChangeEvent AnswerCorrectStartedEvent;
     public static event StateChangeEvent MovingToEnemyStartedEvent;
     public static event StateChangeEvent EvaluatingEncounterStartedEvent;
-    public static event StateChangeEvent EvaluatingBreakStartedEvent;
     public static event StateChangeEvent WonBreakStartedEvent;
     public static event StateChangeEvent WonEncounterStartedEvent;
     public static event StateChangeEvent LostEncounterStartedEvent;
@@ -164,24 +163,11 @@ namespace Assets
       StartCoroutine(Timer(EncounterStartTime, BreakingBad));
     }
 
-    private Coroutine breakRoutine; 
     private void BreakingBad()
     {
-      BreakingBadStartedEvent?.Invoke(EvaluatingBreak);
+      BreakingBadStartedEvent?.Invoke();
 
-      breakRoutine = StartCoroutine(Timer(BreakTimeOut, EndingBreak));
-    }
-
-    private void EvaluatingBreak(InputHandler.InputState input)
-    {
-      StopCoroutine(breakRoutine);
-      
-      EvaluatingBreakStartedEvent?.Invoke();
-      
-      if (input == InputHandler.InputState.USING)
-        WonBreak();
-      else
-        EndingBreak();
+      StartCoroutine(Timer(BreakTimeOut, WonBreak));
     }
 
     private void WonBreak()
@@ -338,7 +324,10 @@ namespace Assets
     {
       EndingBreakStartedEvent?.Invoke();
       
-      StartCoroutine(Timer(PlayerReset, OnRail));
+      if (trialHandler.LevelOver)
+        StartCoroutine(Timer(PlayerReset, LevelOver));
+      else
+        StartCoroutine(Timer(PlayerReset, OnRail));
     }
 
     private void LevelOver()

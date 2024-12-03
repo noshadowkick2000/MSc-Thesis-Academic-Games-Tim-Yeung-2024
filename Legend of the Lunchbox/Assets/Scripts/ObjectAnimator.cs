@@ -24,6 +24,8 @@ public class ObjectAnimator : ObjectMover
    {
       TrialHandler.OnObjectSpawnedEvent += ObjectSpawned;
       GameEngine.ShowingEnemyStartedEvent += ShowingEnemy;
+      GameEngine.MovingToPropertyStartedEvent += MovingToProperty;
+      GameEngine.MovingToEnemyStartedEvent += MovingToEnemy;
       GameEngine.AnswerCorrectStartedEvent += CorrectAnswer;
       GameEngine.AnswerWrongStartedEvent += WrongAnswer;
       GameEngine.LostEncounterStartedEvent += LostEncounter;
@@ -34,6 +36,8 @@ public class ObjectAnimator : ObjectMover
    {
       TrialHandler.OnObjectSpawnedEvent -= ObjectSpawned;
       GameEngine.ShowingEnemyStartedEvent -= ShowingEnemy;
+      GameEngine.MovingToPropertyStartedEvent -= MovingToProperty;
+      GameEngine.MovingToEnemyStartedEvent -= MovingToEnemy;
       GameEngine.AnswerCorrectStartedEvent -= CorrectAnswer;
       GameEngine.AnswerWrongStartedEvent -= WrongAnswer;
       GameEngine.LostEncounterStartedEvent -= LostEncounter;
@@ -64,14 +68,22 @@ public class ObjectAnimator : ObjectMover
       StartCoroutine(GrowObject());
    }
 
+   protected virtual void MovingToProperty(TrialHandler.PropertyType propertyType)
+   {
+   }
+
+   protected virtual void MovingToEnemy()
+   {
+   }
+
    protected virtual void CorrectAnswer()
    {
-      StartCoroutine(Wiggle(GameEngine.FeedbackTime, 30f, 8));
+      StartCoroutine(Nod(GameEngine.FeedbackTime, .1f, 4, true));
    }
 
    protected virtual void WrongAnswer()
    {
-      StartCoroutine(Wiggle(GameEngine.FeedbackTime, 45f, 2));
+      StartCoroutine(Nod(GameEngine.FeedbackTime, .1f, 2, false));
    }
 
    protected virtual void WonEncounter()
