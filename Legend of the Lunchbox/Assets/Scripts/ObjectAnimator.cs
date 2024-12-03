@@ -8,6 +8,8 @@ using Random = UnityEngine.Random;
 
 public class ObjectAnimator : ObjectMover
 {
+   private Material objectMat;
+   
    private void Awake()
    {
       SubscribeToEvents();
@@ -22,6 +24,8 @@ public class ObjectAnimator : ObjectMover
    {
       TrialHandler.OnObjectSpawnedEvent += ObjectSpawned;
       GameEngine.ShowingEnemyStartedEvent += ShowingEnemy;
+      GameEngine.AnswerCorrectStartedEvent += CorrectAnswer;
+      GameEngine.AnswerWrongStartedEvent += WrongAnswer;
       GameEngine.LostEncounterStartedEvent += LostEncounter;
       GameEngine.WonEncounterStartedEvent += WonEncounter;
    }
@@ -30,6 +34,8 @@ public class ObjectAnimator : ObjectMover
    {
       TrialHandler.OnObjectSpawnedEvent -= ObjectSpawned;
       GameEngine.ShowingEnemyStartedEvent -= ShowingEnemy;
+      GameEngine.AnswerCorrectStartedEvent -= CorrectAnswer;
+      GameEngine.AnswerWrongStartedEvent -= WrongAnswer;
       GameEngine.LostEncounterStartedEvent -= LostEncounter;
       GameEngine.WonEncounterStartedEvent -= WonEncounter;
    }
@@ -40,6 +46,7 @@ public class ObjectAnimator : ObjectMover
    {
       objectRb = objectTransform.GetComponentInChildren<Rigidbody>();
       face = objectTransform.GetComponentInChildren<Animation>().gameObject;
+      objectMat = objectTransform.GetComponentInChildren<Renderer>().material;
       
       face.SetActive(false);
       mainObject = objectTransform;
@@ -52,42 +59,32 @@ public class ObjectAnimator : ObjectMover
 
    protected virtual void ShowingEnemy()
    {
+      objectMat.SetFloat("_t", 1);
+      mainObject.gameObject.SetActive(true);
       StartCoroutine(GrowObject());
    }
 
-   private IEnumerator GrowObject()
+   protected virtual void CorrectAnswer()
    {
-      mainObject.gameObject.SetActive(true);
-      Vector3 startScale = mainObject.localScale;
-      mainObject.localScale = Vector3.zero;
-      Quaternion startRotation = quaternion.Euler(0, -90, 0);
-      Quaternion targetRotation = Quaternion.Euler(0, 30, 0);
-    
-      float startTime = Time.realtimeSinceStartup;
-      while (Time.realtimeSinceStartup < startTime + (GameEngine.EnemyShowTime/4f))
-      {
-         float x = (Time.realtimeSinceStartup - startTime) / (GameEngine.EnemyShowTime/4f);
-         float y = MathT.EasedT(x);
-         mainObject.localScale = new Vector3(startScale.x * y, startScale.y * y, startScale.z * y);
-         mainObject.rotation = Quaternion.Lerp(startRotation, targetRotation, y);
-         yield return null;
-      }
-    
-      mainObject.localScale = startScale;
-      mainObject.rotation = targetRotation;
+      StartCoroutine(Wiggle(GameEngine.FeedbackTime, 30f, 8));
+   }
+
+   protected virtual void WrongAnswer()
+   {
+      StartCoroutine(Wiggle(GameEngine.FeedbackTime, 45f, 2));
    }
 
    protected virtual void WonEncounter()
    {
-      StartCoroutine(DelayedAnimation());
+      StartCoroutine(WinAnimation());
    }
    
    protected virtual void LostEncounter()
    {
-      StartCoroutine(DelayedPhysics());
+      StartCoroutine(LostAnimation());
    }
 
-   private IEnumerator DelayedPhysics()
+   private IEnumerator LostAnimation()
    {
       Vector3 randomVector = new Vector3(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
       
@@ -98,10 +95,47 @@ public class ObjectAnimator : ObjectMover
       objectRb.AddTorque(randomVector, ForceMode.VelocityChange);
    }
 
-   private IEnumerator DelayedAnimation()
+   private IEnumerator WinAnimation()
    {
-      yield return new WaitForSecondsRealtime(1f);
+      float startTime = Time.realtimeSinceStartup;
+      float t = 0f;
+      float duration = GameEngine.EncounterStopTime * .3f;
+
+      while (t < 1)
+      {
+         objectMat.SetFloat("_t", 1-t);
+         
+         t = (Time.realtimeSinceStartup - startTime) / duration;
+         yield return null;
+      }
       
-      face.SetActive(true);
+      objectMat.SetFloat("_t", 0);
+      
+      face.gameObject.SetActive(true);
+
+      Vector3 startPosition = mainObject.transform.position;
+      float speed = 0f;
+      float acceleration = .2f;
+      float h = 0;
+      startTime = Time.realtimeSinceStartup;
+      t = 0f;
+      duration = GameEngine.EncounterStopTime * .7f;
+      int repetitions = 10;
+      float maxSpeed = 2f;
+      
+      while (t < 1)
+      {
+         float x = Mathf.Sin(t * repetitions * Mathf.PI) * speed;
+         float y = Mathf.Cos(t * repetitions * Mathf.PI) * speed;
+         h = Mathf.Pow(1.65f * t - .5f, 2) - .25f;
+
+         mainObject.position = startPosition + new Vector3(x, h, y);
+         // mainObject.Rotate(Vector3.up, speed * 20f);
+
+         if (speed < maxSpeed)
+            speed += acceleration * Time.deltaTime;
+         t = (Time.realtimeSinceStartup - startTime) / duration;
+         yield return null;
+      }
    }
 }

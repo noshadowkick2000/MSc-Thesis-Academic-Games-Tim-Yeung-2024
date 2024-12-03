@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Assets;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -34,8 +35,47 @@ public class ObjectMover : MonoBehaviour
         mainObject.position = goalPos;
         mainObject.rotation = goalRot;
     }
+    
+    protected IEnumerator Wiggle(float duration, float maxAngle, float repetitions)
+    {
+        Quaternion baseRot = mainObject.rotation;
+      
+        float startTime = Time.realtimeSinceStartup;
+        float x = 0;
 
-    protected IEnumerator TransitionObject(Vector3 position, Quaternion rotation, float duration, bool ease)
+        while (x < 1)
+        {
+            float y = Mathf.Sin((MathT.EasedT(x) * repetitions * Mathf.PI));
+            mainObject.rotation = Quaternion.Euler(0, 0, maxAngle * y) * baseRot;
+            x = (Time.realtimeSinceStartup - startTime) / duration;
+            yield return null;
+        }
+      
+        mainObject.rotation = baseRot;
+    }
+    
+    protected IEnumerator GrowObject()
+    {
+        Vector3 startScale = mainObject.localScale;
+        mainObject.localScale = Vector3.zero;
+        Quaternion startRotation = Quaternion.Euler(0, -90, 0);
+        Quaternion targetRotation = Quaternion.Euler(0, 30, 0);
+    
+        float startTime = Time.realtimeSinceStartup;
+        while (Time.realtimeSinceStartup < startTime + (GameEngine.EnemyShowTime/4f))
+        {
+            float x = (Time.realtimeSinceStartup - startTime) / (GameEngine.EnemyShowTime/4f);
+            float y = MathT.EasedT(x);
+            mainObject.localScale = new Vector3(startScale.x * y, startScale.y * y, startScale.z * y);
+            mainObject.rotation = Quaternion.Lerp(startRotation, targetRotation, y);
+            yield return null;
+        }
+    
+        mainObject.localScale = startScale;
+        mainObject.rotation = targetRotation;
+    }
+
+    private IEnumerator TransitionObject(Vector3 position, Quaternion rotation, float duration, bool ease)
     {
         Vector3 startingPos = mainObject.position;
         Quaternion startingRot = mainObject.rotation;

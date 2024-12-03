@@ -46,8 +46,6 @@ public class PropertyCameraController : ObjectMover
     private Coroutine cameraRoutine;
     protected virtual void MovingToProperty(TrialHandler.PropertyType propertyType)
     {
-        // int mult = propertyType == TrialHandler.PropertyType.SOUND ? 1 : -1;
-        // Quaternion randomRotation = Quaternion.Euler(Random.Range(-maxRotation, maxRotation), mult * Random.Range(minRotation, maxRotation), 0);
         cameraRoutine = SmoothToObject(mainObject.position + Vector3.forward, mainObject.rotation, GameEngine.MindPropertyTransitionTime / 4, true);
     }
 

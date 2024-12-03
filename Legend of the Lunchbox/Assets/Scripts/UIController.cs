@@ -16,7 +16,9 @@ public class UIController : MonoBehaviour
     [SerializeField] private Material spotLightMaterial;
     [SerializeField] private GameObject thoughtUI;
     [SerializeField] private TextMeshProUGUI thoughtWords;
-    [SerializeField] private Sprite[] thoughtSprites;
+    [SerializeField] private GameObject scramble;
+    [SerializeField] private Image scrambleImage;
+    [FormerlySerializedAs("thoughtSprites")] [SerializeField] private Sprite[] scrambleSprites;
     [SerializeField] private GameObject controlIndicatorUI;
     [SerializeField] private GameObject distractionUI;
     [SerializeField] private GameObject endScreen;
@@ -30,6 +32,7 @@ public class UIController : MonoBehaviour
         mindUI.SetActive(false);
         controlIndicatorUI.SetActive(false);
         flashBang.SetActive(false);
+        scramble.SetActive(false);
 
         StartPinhole(true, GameEngine.LevelOverTime);
         
@@ -46,11 +49,6 @@ public class UIController : MonoBehaviour
         controlIndicatorUI.SetActive(false);
         mindUI.SetActive(false);
         thoughtUI.SetActive(false);
-    }
-
-    private void StartMind(float duration)
-    {
-        distractionUI.SetActive(false);
     }
 
     private Coroutine thoughtRoutine;
@@ -85,19 +83,6 @@ public class UIController : MonoBehaviour
 
     private IEnumerator AnimateThought()
     {
-        // Image img = thoughtUI.GetComponent<Image>();
-        // int counter = 0;
-        //
-        // while (true)
-        // {
-        //     img.sprite = thoughtSprites[counter];
-        //     counter++;
-        //     if (counter == thoughtSprites.Length)
-        //         counter = 0;
-        //     
-        //     yield return new WaitForSecondsRealtime(.2f);
-        // }
-
         float startTime = Time.realtimeSinceStartup;
         float x = 0;
         float y;
@@ -134,6 +119,24 @@ public class UIController : MonoBehaviour
         }
     }
 
+    private IEnumerator AnimateScramble()
+    {
+        int counter = 0;
+        float endTime = Time.realtimeSinceStartup + GameEngine.FeedbackTime;
+        
+        while (Time.realtimeSinceStartup < endTime)
+        {
+            scrambleImage.sprite = scrambleSprites[counter];
+            counter++;
+            if (counter == scrambleSprites.Length)
+                counter = 0;
+            
+            yield return new WaitForSecondsRealtime(.2f);
+        }
+        
+        scramble.SetActive(false);
+    }
+
     Coroutine timerRoutine;
 
     private void EndThought(float timeOut) 
@@ -143,11 +146,6 @@ public class UIController : MonoBehaviour
 
         StopCoroutine(thoughtRoutine);
         timerRoutine = StartCoroutine(AnimateTimer(timeOut));
-    }
-
-    private void ExitMind()
-    {
-        distractionUI.SetActive(true);
     }
 
     private void CancelTimer()
@@ -170,32 +168,50 @@ public class UIController : MonoBehaviour
 
     private void SubscribeToEvents()
     {
+        GameEngine.BreakingBadStartedEvent += BreakingBad;
         GameEngine.ShowingEnemyStartedEvent += ShowingEnemy;
         GameEngine.SettingUpMindStartedEvent += SettingUpMind;
         GameEngine.ShowingEnemyInMindStartedEvent += ShowingEnemyInMind;
         GameEngine.MovingToPropertyStartedEvent += MovingToProperty;
         GameEngine.ShowingPropertyStartedEvent += ShowingProperty;
         GameEngine.EvaluatingInputStartedEvent += EvaluatingInput;
+        GameEngine.AnswerWrongStartedEvent += AnswerWrong;
         GameEngine.TimedOutStartedEvent += TimedOut;
         GameEngine.MovingToEnemyStartedEvent += MovingToEnemy;
         GameEngine.EvaluatingEncounterStartedEvent += EvaluatingEncounter;
         GameEngine.EndingEncounterStartedEvent += EndingEncounter;
+        GameEngine.EndingBreakStartedEvent += EndingBreak;
         GameEngine.LevelOverStartedEvent += LevelOver;
     }
 
     private void UnsubscribeFromEvents()
     {
+        GameEngine.BreakingBadStartedEvent -= BreakingBad;
         GameEngine.ShowingEnemyStartedEvent -= ShowingEnemy;
         GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
         GameEngine.ShowingEnemyInMindStartedEvent -= ShowingEnemyInMind;
         GameEngine.MovingToPropertyStartedEvent -= MovingToProperty;
         GameEngine.ShowingPropertyStartedEvent -= ShowingProperty;
         GameEngine.EvaluatingInputStartedEvent -= EvaluatingInput;
+        GameEngine.AnswerWrongStartedEvent -= AnswerWrong;
         GameEngine.TimedOutStartedEvent -= TimedOut;
         GameEngine.MovingToEnemyStartedEvent -= MovingToEnemy;
         GameEngine.EvaluatingEncounterStartedEvent -= EvaluatingEncounter;
         GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
+        GameEngine.EndingBreakStartedEvent -= EndingBreak;
         GameEngine.LevelOverStartedEvent -= LevelOver;
+    }
+
+    protected virtual void BreakingBad(Action<InputHandler.InputState> callback)
+    {
+        ShowingEnemy();
+        SettingUpMind();
+    }
+
+    protected virtual void EndingBreak()
+    {
+        distractionUI.SetActive(true);
+        StartPinhole(true, GameEngine.PlayerReset);
     }
 
     protected virtual void ShowingEnemy()
@@ -212,8 +228,7 @@ public class UIController : MonoBehaviour
     
     protected virtual void SettingUpMind()
     {
-        StartMind(GameEngine.MindStartTime);
-        
+        distractionUI.SetActive(false);
         StartPinhole(false, GameEngine.MindStartTime);
     }
     
@@ -230,6 +245,12 @@ public class UIController : MonoBehaviour
     protected virtual void EvaluatingInput(InputHandler.InputState input)
     {
         CancelTimer();
+    }
+
+    protected virtual void AnswerWrong()
+    {
+        scramble.SetActive(true);
+        StartCoroutine(AnimateScramble());
     }
 
     protected virtual void TimedOut()
@@ -249,12 +270,12 @@ public class UIController : MonoBehaviour
     protected virtual void EvaluatingEncounter()
     {
         Idle();
-        StartPinhole(true, GameEngine.playerReset);
+        StartPinhole(true, GameEngine.PlayerReset);
     }
 
     protected virtual void EndingEncounter()
     {
-        ExitMind();
+        distractionUI.SetActive(true);
     }
 
     protected virtual void LevelOver()

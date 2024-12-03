@@ -12,8 +12,15 @@ public class InputHandler : MonoBehaviour
         USING,
         DISCARDING
     }
-    
-    bool acceptingInput = false;
+
+    private enum InputType
+    {
+        NONE,
+        SINGLE,
+        RAPID        
+    }
+
+    private InputType acceptingInput = InputType.NONE;
     private static InputState _input = InputState.NONE;
     private Action<InputState> inputCallback;
         
@@ -26,7 +33,11 @@ public class InputHandler : MonoBehaviour
     {
         UnSubscribeToEvents();
     }
-    
+
+    private float inputThreshold = 1;
+    public static float InputAverage;
+    private float inputAdd = .1f;
+    private float inputDecay = 10f;
     private void Update()
     {
         _input = InputState.NONE;
@@ -34,10 +45,26 @@ public class InputHandler : MonoBehaviour
         if (Input.GetButtonDown("Discard")) { _input = InputState.DISCARDING; }
         if (_input != InputState.NONE) { Logger.Log($"Input: {_input.ToString()}"); }
 
-        if (acceptingInput && _input != InputState.NONE)
+
+        InputAverage -= inputAdd / inputDecay;
+        if (InputAverage < 0)
+            InputAverage = 0;
+
+        if (acceptingInput == InputType.SINGLE && _input != InputState.NONE)
         {
             inputCallback?.Invoke(_input);
-            acceptingInput = false;
+            acceptingInput = InputType.NONE;
+        }
+        else if (acceptingInput == InputType.RAPID && _input !=InputState.NONE)
+        {
+            float multiplier = -Mathf.Pow((InputAverage / inputThreshold) - .1f, 4f) + 1f;
+            InputAverage += inputAdd * multiplier;
+
+            if (InputAverage > inputThreshold)
+            {
+                inputCallback?.Invoke(InputState.USING);
+                acceptingInput = InputType.NONE;
+            }
         }
     }
     
@@ -47,22 +74,37 @@ public class InputHandler : MonoBehaviour
     {
         GameEngine.ShowingPropertyStartedEvent += ShowingProperty;
         GameEngine.TimedOutStartedEvent += TimedOut;
+        GameEngine.BreakingBadStartedEvent += BreakingBad;
+        GameEngine.EndingBreakStartedEvent += EndingBreak;
     }
     
     private void UnSubscribeToEvents()
     {
         GameEngine.ShowingPropertyStartedEvent -= ShowingProperty;
         GameEngine.TimedOutStartedEvent -= TimedOut;
+        GameEngine.BreakingBadStartedEvent -= BreakingBad;
+        GameEngine.EndingBreakStartedEvent -= EndingBreak;
+    }
+
+    protected virtual void BreakingBad(Action<InputState> callback)
+    {
+        acceptingInput = InputType.RAPID;
+        inputCallback = callback;
+    }
+
+    protected virtual void EndingBreak()
+    {
+        acceptingInput = InputType.NONE;
     }
 
     protected virtual void ShowingProperty(Action<InputState> callback)
     {
-        acceptingInput = true;
+        acceptingInput = InputType.SINGLE;
         inputCallback = callback;
     }
 
     protected virtual void TimedOut()
     {
-        acceptingInput = false;
+        acceptingInput = InputType.NONE;
     }
 }

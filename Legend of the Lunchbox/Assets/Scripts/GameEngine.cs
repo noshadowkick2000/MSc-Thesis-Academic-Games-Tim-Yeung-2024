@@ -32,7 +32,10 @@ namespace Assets
 
     public static float EncounterStopTime { get; } = 5f;
 
-    public static float playerReset { get; } = 2f;
+    public static float PlayerReset { get; } = 2f;
+    
+    public static float BreakTimeOut { get; } = 8f;
+    public static float WonBreakTime { get; } = 2f;
 
     public static float LevelOverTime { get; } = 3f;
 
@@ -107,6 +110,7 @@ namespace Assets
     public static event StateChangeEvent OnRailStartedEvent;
     public static event StateChangeEvent StartingEncounterStartedEvent;
     public static event StateChangeEvent StartingBreakStartedEvent;
+    public static event StateChangeEventCallback BreakingBadStartedEvent;
     public static event StateChangeEvent ShowingEnemyStartedEvent;
     public static event StateChangeEvent SettingUpMindStartedEvent;
     public static event StateChangeEvent ShowingEnemyInMindStartedEvent;
@@ -119,9 +123,12 @@ namespace Assets
     public static event StateChangeEvent AnswerCorrectStartedEvent;
     public static event StateChangeEvent MovingToEnemyStartedEvent;
     public static event StateChangeEvent EvaluatingEncounterStartedEvent;
+    public static event StateChangeEvent EvaluatingBreakStartedEvent;
+    public static event StateChangeEvent WonBreakStartedEvent;
     public static event StateChangeEvent WonEncounterStartedEvent;
     public static event StateChangeEvent LostEncounterStartedEvent;
     public static event StateChangeEvent EndingEncounterStartedEvent;
+    public static event StateChangeEvent EndingBreakStartedEvent;
     public static event StateChangeEvent LevelOverStartedEvent;
 
     private IEnumerator Timer(float duration, Action nextState)
@@ -153,8 +160,35 @@ namespace Assets
     private void StartingBreak()
     {
       StartingBreakStartedEvent?.Invoke();
+      
+      StartCoroutine(Timer(EncounterStartTime, BreakingBad));
+    }
 
-      StartCoroutine(Timer(playerReset, OnRail));
+    private Coroutine breakRoutine; 
+    private void BreakingBad()
+    {
+      BreakingBadStartedEvent?.Invoke(EvaluatingBreak);
+
+      breakRoutine = StartCoroutine(Timer(BreakTimeOut, EndingBreak));
+    }
+
+    private void EvaluatingBreak(InputHandler.InputState input)
+    {
+      StopCoroutine(breakRoutine);
+      
+      EvaluatingBreakStartedEvent?.Invoke();
+      
+      if (input == InputHandler.InputState.USING)
+        WonBreak();
+      else
+        EndingBreak();
+    }
+
+    private void WonBreak()
+    {
+      WonBreakStartedEvent?.Invoke();
+
+      StartCoroutine(Timer(WonBreakTime, EndingBreak));
     }
 
     private void StartingEncounter()
@@ -292,12 +326,19 @@ namespace Assets
       if (PlayerIsDead())
       { 
         Logger.Log("Played died");
-        StartCoroutine(Timer(playerReset, CutScene)); // TODO animations etc
+        StartCoroutine(Timer(PlayerReset, CutScene)); // TODO animations etc
       }
       else if (trialHandler.LevelOver)
-        StartCoroutine(Timer(playerReset, LevelOver));
+        StartCoroutine(Timer(PlayerReset, LevelOver));
       else
-        StartCoroutine(Timer(playerReset, OnRail));
+        StartCoroutine(Timer(PlayerReset, OnRail));
+    }
+
+    private void EndingBreak()
+    {
+      EndingBreakStartedEvent?.Invoke();
+      
+      StartCoroutine(Timer(PlayerReset, OnRail));
     }
 
     private void LevelOver()

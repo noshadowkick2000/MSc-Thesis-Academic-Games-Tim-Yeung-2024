@@ -4,11 +4,7 @@
             <property correct="true" type="0">hammering</property>
             <property correct="true" type="1">hammersound</property>
         </encounter>
-        <break health="4" wait="4000">
+        <break health="4" wait="1000">
         </break>
-        <encounter enemy="hammer" health="2" wait="4000">
-            <property correct="true" type="0">hammering</property>
-            <property correct="true" type="1">hammersound</property>
-        </encounter>
     </level>
 </root>

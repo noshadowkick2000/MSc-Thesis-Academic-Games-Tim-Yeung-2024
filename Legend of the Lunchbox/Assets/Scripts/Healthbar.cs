@@ -67,7 +67,7 @@ public class Healthbar : MonoBehaviour
 
     private IEnumerator AnimateBar()
     {
-        yield return new WaitForSecondsRealtime(GameEngine.playerReset / 4);
+        yield return new WaitForSecondsRealtime(GameEngine.PlayerReset / 4);
         
         float startTime = Time.realtimeSinceStartup;
         float x = 0;
@@ -81,7 +81,7 @@ public class Healthbar : MonoBehaviour
         {
             liquidScript.fillAmount = x * goal + (1-x) * start;
             healthBar.transform.rotation = startPos * Quaternion.Euler(0, 0, Mathf.PerlinNoise1D(Time.realtimeSinceStartup) * .1f);
-            x = (Time.realtimeSinceStartup - startTime) / GameEngine.playerReset / 2;
+            x = (Time.realtimeSinceStartup - startTime) / GameEngine.PlayerReset / 2;
 
             yield return null;
         }
