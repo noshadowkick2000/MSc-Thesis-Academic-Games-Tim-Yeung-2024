@@ -50,6 +50,7 @@ public class SoundEngine : MonoBehaviour
     {
         GameEngine.OnRailStartedEvent += OnRail;
         GameEngine.StartingEncounterStartedEvent += StartingEncounter;
+        GameEngine.StartingBreakStartedEvent += StartingBreak;
         GameEngine.SettingUpMindStartedEvent += SettingUpMind;
         GameEngine.ShowingPropertyStartedEvent += ShowingProperty;
         GameEngine.LostEncounterStartedEvent += WonEncounter;
@@ -62,6 +63,7 @@ public class SoundEngine : MonoBehaviour
     {
         GameEngine.OnRailStartedEvent -= OnRail;
         GameEngine.StartingEncounterStartedEvent -= StartingEncounter;
+        GameEngine.StartingBreakStartedEvent -= StartingBreak;
         GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
         GameEngine.ShowingPropertyStartedEvent -= ShowingProperty;
         GameEngine.LostEncounterStartedEvent -= WonEncounter;
@@ -86,6 +88,11 @@ public class SoundEngine : MonoBehaviour
         }
         
         oneShotPlayer.PlayOneShot(enemyAppear);
+    }
+
+    protected virtual void StartingBreak()
+    {
+        StartingEncounter();
     }
 
     protected virtual void SettingUpMind()

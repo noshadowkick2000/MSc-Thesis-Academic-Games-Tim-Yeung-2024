@@ -41,6 +41,7 @@ public class EnvironmentHandler : ObjectMover
     {
         GameEngine.OnRailStartedEvent += OnRail;
         GameEngine.StartingBreakStartedEvent += StartingBreak;
+        GameEngine.EndingBreakStartedEvent += BreakingBad;
         GameEngine.StartingEncounterStartedEvent += StartingEncounter;
         GameEngine.ShowingEnemyStartedEvent += ShowingEnemy;
         GameEngine.LevelOverStartedEvent += LevelOver;
@@ -50,6 +51,7 @@ public class EnvironmentHandler : ObjectMover
     {
         GameEngine.OnRailStartedEvent -= OnRail;
         GameEngine.StartingBreakStartedEvent -= StartingBreak;
+        GameEngine.EndingBreakStartedEvent -= BreakingBad;
         GameEngine.StartingEncounterStartedEvent -= StartingEncounter;
         GameEngine.ShowingEnemyStartedEvent -= ShowingEnemy;
         GameEngine.LevelOverStartedEvent -= LevelOver;
@@ -64,6 +66,16 @@ public class EnvironmentHandler : ObjectMover
     protected virtual void StartingBreak()
     {
         Moving = false;
+        mainObject = spawnedDiscoverable.transform;
+        Vector3 pos = LocationHolder.DiscoverableLocation.position;
+        pos.y = LocationHolder.EnemyCameraLocation.position.y - .3f;
+        SmoothToObject(pos, Quaternion.identity, GameEngine.EncounterStartTime, true);
+    }
+
+    protected virtual void BreakingBad()
+    {
+        Destroy(mainObject.gameObject);
+        mainObject = null;
     }
     
     protected virtual void StartingEncounter()

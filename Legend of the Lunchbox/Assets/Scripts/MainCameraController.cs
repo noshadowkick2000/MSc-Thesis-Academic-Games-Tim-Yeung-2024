@@ -94,6 +94,7 @@ public class MainCameraController : ObjectMover
     GameEngine.EvaluatingEncounterStartedEvent += EvaluatingEncounter;
     GameEngine.LostEncounterStartedEvent += LostEncounter;
     GameEngine.EndingEncounterStartedEvent += EndingEncounter;
+    GameEngine.EndingBreakStartedEvent += EndingBreak;
     GameEngine.LevelOverStartedEvent += LevelOver;
   }
   
@@ -106,6 +107,7 @@ public class MainCameraController : ObjectMover
     GameEngine.EvaluatingEncounterStartedEvent -= EvaluatingEncounter;
     GameEngine.LostEncounterStartedEvent -= LostEncounter;
     GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
+    GameEngine.EndingBreakStartedEvent -= EndingBreak;
     GameEngine.LevelOverStartedEvent -= LevelOver;
   }
 
@@ -118,6 +120,13 @@ public class MainCameraController : ObjectMover
   protected virtual void StartingBreak()
   {
     StopBobbingCamera();
+    ImmediateToObject(LocationHolder.DiscoverableCameraLocation);
+    SmoothToObject(LocationHolder.EnemyCameraLocation, GameEngine.EncounterStartTime, true);
+  }
+
+  protected virtual void EndingBreak()
+  {
+    SmoothToObject(LocationHolder.BaseCameraLocation, GameEngine.PlayerReset, true);
   }
 
   protected virtual void StartingEncounter()
@@ -137,7 +146,7 @@ public class MainCameraController : ObjectMover
 
   protected virtual void EvaluatingEncounter()
   {
-    SmoothToObject(LocationHolder.EnemyCameraLocation, GameEngine.playerReset, true);
+    SmoothToObject(LocationHolder.EnemyCameraLocation, GameEngine.PlayerReset, true);
   }
 
   protected virtual void LostEncounter()
@@ -147,7 +156,7 @@ public class MainCameraController : ObjectMover
 
   protected virtual void EndingEncounter()
   {
-    SmoothToObject(LocationHolder.BaseCameraLocation, GameEngine.playerReset, true);
+    SmoothToObject(LocationHolder.BaseCameraLocation, GameEngine.PlayerReset, true);
   }
 
   protected virtual void LevelOver()

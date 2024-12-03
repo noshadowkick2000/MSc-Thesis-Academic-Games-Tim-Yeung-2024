@@ -253,28 +253,28 @@ public class TrialHandler : MonoBehaviour
     Transform property = objectDictionary[propid];
     float duration = GameEngine.MindPropertyTransitionTime / 2;
 
-    if (input != InputHandler.InputState.USING)
-    {
-      Vector3 basePosition = property.position;
-      
-      float movement = Random.Range(0.02f, 0.06f);
-      float direction = Random.Range(0, 2) == 0 ? -1 : 1;
-
-      float startTime = Time.realtimeSinceStartup;
-      while (Time.realtimeSinceStartup < startTime + duration)
-      {
-        float x = (Time.realtimeSinceStartup - startTime) / duration;
-        // property.localScale = new Vector3(x, x, x);
-        if (input != InputHandler.InputState.NONE)
-          property.position = basePosition +
-                              new Vector3(property.position.x + direction * movement * x, (-4 * MathF.Pow(x - .25f, 2) + .25f), 0);
-        yield return null;
-      }
-    }
-    else
-    {
+    // if (input != InputHandler.InputState.USING)
+    // {
+    //   Vector3 basePosition = property.position;
+    //   
+    //   float movement = Random.Range(0.02f, 0.06f);
+    //   float direction = Random.Range(0, 2) == 0 ? -1 : 1;
+    //
+    //   float startTime = Time.realtimeSinceStartup;
+    //   while (Time.realtimeSinceStartup < startTime + duration)
+    //   {
+    //     float x = (Time.realtimeSinceStartup - startTime) / duration;
+    //     // property.localScale = new Vector3(x, x, x);
+    //     if (input != InputHandler.InputState.NONE)
+    //       property.position = basePosition +
+    //                           new Vector3(property.position.x + direction * movement * x, (-4 * MathF.Pow(x - .25f, 2) + .25f), 0);
+    //     yield return null;
+    //   }
+    // }
+    // else
+    // {
       yield return new WaitForSecondsRealtime(duration);
-    }
+    // }
 
     property.gameObject.SetActive(false);
   }

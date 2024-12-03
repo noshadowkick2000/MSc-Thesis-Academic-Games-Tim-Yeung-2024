@@ -9,6 +9,7 @@ public class FeedbackUI : MonoBehaviour
 {
     [SerializeField] private GameObject feedbackUI;
     [SerializeField] private Animation feedbackAnimation;
+    [SerializeField] private RectTransform burstLines;
 
     private void Awake()
     {
@@ -25,13 +26,31 @@ public class FeedbackUI : MonoBehaviour
     private void ShowPositiveFeedback()
     {
         feedbackUI.SetActive(true);
-        feedbackAnimation.Play("feedbackCorrect");
+        // feedbackAnimation.Play("feedbackCorrect");
+
+        StartCoroutine(PlayPositive());
+    }
+
+    private IEnumerator PlayPositive()
+    {
+        float startTime = Time.realtimeSinceStartup;
+        float x = 0;
+        float y;
+
+        while (x < 1)
+        {
+            y = MathT.EasedT(x) * 4f;
+            burstLines.localScale = new Vector3(y, y, y);
+            x = (Time.realtimeSinceStartup - startTime) / GameEngine.FeedbackTime;
+
+            yield return null;
+        }
     }
 
     private void ShowNegativeFeedback()
     {
-        feedbackUI.SetActive(true);
-        feedbackAnimation.Play("feedbackIncorrect");
+        // feedbackUI.SetActive(true);
+        // feedbackAnimation.Play("feedbackIncorrect");
     }
 
     private void RemoveFeedback()
