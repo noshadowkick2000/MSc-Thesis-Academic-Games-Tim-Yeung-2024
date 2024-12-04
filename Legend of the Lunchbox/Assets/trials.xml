@@ -1,11 +1,11 @@
 <root>
     <level>
+        <break health="4" wait="1000">
+        </break>
         <encounter enemy="hammer" health="2" wait="2000">
             <property correct="true" type="0">hammering</property>
             <property correct="true" type="1">hammersound</property>
         </encounter>
-        <break health="4" wait="1000">
-        </break>
         <encounter enemy="hammerword" health="2" wait="2000">
             <property correct="true" type="2">metalword</property>
             <property correct="true" type="2">nailword</property>

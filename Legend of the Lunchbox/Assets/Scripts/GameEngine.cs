@@ -60,25 +60,23 @@ namespace Assets
     private TrialHandler trialHandler = null;
     
     private int playerHealth = 4;
-    public int TotalHealth => playerHealth + friendHealth;
+    public int TotalHealth => playerHealth;
     public int MaxHealth = 6;
-    private int friendHealth = 0;
 
     private void DamagePlayer()
     {
-      if (friendHealth > 0)
-      {
-        friendHealth--;
-      }
-      else
-      {
-        playerHealth--;
-      }
+      playerHealth--;
+    }
+
+    private void HealPlayer()
+    {
+      if (playerHealth < MaxHealth)
+        playerHealth++;
     }
 
     private bool PlayerIsDead()
     {
-      return playerHealth + friendHealth <= 0;
+      return playerHealth <= 0;
     }
 
     private void Awake()
@@ -172,6 +170,8 @@ namespace Assets
 
     private void WonBreak()
     {
+      HealPlayer();
+      
       WonBreakStartedEvent?.Invoke();
 
       StartCoroutine(Timer(WonBreakTime, EndingBreak));

@@ -32,14 +32,14 @@ public class Healthbar : MonoBehaviour
     private void SubscribeToEvents()
     {
         GameEngine.SettingUpMindStartedEvent += SettingUpMind;
-        GameEngine.EndingEncounterStartedEvent += EndingEncounter;
+        GameEngine.WonBreakStartedEvent += WonBreak;
         GameEngine.LostEncounterStartedEvent += LostEncounter;
     }
 
     private void UnsubscribeToEvents()
     {
         GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
-        GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
+        GameEngine.WonBreakStartedEvent -= WonBreak;
         GameEngine.LostEncounterStartedEvent -= LostEncounter;
     }
     
@@ -54,20 +54,21 @@ public class Healthbar : MonoBehaviour
         healthBar.SetActive(false);
     }
 
-    protected virtual void EndingEncounter()
+    protected virtual void WonBreak()
     {
+        StartCoroutine(AnimateBar(0, GameEngine.WonBreakTime));
     }
 
     protected virtual void LostEncounter()
     {
         healthBar.SetActive(true);
 
-        StartCoroutine(AnimateBar());
+        StartCoroutine(AnimateBar(GameEngine.EncounterStopTime / 4, GameEngine.EncounterStopTime * .75f));
     }
 
-    private IEnumerator AnimateBar()
+    private IEnumerator AnimateBar(float delay, float duration)
     {
-        yield return new WaitForSecondsRealtime(GameEngine.PlayerReset / 4);
+        yield return new WaitForSecondsRealtime(delay);
         
         float startTime = Time.realtimeSinceStartup;
         float x = 0;
@@ -79,9 +80,10 @@ public class Healthbar : MonoBehaviour
         
         while (x < 1)
         {
-            liquidScript.fillAmount = x * goal + (1-x) * start;
-            healthBar.transform.rotation = startPos * Quaternion.Euler(0, 0, Mathf.PerlinNoise1D(Time.realtimeSinceStartup) * .1f);
-            x = (Time.realtimeSinceStartup - startTime) / GameEngine.PlayerReset / 2;
+            float y = MathT.EasedT(x);
+            liquidScript.fillAmount = y * goal + (1-y) * start;
+            healthBar.transform.rotation = startPos * Quaternion.Euler(0, 0, Mathf.PerlinNoise1D(Time.realtimeSinceStartup));
+            x = (Time.realtimeSinceStartup - startTime) / duration;
 
             yield return null;
         }

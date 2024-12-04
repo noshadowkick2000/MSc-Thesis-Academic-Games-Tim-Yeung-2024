@@ -132,7 +132,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainObject: {fileID: 0}
   cap: {fileID: 6936337184574027030}
-  goal: 0.5
+  potionLiquid: {fileID: 2525462621650582025}
+  drainGoal: 0.65
 --- !u!1 &7105615745474028730
 GameObject:
   m_ObjectHideFlags: 0
