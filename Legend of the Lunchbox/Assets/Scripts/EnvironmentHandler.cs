@@ -65,17 +65,12 @@ public class EnvironmentHandler : ObjectMover
 
     protected virtual void StartingBreak()
     {
-        Moving = false;
-        mainObject = spawnedDiscoverable.transform;
-        Vector3 pos = LocationHolder.DiscoverableLocation.position;
-        pos.y = LocationHolder.EnemyCameraLocation.position.y - .3f;
-        SmoothToObject(pos, Quaternion.identity, GameEngine.EncounterStartTime, true);
+        StartingEncounter();
     }
 
     protected virtual void BreakingBad()
     {
-        Destroy(mainObject.gameObject);
-        mainObject = null;
+        ShowingEnemy();
     }
     
     protected virtual void StartingEncounter()

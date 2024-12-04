@@ -74,8 +74,6 @@ public class ObjectMover : MonoBehaviour
     {
         Vector3 startScale = mainObject.localScale;
         mainObject.localScale = Vector3.zero;
-        Quaternion startRotation = Quaternion.Euler(0, -90, 0);
-        Quaternion targetRotation = Quaternion.Euler(0, 30, 0);
     
         float startTime = Time.realtimeSinceStartup;
         while (Time.realtimeSinceStartup < startTime + (GameEngine.EnemyShowTime/4f))
@@ -83,12 +81,11 @@ public class ObjectMover : MonoBehaviour
             float x = (Time.realtimeSinceStartup - startTime) / (GameEngine.EnemyShowTime/4f);
             float y = MathT.EasedT(x);
             mainObject.localScale = new Vector3(startScale.x * y, startScale.y * y, startScale.z * y);
-            mainObject.rotation = Quaternion.Lerp(startRotation, targetRotation, y);
+
             yield return null;
         }
     
         mainObject.localScale = startScale;
-        mainObject.rotation = targetRotation;
     }
 
     private IEnumerator TransitionObject(Vector3 position, Quaternion rotation, float duration, bool ease)

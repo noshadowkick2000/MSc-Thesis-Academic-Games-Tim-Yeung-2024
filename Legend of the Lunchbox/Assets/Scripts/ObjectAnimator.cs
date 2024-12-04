@@ -8,6 +8,7 @@ using Random = UnityEngine.Random;
 
 public class ObjectAnimator : ObjectMover
 {
+   private SpriteRenderer objectRenderer;
    private Material objectMat;
    
    private void Awake()
@@ -44,13 +45,14 @@ public class ObjectAnimator : ObjectMover
       GameEngine.WonEncounterStartedEvent -= WonEncounter;
    }
 
-   private Rigidbody objectRb;
+   // private Rigidbody objectRb;
    private GameObject face;
    protected virtual void ObjectSpawned(Transform objectTransform)
    {
-      objectRb = objectTransform.GetComponentInChildren<Rigidbody>();
+      // objectRb = objectTransform.GetComponentInChildren<Rigidbody>();
       face = objectTransform.GetComponentInChildren<Animation>().gameObject;
-      objectMat = objectTransform.GetComponentInChildren<Renderer>().material;
+      objectRenderer = objectTransform.GetComponentInChildren<TrialObject>().MainSprite;
+      objectMat = objectRenderer.material;
       
       face.SetActive(false);
       mainObject = objectTransform;
@@ -70,15 +72,37 @@ public class ObjectAnimator : ObjectMover
 
    protected virtual void MovingToProperty(TrialHandler.PropertyType propertyType)
    {
+      StartCoroutine(Fade(false, GameEngine.MindPropertyTransitionTime / 6));
+   }
+
+   private IEnumerator Fade(bool fadingIn, float duration)
+   {
+      objectRenderer.color = fadingIn ? Color.clear : Color.white;
+
+      float startTime = Time.realtimeSinceStartup;
+      float x = 0;
+      Color tempColor = Color.white;
+
+      while (x < 1)
+      {
+         tempColor.a = fadingIn ? MathT.EasedT(x) : MathT.EasedT(1-x);
+         objectRenderer.color = tempColor;
+         
+         x = (Time.realtimeSinceStartup - startTime) / duration;
+         yield return null;
+      }
+      
+      objectRenderer.color = fadingIn ? Color.white : Color.clear;
    }
 
    protected virtual void MovingToEnemy()
    {
+      StartCoroutine(Fade(true, GameEngine.MindPropertyTransitionTime / 2));
    }
 
    protected virtual void CorrectAnswer()
    {
-      StartCoroutine(Nod(GameEngine.FeedbackTime, .1f, 4, true));
+      StartCoroutine(Nod(GameEngine.FeedbackTime, .1f, 2, true));
    }
 
    protected virtual void WrongAnswer()
@@ -101,10 +125,8 @@ public class ObjectAnimator : ObjectMover
       Vector3 randomVector = new Vector3(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
       
       yield return new WaitForSecondsRealtime(1f);
-      
-      objectRb.isKinematic = false;
-      
-      objectRb.AddTorque(randomVector, ForceMode.VelocityChange);
+
+      SmoothToObject(mainObject.position + Vector3.down, mainObject.rotation, .5f, true);
    }
 
    private IEnumerator WinAnimation()

@@ -67,6 +67,9 @@ public class UIController : MonoBehaviour
             case TrialHandler.PropertyType.SOUND:
                 thoughtWords.text += "what would this sound like?";
                 break;
+            case TrialHandler.PropertyType.WORD:
+                thoughtWords.text += "could this be...";
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(propertyType), propertyType, null);
         }
@@ -86,7 +89,7 @@ public class UIController : MonoBehaviour
         float startTime = Time.realtimeSinceStartup;
         float x = 0;
         float y;
-        float power = 16f;
+        float power = 10f;
         Color a = Color.white; 
 
         while (x < 1)

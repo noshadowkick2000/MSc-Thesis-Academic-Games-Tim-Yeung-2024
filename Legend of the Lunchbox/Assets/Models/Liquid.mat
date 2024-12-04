@@ -87,7 +87,7 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _AlphaToMask: 0
-    - _Amplitude: 25
+    - _Amplitude: 2
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
@@ -100,8 +100,8 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
-    - _FoamWidth: 0.5
-    - _Foam_Smoothness: 0.52
+    - _FoamWidth: 0.043
+    - _Foam_Smoothness: 0.12
     - _Frequency: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
