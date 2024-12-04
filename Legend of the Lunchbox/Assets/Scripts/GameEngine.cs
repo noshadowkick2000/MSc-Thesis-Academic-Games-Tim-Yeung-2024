@@ -22,13 +22,13 @@ namespace Assets
 
     public static float EnemyMindShowTime { get; } = 2f;
 
-    public static float MindPropertyTransitionTime { get; } = 5f;
+    public static float MindPropertyTransitionTime { get; } = 4f;
 
     public static float PullingTime { get; } = 2f;
 
     public static float EnemyTimeOut { get; } = 4.0f;
 
-    public static float FeedbackTime { get; } = 2.0f;
+    public static float FeedbackTime { get; } = 1.0f;
 
     public static float EncounterStopTime { get; } = 5f;
 

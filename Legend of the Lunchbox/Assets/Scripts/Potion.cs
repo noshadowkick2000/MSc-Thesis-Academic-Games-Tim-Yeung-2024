@@ -6,7 +6,7 @@ using UnityEngine;
 public class Potion : ObjectMover
 {
     [SerializeField] private Transform cap;
-    [SerializeField] private float goal = .5f;
+    // [SerializeField] private float goal = .5f;
 
     private void Awake()
     {

@@ -164,7 +164,8 @@ public class TrialHandler : MonoBehaviour
   public enum PropertyType
   {
     ACTION,
-    SOUND
+    SOUND,
+    WORD
   }
 
   public PropertyType GetCurrentEncounterType()
