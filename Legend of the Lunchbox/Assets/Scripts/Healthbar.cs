@@ -34,8 +34,8 @@ public class Healthbar : MonoBehaviour
         GameEngine.SettingUpMindStartedEvent += SettingUpMind;
         GameEngine.BreakingBadStartedEvent += BreakingBad;
         GameEngine.WonBreakStartedEvent += WonBreak;
-        GameEngine.EvaluatingEncounterStartedEvent += EvaluatingEncounter;
         GameEngine.LostEncounterStartedEvent += LostEncounter;
+        GameEngine.EndingEncounterStartedEvent += EndingEncounter;
     }
 
     private void UnsubscribeToEvents()
@@ -43,14 +43,19 @@ public class Healthbar : MonoBehaviour
         GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
         GameEngine.BreakingBadStartedEvent -= BreakingBad;
         GameEngine.WonBreakStartedEvent -= WonBreak;
-        GameEngine.EvaluatingEncounterStartedEvent -= EvaluatingEncounter;
         GameEngine.LostEncounterStartedEvent -= LostEncounter;
+        GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
     }
     
     private float CalculateFill()
     {
         float ratio = ((float) gameEngine.TotalHealth / (float) gameEngine.MaxHealth);
         return ratio * maxFill + (1 - ratio) * minFill;
+    }
+
+    protected virtual void EndingEncounter()
+    {
+        healthBar.SetActive(true);
     }
 
     protected virtual void SettingUpMind()
@@ -63,11 +68,6 @@ public class Healthbar : MonoBehaviour
         SettingUpMind();
     }
 
-    protected virtual void EvaluatingEncounter()
-    {
-        healthBar.SetActive(true);
-    }
-
     protected virtual void WonBreak()
     {
         healthBar.SetActive(true);
@@ -76,6 +76,7 @@ public class Healthbar : MonoBehaviour
 
     protected virtual void LostEncounter()
     {
+        healthBar.SetActive(true);
         StartCoroutine(AnimateBar(GameEngine.EncounterStopTime / 4, GameEngine.EncounterStopTime * .75f));
     }
 

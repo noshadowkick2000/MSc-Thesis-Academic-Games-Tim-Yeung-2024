@@ -208,6 +208,7 @@ public class UIController : MonoBehaviour
         GameEngine.MovingToEnemyStartedEvent += MovingToEnemy;
         GameEngine.EvaluatingEncounterStartedEvent += EvaluatingEncounter;
         GameEngine.EndingEncounterStartedEvent += EndingEncounter;
+        GameEngine.LostEncounterStartedEvent += LostEncounter;
         GameEngine.WonBreakStartedEvent += WonBreak;
         GameEngine.LevelOverStartedEvent += LevelOver;
     }
@@ -226,6 +227,7 @@ public class UIController : MonoBehaviour
         GameEngine.MovingToEnemyStartedEvent -= MovingToEnemy;
         GameEngine.EvaluatingEncounterStartedEvent -= EvaluatingEncounter;
         GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
+        GameEngine.LostEncounterStartedEvent -= LostEncounter;
         GameEngine.WonBreakStartedEvent -= WonBreak;
         GameEngine.LevelOverStartedEvent -= LevelOver;
     }
@@ -307,6 +309,11 @@ public class UIController : MonoBehaviour
     {
         Idle();
         StartPinhole(true, GameEngine.PlayerReset);
+    }
+
+    protected virtual void LostEncounter()
+    {
+        distractionUI.SetActive(true);
     }
 
     protected virtual void EndingEncounter()
