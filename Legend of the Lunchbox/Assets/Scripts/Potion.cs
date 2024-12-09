@@ -19,7 +19,7 @@ public class Potion : ObjectMover
     public void RemoveCap()
     {
         StartCoroutine(DrainLiquid());
-        SmoothToObject(cap.position + 2 * cap.up, Quaternion.identity, .2f, true);
+        SmoothToObject(cap.position + cap.up, Quaternion.identity, GameEngine.WonBreakTime / 2f, true);
     }
 
     private IEnumerator DrainLiquid()

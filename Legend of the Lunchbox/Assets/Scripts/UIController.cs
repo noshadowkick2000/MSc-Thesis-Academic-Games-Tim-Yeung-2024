@@ -10,7 +10,7 @@ using UnityEngine.UI;
 public class UIController : MonoBehaviour
 {
     [SerializeField] private GameObject mindUI;
-    [SerializeField] private Image mindPanel;
+    // [SerializeField] private Image mindPanel;
     [SerializeField] private Color spotColor;
     [SerializeField] private GameObject spotLight;
     [SerializeField] private Material spotLightMaterial;
@@ -25,6 +25,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private Transform stencil;
     [SerializeField] private GameObject flashBang;
     [SerializeField] private Image timerUI;
+    [SerializeField] private GameObject breakInstructions;
     
     void Awake()
     {
@@ -33,6 +34,7 @@ public class UIController : MonoBehaviour
         controlIndicatorUI.SetActive(false);
         flashBang.SetActive(false);
         scramble.SetActive(false);
+        breakInstructions.SetActive(false);
 
         StartPinhole(true, GameEngine.LevelOverTime);
         
@@ -122,6 +124,29 @@ public class UIController : MonoBehaviour
         }
     }
 
+    private IEnumerator AnimateShakePrompt()
+    {
+        thoughtWords.text = "press LEFT and RIGHT rapidly to loosen the cork!";
+        
+        float startTime = Time.realtimeSinceStartup;
+        float x = 0;
+        float y;
+        float power = 10f;
+        Color a = Color.white; 
+
+        while (x < 1)
+        {
+            y = x < .5f ? 1 - Mathf.Pow(x-1, power) : 1 - Mathf.Pow(x, power);
+            a.a = y;
+            thoughtWords.color = a;
+            x = (Time.realtimeSinceStartup - startTime) / (GameEngine.BreakTimeOut / 2f);
+
+            yield return null;
+        }
+        
+        thoughtWords.color = Color.clear;
+    }
+
     private IEnumerator AnimateScramble()
     {
         int counter = 0;
@@ -209,10 +234,18 @@ public class UIController : MonoBehaviour
     {
         ShowingEnemy();
         SettingUpMind();
+        
+        breakInstructions.SetActive(true);
+        mindUI.SetActive(true);
+        thoughtUI.SetActive(true);
+        StartCoroutine(AnimateShakePrompt());
     }
 
     protected virtual void WonBreak()
     {
+        breakInstructions.SetActive(false);
+        mindUI.SetActive(false);
+        thoughtUI.SetActive(false);
         distractionUI.SetActive(true);
         StartPinhole(true, GameEngine.PlayerReset);
     }
@@ -252,8 +285,8 @@ public class UIController : MonoBehaviour
 
     protected virtual void AnswerWrong()
     {
-        scramble.SetActive(true);
-        StartCoroutine(AnimateScramble());
+        // scramble.SetActive(true);
+        // StartCoroutine(AnimateScramble());
     }
 
     protected virtual void TimedOut()
