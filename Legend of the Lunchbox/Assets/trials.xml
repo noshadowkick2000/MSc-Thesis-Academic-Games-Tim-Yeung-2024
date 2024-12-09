@@ -8,7 +8,7 @@
         </encounter>
         <encounter enemy="hammerword" health="2" wait="2000">
             <property correct="true" type="2">metalword</property>
-            <property correct="true" type="2">nailword</property>
+            <property correct="true" type="2">swungword</property>
         </encounter>
     </level>
 </root>

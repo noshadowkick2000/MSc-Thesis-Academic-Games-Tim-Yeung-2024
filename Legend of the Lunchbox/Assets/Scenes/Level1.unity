@@ -2767,6 +2767,10 @@ MonoBehaviour:
   enterMind: {fileID: 8300000, guid: 095e108ef02fbf840896fdc93a8302ee, type: 3}
   spotLight: {fileID: 8300000, guid: f9e8ea255ed194e4886f74bdc1211d21, type: 3}
   worldDeform: {fileID: 8300000, guid: 83e3026c437ec4849a60748734ee7efc, type: 3}
+  goodFeedback: {fileID: 8300000, guid: a2835626abfa5a6478ec29fa55ee9b09, type: 3}
+  badFeedback: {fileID: 8300000, guid: 6ed0cf7824e779246a680d5be5eccefb, type: 3}
+  cork: {fileID: 8300000, guid: 5caea8a9ef3227548ac8274548b4c6f8, type: 3}
+  corkPop: {fileID: 8300000, guid: b3096384b548ad44ba14ee7787d780d6, type: 3}
   oneShotPlayer: {fileID: 366216253}
 --- !u!114 &959961349
 MonoBehaviour:
@@ -3418,7 +3422,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1090815617
 RectTransform:
   m_ObjectHideFlags: 0

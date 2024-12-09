@@ -99,7 +99,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Nail
+  m_text: Swung
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4d0fab5dc84a5144cb96046185555da0, type: 2}
   m_sharedMaterial: {fileID: 6995378533898992213, guid: 4d0fab5dc84a5144cb96046185555da0, type: 2}
@@ -230,7 +230,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5162899491460500509}
   m_Layer: 6
-  m_Name: nailword
+  m_Name: swungword
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
