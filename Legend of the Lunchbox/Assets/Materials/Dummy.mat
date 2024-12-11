@@ -8,26 +8,34 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Dummy
-  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 38be96ab7b9e81140bd98ea4b8a977ab, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
-  - _METALLICSPECGLOSSMAP
-  - _NORMALMAP
-  - _OCCLUSIONMAP
-  - _PARALLAXMAP
+  - BOOLEAN_568FAFDE943840E4B4BD7C392F485EA8_ON
   m_InvalidKeywords: []
   m_LightmapFlags: 6
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap:
-    RenderType: Opaque
+  stringTagMap: {}
   disabledShaderPasses: []
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - Texture2D_943f80e5e52d4ed6ae2ff518086f9225:
+        m_Texture: {fileID: 2800000, guid: 4304ae00889612d4a80ee923d92f91f2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_f5b1096f690a40c3a67e1389086d2a11:
+        m_Texture: {fileID: 2800000, guid: 5aed6c3dbcfc8aa468288e0519db2ff3, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_f5b1096f690a40c3a67e1389086d2a11_1:
+        m_Texture: {fileID: 2800000, guid: 63802eb89fed09941b09b739b4af1463, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BaseMap:
         m_Texture: {fileID: 2800000, guid: 4304ae00889612d4a80ee923d92f91f2, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -86,6 +94,11 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - BOOLEAN_568FAFDE943840E4B4BD7C392F485EA8: 1
+    - Vector1_50b8ac999980412db264f78e0847fd39: 5
+    - Vector1_753aa7a2449e49e7b5f4330b9387cf92: 2
+    - Vector1_81d8d78318854578b97259c3b4d7675d: 0.0012
+    - Vector1_94faf8875e9e410a8cd9ed9541600b4f: 0
     - _AlphaClip: 0
     - _AlphaToMask: 0
     - _Blend: 0
@@ -106,6 +119,7 @@ Material:
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
+    - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Smoothness: 0.5
@@ -117,6 +131,9 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
+    - Color_f1c1645d1a5645c18d9725c45912eec5: {r: 1, g: 1, b: 1, a: 0}
+    - Color_f1c1645d1a5645c18d9725c45912eec5_1: {r: 0, g: 0, b: 0, a: 1}
+    - Color_fdb4426266254bd3ba2d808bbe0554ef: {r: 0, g: 0, b: 0, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

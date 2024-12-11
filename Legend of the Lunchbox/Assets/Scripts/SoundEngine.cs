@@ -14,6 +14,10 @@ public class SoundEngine : MonoBehaviour
     [SerializeField] private AudioClip enterMind;
     [SerializeField] private AudioClip spotLight;
     [SerializeField] private AudioClip worldDeform; 
+    [SerializeField] private AudioClip goodFeedback;
+    [SerializeField] private AudioClip badFeedback;
+    [SerializeField] private AudioClip cork;
+    [SerializeField] private AudioClip corkPop;
     [SerializeField] private AudioSource oneShotPlayer;
 
     private void Init()
@@ -50,10 +54,14 @@ public class SoundEngine : MonoBehaviour
     {
         GameEngine.OnRailStartedEvent += OnRail;
         GameEngine.StartingEncounterStartedEvent += StartingEncounter;
+        GameEngine.StartingBreakStartedEvent += StartingBreak;
+        GameEngine.BreakingBadStartedEvent += BreakingBad;
+        GameEngine.WonBreakStartedEvent += WonBreak;
         GameEngine.SettingUpMindStartedEvent += SettingUpMind;
-        GameEngine.ThinkingOfPropertyStartedEvent += ThinkingOfProperty;
         GameEngine.ShowingPropertyStartedEvent += ShowingProperty;
-        GameEngine.LostEncounterStartedEvent += WonEncounter;
+        GameEngine.AnswerCorrectStartedEvent += AnswerCorrect;
+        GameEngine.AnswerWrongStartedEvent += AnswerWrong;
+        GameEngine.WonEncounterStartedEvent += WonEncounter;
         GameEngine.LostEncounterStartedEvent += LostEncounter;
         // GameEngine.EndingEncounterStartedEvent += EndingEncounter;
         GameEngine.EvaluatingEncounterStartedEvent += EvaluatingEncounter;
@@ -63,13 +71,25 @@ public class SoundEngine : MonoBehaviour
     {
         GameEngine.OnRailStartedEvent -= OnRail;
         GameEngine.StartingEncounterStartedEvent -= StartingEncounter;
+        GameEngine.StartingBreakStartedEvent -= StartingBreak;
+        GameEngine.BreakingBadStartedEvent -= BreakingBad;
+        GameEngine.WonBreakStartedEvent -= WonBreak;
         GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
-        GameEngine.ThinkingOfPropertyStartedEvent -= ThinkingOfProperty;
         GameEngine.ShowingPropertyStartedEvent -= ShowingProperty;
-        GameEngine.LostEncounterStartedEvent -= WonEncounter;
+        GameEngine.AnswerCorrectStartedEvent -= AnswerCorrect;
+        GameEngine.AnswerWrongStartedEvent -= AnswerWrong;
+        GameEngine.WonEncounterStartedEvent -= WonEncounter;
         GameEngine.LostEncounterStartedEvent -= LostEncounter;
         // GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
         GameEngine.EvaluatingEncounterStartedEvent -= EvaluatingEncounter;
+    }
+
+    private void Update()
+    {
+        if (breaking && (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow)))
+        {
+            oneShotPlayer.PlayOneShot(cork);
+        }
     }
 
     protected virtual void OnRail()
@@ -88,6 +108,23 @@ public class SoundEngine : MonoBehaviour
         }
         
         oneShotPlayer.PlayOneShot(enemyAppear);
+    }
+
+    protected virtual void StartingBreak()
+    {
+        StartingEncounter();
+    }
+
+    private bool breaking = false;
+    protected virtual void BreakingBad()
+    {
+        breaking = true;
+    }
+
+    protected virtual void WonBreak()
+    {
+        breaking = false;
+        oneShotPlayer.PlayOneShot(corkPop);
     }
 
     protected virtual void SettingUpMind()
@@ -114,6 +151,16 @@ public class SoundEngine : MonoBehaviour
     protected virtual void ShowingProperty(Action<InputHandler.InputState> callback)
     {
         // oneShotPlayer.PlayOneShot(enemyAppear);
+    }
+
+    protected virtual void AnswerCorrect()
+    {
+        oneShotPlayer.PlayOneShot(goodFeedback);
+    }
+
+    protected virtual void AnswerWrong()
+    {
+        oneShotPlayer.PlayOneShot(badFeedback);
     }
 
     protected virtual void EvaluatingEncounter()

@@ -1,33 +1,14 @@
-<!-- <root>
-    <level>
-        <encounter enemy="chair" health="2">
-            <property correct="true">wooden</property>
-            <property correct="true">sitting</property>
-            <property correct="false">sharp</property>
-            <property correct="false">sleeping</property>
-            <property correct="false">hot</property>
-        </encounter>
-        <encounter enemy="bicycle" health="2">
-            <property correct="true">riding</property>
-            <property correct="true">metal</property>
-            <property correct="false">hitting</property>
-            <property correct="false">enormous</property>
-            <property correct="false">edible</property>
-        </encounter>
-    </level>
-</root> -->
-
 <root>
     <level>
-        <encounter enemy="hammer" health="2" wait="4000">
-            <property correct="true">hammering</property>
-            <property correct="true">hammersound</property>
-        </encounter>
-        <break health="4" wait="4000">
+        <break health="4" wait="1000">
         </break>
-        <encounter enemy="hammer" health="2" wait="4000">
-            <property correct="true">hammering</property>
-            <property correct="true">hammersound</property>
+        <encounter enemy="hammer" health="2" wait="2000">
+            <property correct="true" type="0">hammering</property>
+            <property correct="true" type="1">hammersound</property>
+        </encounter>
+        <encounter enemy="hammerword" health="2" wait="2000">
+            <property correct="true" type="2">metalword</property>
+            <property correct="true" type="2">swungword</property>
         </encounter>
     </level>
 </root>

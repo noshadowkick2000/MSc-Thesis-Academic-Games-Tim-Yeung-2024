@@ -32,15 +32,19 @@ public class Healthbar : MonoBehaviour
     private void SubscribeToEvents()
     {
         GameEngine.SettingUpMindStartedEvent += SettingUpMind;
-        GameEngine.EndingEncounterStartedEvent += EndingEncounter;
+        GameEngine.BreakingBadStartedEvent += BreakingBad;
+        GameEngine.WonBreakStartedEvent += WonBreak;
         GameEngine.LostEncounterStartedEvent += LostEncounter;
+        GameEngine.EndingEncounterStartedEvent += EndingEncounter;
     }
 
     private void UnsubscribeToEvents()
     {
         GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
-        GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
+        GameEngine.BreakingBadStartedEvent -= BreakingBad;
+        GameEngine.WonBreakStartedEvent -= WonBreak;
         GameEngine.LostEncounterStartedEvent -= LostEncounter;
+        GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
     }
     
     private float CalculateFill()
@@ -49,18 +53,56 @@ public class Healthbar : MonoBehaviour
         return ratio * maxFill + (1 - ratio) * minFill;
     }
 
-    protected virtual void SettingUpMind()
-    {
-        healthBar.SetActive(false);
-    }
-
     protected virtual void EndingEncounter()
     {
         healthBar.SetActive(true);
     }
 
+    protected virtual void SettingUpMind()
+    {
+        healthBar.SetActive(false);
+    }
+
+    protected virtual void BreakingBad()
+    {
+        SettingUpMind();
+    }
+
+    protected virtual void WonBreak()
+    {
+        healthBar.SetActive(true);
+        StartCoroutine(AnimateBar(0, GameEngine.WonBreakTime));
+    }
+
     protected virtual void LostEncounter()
     {
-        liquidScript.fillAmount = CalculateFill();
+        healthBar.SetActive(true);
+        StartCoroutine(AnimateBar(GameEngine.EncounterStopTime / 4, GameEngine.EncounterStopTime * .75f));
+    }
+
+    private IEnumerator AnimateBar(float delay, float duration)
+    {
+        yield return new WaitForSecondsRealtime(delay);
+        
+        float startTime = Time.realtimeSinceStartup;
+        float x = 0;
+
+        float start = liquidScript.fillAmount;
+        float goal = CalculateFill();
+
+        Quaternion startPos = healthBar.transform.rotation;
+        
+        while (x < 1)
+        {
+            float y = MathT.EasedT(x);
+            liquidScript.fillAmount = y * goal + (1-y) * start;
+            healthBar.transform.rotation = startPos * Quaternion.Euler(0, 0, Mathf.PerlinNoise1D(Time.realtimeSinceStartup));
+            x = (Time.realtimeSinceStartup - startTime) / duration;
+
+            yield return null;
+        }
+        
+        healthBar.transform.rotation = startPos;
+        liquidScript.fillAmount = goal;
     }
 }
