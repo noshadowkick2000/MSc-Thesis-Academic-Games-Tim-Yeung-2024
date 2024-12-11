@@ -43,14 +43,14 @@ public class PlayerController : MonoBehaviour
   {
     GameEngine.ShowingEnemyStartedEvent += ShowingEnemy;
     GameEngine.SettingUpMindStartedEvent += SettingUpMind;
-    GameEngine.ThinkingOfPropertyStartedEvent += ThinkingOfProperty;
+    GameEngine.EvaluatingEncounterStartedEvent += EvaluatingEncounter;
   }
 
   private void UnsubscribeFromEvents()
   {
     GameEngine.ShowingEnemyStartedEvent -= ShowingEnemy;
     GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
-    GameEngine.ThinkingOfPropertyStartedEvent -= ThinkingOfProperty;
+    GameEngine.EvaluatingEncounterStartedEvent -= EvaluatingEncounter;
   }
 
   protected virtual void ShowingEnemy()
@@ -63,9 +63,8 @@ public class PlayerController : MonoBehaviour
     StartMind();
   }
 
-  protected virtual void ThinkingOfProperty(bool encounterOver)
-  {
-    if (encounterOver)
-      Idle();
+  protected virtual void EvaluatingEncounter()
+  { 
+    Idle();
   }
 }

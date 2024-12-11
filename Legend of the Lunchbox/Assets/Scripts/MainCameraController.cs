@@ -91,9 +91,10 @@ public class MainCameraController : ObjectMover
     GameEngine.StartingBreakStartedEvent += StartingBreak;
     GameEngine.StartingEncounterStartedEvent += StartingEncounter;
     GameEngine.SettingUpMindStartedEvent += SettingUpMind;
-    GameEngine.ThinkingOfPropertyStartedEvent += ThinkingOfProperty;
+    GameEngine.EvaluatingEncounterStartedEvent += EvaluatingEncounter;
     GameEngine.LostEncounterStartedEvent += LostEncounter;
     GameEngine.EndingEncounterStartedEvent += EndingEncounter;
+    GameEngine.EndingBreakStartedEvent += EndingBreak;
     GameEngine.LevelOverStartedEvent += LevelOver;
   }
   
@@ -103,9 +104,10 @@ public class MainCameraController : ObjectMover
     GameEngine.StartingBreakStartedEvent -= StartingBreak;
     GameEngine.StartingEncounterStartedEvent -= StartingEncounter;
     GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
-    GameEngine.ThinkingOfPropertyStartedEvent -= ThinkingOfProperty;
+    GameEngine.EvaluatingEncounterStartedEvent -= EvaluatingEncounter;
     GameEngine.LostEncounterStartedEvent -= LostEncounter;
     GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
+    GameEngine.EndingBreakStartedEvent -= EndingBreak;
     GameEngine.LevelOverStartedEvent -= LevelOver;
   }
 
@@ -118,6 +120,13 @@ public class MainCameraController : ObjectMover
   protected virtual void StartingBreak()
   {
     StopBobbingCamera();
+    ImmediateToObject(LocationHolder.DiscoverableCameraLocation);
+    SmoothToObject(LocationHolder.EnemyCameraLocation, GameEngine.EncounterStartTime, true);
+  }
+
+  protected virtual void EndingBreak()
+  {
+    SmoothToObject(LocationHolder.BaseCameraLocation, GameEngine.PlayerReset, true);
   }
 
   protected virtual void StartingEncounter()
@@ -132,13 +141,12 @@ public class MainCameraController : ObjectMover
     // ImmediateToObject(LocationHolder.MindCameraLocation);
     // OrthoCamera();
     
-    SmoothToObject(LocationHolder.EnemyLocation, GameEngine.MindStartTime, true);
+    SmoothToObject(LocationHolder.DiscoverableLocation, GameEngine.MindStartTime, true);
   }
 
-  protected virtual void ThinkingOfProperty(bool encounterOver)
+  protected virtual void EvaluatingEncounter()
   {
-    if (!encounterOver) return;
-    SmoothToObject(LocationHolder.EnemyCameraLocation, GameEngine.playerReset, true);
+    SmoothToObject(LocationHolder.EnemyCameraLocation, GameEngine.PlayerReset, true);
   }
 
   protected virtual void LostEncounter()
@@ -148,7 +156,7 @@ public class MainCameraController : ObjectMover
 
   protected virtual void EndingEncounter()
   {
-    SmoothToObject(LocationHolder.BaseCameraLocation, GameEngine.playerReset, true);
+    SmoothToObject(LocationHolder.BaseCameraLocation, GameEngine.PlayerReset, true);
   }
 
   protected virtual void LevelOver()

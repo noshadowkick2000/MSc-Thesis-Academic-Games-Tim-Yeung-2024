@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Assets;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -9,28 +10,33 @@ using UnityEngine.UI;
 public class UIController : MonoBehaviour
 {
     [SerializeField] private GameObject mindUI;
-    [SerializeField] private Image mindPanel;
+    // [SerializeField] private Image mindPanel;
     [SerializeField] private Color spotColor;
     [SerializeField] private GameObject spotLight;
     [SerializeField] private Material spotLightMaterial;
     [SerializeField] private GameObject thoughtUI;
-    [SerializeField] private Sprite[] thoughtSprites;
+    [SerializeField] private TextMeshProUGUI thoughtWords;
+    [SerializeField] private GameObject scramble;
+    [SerializeField] private Image scrambleImage;
+    [FormerlySerializedAs("thoughtSprites")] [SerializeField] private Sprite[] scrambleSprites;
     [SerializeField] private GameObject controlIndicatorUI;
     [SerializeField] private GameObject distractionUI;
     [SerializeField] private GameObject endScreen;
     [SerializeField] private Transform stencil;
     [SerializeField] private GameObject flashBang;
     [SerializeField] private Image timerUI;
+    [SerializeField] private GameObject breakInstructions;
     
     void Awake()
     {
         thoughtUI.SetActive(false);
         mindUI.SetActive(false);
         controlIndicatorUI.SetActive(false);
-        // spotLight.SetActive(false);
         flashBang.SetActive(false);
+        scramble.SetActive(false);
+        breakInstructions.SetActive(false);
 
-        StartCoroutine(AnimatePinhole(true));
+        StartPinhole(true, GameEngine.LevelOverTime);
         
         SubscribeToEvents();
     }
@@ -40,90 +46,123 @@ public class UIController : MonoBehaviour
         UnsubscribeFromEvents();
     }
 
-    private void Idle(bool encounterOver)
+    private void Idle()
     {
-        if (encounterOver) 
-        {
-            controlIndicatorUI.SetActive(false);
-            StartCoroutine(AnimateCanvas(true, .5f)); 
-        }
-        thoughtUI?.SetActive(false);
-    }
-
-    private void StartMind(float duration)
-    {
-        distractionUI.SetActive(false);
-        StartCoroutine(AnimateCanvas(false, duration));
-    }
-    
-    private IEnumerator AnimateCanvas(bool inverse, float duration) 
-    {
-        if (!inverse)
-        {
-            mindUI.SetActive(true);
-            // spotLight.SetActive(true);
-        }
-
-        // RectTransform mt = mindUI.GetComponent<RectTransform>();
-        mindPanel.color = inverse ? Color.black : Color.clear;
-        // mt.localScale = inverse ? Vector3.one : Vector3.zero;
-        // spotLightMaterial.color = Color.clear;  
-        
-        float startTime = Time.realtimeSinceStartup;
-        while (Time.realtimeSinceStartup < startTime + duration)
-        {
-            float x = (Time.realtimeSinceStartup - startTime) / duration;
-            if (inverse) { x = 1 - x; }
-            // mt.localScale = new Vector3 (x, x, 1);
-            mindPanel.color = new Color(0, 0,0 , x);
-            // Color sc = new Color(spotColor.r, spotColor.g, spotColor.b, x);
-            // spotLightMaterial.color = sc;
-            yield return null;
-        }
-
-        mindPanel.color = inverse ? Color.clear : Color.black;
-        // mt.localScale = inverse ? Vector3.zero : Vector3.one;
-        spotLightMaterial.color = spotColor;
-        if (inverse)
-        {
-            mindUI.SetActive(false);
-            // spotLight.SetActive(false);
-        }
+        controlIndicatorUI.SetActive(false);
+        mindUI.SetActive(false);
+        thoughtUI.SetActive(false);
     }
 
     private Coroutine thoughtRoutine;
 
-    private void StartThought(float duration) 
-    { 
-        //TODO spotlights searching around effect
-        
+    private void StartThought(TrialHandler.PropertyType propertyType) 
+    {
         thoughtUI.SetActive(true);
         controlIndicatorUI.SetActive(false);
+        thoughtWords.text = "Hmm.. ";
+
+        switch (propertyType)
+        {
+            case TrialHandler.PropertyType.ACTION:
+                thoughtWords.text += "how would this be used?";
+                break;
+            case TrialHandler.PropertyType.SOUND:
+                thoughtWords.text += "what would this sound like?";
+                break;
+            case TrialHandler.PropertyType.WORD:
+                thoughtWords.text += "could this be...";
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(propertyType), propertyType, null);
+        }
 
         thoughtRoutine = StartCoroutine(AnimateThought());
-        // StartCoroutine(DelayedSpotlight(duration));
     }
-
-    private IEnumerator DelayedSpotlight(float duration)
+    
+    private void StartPinhole(bool opening, float duration)
     {
-        yield return new WaitForSecondsRealtime(duration / 4f);
-        spotLight.SetActive(true);
+        StartCoroutine(AnimatePinhole(opening, duration));
+        if (!opening)
+            endScreen.SetActive(true);
     }
 
     private IEnumerator AnimateThought()
     {
-        Image img = thoughtUI.GetComponent<Image>();
-        int counter = 0;
+        float startTime = Time.realtimeSinceStartup;
+        float x = 0;
+        float y;
+        float power = 10f;
+        Color a = Color.white; 
 
-        while (true)
+        while (x < 1)
         {
-            img.sprite = thoughtSprites[counter];
+            y = x < .5f ? 1 - Mathf.Pow(x-1, power) : 1 - Mathf.Pow(x, power);
+            a.a = y;
+            thoughtWords.color = a;
+            x = (Time.realtimeSinceStartup - startTime) / GameEngine.MindPropertyTransitionTime;
+
+            yield return null;
+        }
+
+        startTime = Time.realtimeSinceStartup;
+        x = 0;
+        thoughtWords.text = ".";
+
+        while (x < 1)
+        {
+            y = x < .5f ? 1 - Mathf.Pow(x-1, power) : 1 - Mathf.Pow(x, power);
+            a.a = y;
+            thoughtWords.color = a;
+            x = (Time.realtimeSinceStartup - startTime) / GameEngine.PullingTime;
+
+            if (x > .66f)
+                thoughtWords.text = "...";
+            else if (x > .33f)
+                thoughtWords.text = "..";
+
+            yield return null;
+        }
+    }
+
+    private IEnumerator AnimateShakePrompt()
+    {
+        thoughtWords.text = "press LEFT and RIGHT rapidly to loosen the cork!";
+        
+        float startTime = Time.realtimeSinceStartup;
+        float x = 0;
+        float y;
+        float power = 10f;
+        Color a = Color.white; 
+
+        while (x < 1)
+        {
+            y = x < .5f ? 1 - Mathf.Pow(x-1, power) : 1 - Mathf.Pow(x, power);
+            a.a = y;
+            thoughtWords.color = a;
+            x = (Time.realtimeSinceStartup - startTime) / (GameEngine.BreakTimeOut / 2f);
+
+            yield return null;
+        }
+        
+        thoughtWords.color = Color.clear;
+    }
+
+    private IEnumerator AnimateScramble()
+    {
+        int counter = 0;
+        float endTime = Time.realtimeSinceStartup + GameEngine.FeedbackTime;
+        
+        while (Time.realtimeSinceStartup < endTime)
+        {
+            scrambleImage.sprite = scrambleSprites[counter];
             counter++;
-            if (counter == thoughtSprites.Length)
+            if (counter == scrambleSprites.Length)
                 counter = 0;
             
             yield return new WaitForSecondsRealtime(.2f);
         }
+        
+        scramble.SetActive(false);
     }
 
     Coroutine timerRoutine;
@@ -137,82 +176,80 @@ public class UIController : MonoBehaviour
         timerRoutine = StartCoroutine(AnimateTimer(timeOut));
     }
 
-    private void ExitMind()
-    {
-        distractionUI.SetActive(true);
-    }
-
     private void CancelTimer()
     {
-        // timerUI.color = Color.clear;
         StopCoroutine(timerRoutine);
     }
 
     private IEnumerator AnimateTimer(float timeOut)
     {
         float startTime = Time.realtimeSinceStartup;
-        // timerUI.color = Color.white;
-        // Color newColor = timerUI.color;
         timerUI.fillAmount = 0;
         while (Time.realtimeSinceStartup < startTime + timeOut)
         {
             timerUI.fillAmount = (Time.realtimeSinceStartup - startTime) / timeOut;
-            // newColor.a = (Time.realtimeSinceStartup - startTime) / timeOut;
-            // timerUI.color = newColor;
             yield return null;
         }
 
         timerUI.fillAmount = 1;
-
-        // Wait for a while before starting to flicker
-
-        // float waitRatio = .3f; // TODO implement that in game engine, the time for the timeout is the experimental max time, plus a certain margin that's a percentage of that time, and use that time here
-        // int stops = 4;
-        // float stopRatio = .1f;
-        //
-        // float visibleRatio = 1f - waitRatio;
-        //
-        // yield return new WaitForSecondsRealtime((visibleRatio * timeOut));
-        //
-        // float stopTime = timeOut * waitRatio * stopRatio / stops;
-        // float visibleTimeTotal = timeOut * waitRatio * (1 - stopRatio);
-        //
-        // for (int i = stops; i > 0; i--)
-        // {
-        //     spotLight.SetActive(false);
-        //     yield return new WaitForSecondsRealtime(stopTime);
-        //     spotLight.SetActive(true);
-        //     float goTime = (Mathf.Pow(2, i) - Mathf.Pow(2, i - 1)) / Mathf.Pow(2, stops) * visibleTimeTotal;
-        //     yield return new WaitForSecondsRealtime(goTime);
-        // }
-        //
-        // spotLight.SetActive(false);
     }
-    
-    //-----------------------------------------------------
-    
+
     private void SubscribeToEvents()
     {
+        GameEngine.BreakingBadStartedEvent += BreakingBad;
         GameEngine.ShowingEnemyStartedEvent += ShowingEnemy;
         GameEngine.SettingUpMindStartedEvent += SettingUpMind;
-        GameEngine.ThinkingOfPropertyStartedEvent += ThinkingOfProperty;
+        GameEngine.ShowingEnemyInMindStartedEvent += ShowingEnemyInMind;
+        GameEngine.MovingToPropertyStartedEvent += MovingToProperty;
         GameEngine.ShowingPropertyStartedEvent += ShowingProperty;
         GameEngine.EvaluatingInputStartedEvent += EvaluatingInput;
+        GameEngine.AnswerWrongStartedEvent += AnswerWrong;
         GameEngine.TimedOutStartedEvent += TimedOut;
+        GameEngine.MovingToEnemyStartedEvent += MovingToEnemy;
+        GameEngine.EvaluatingEncounterStartedEvent += EvaluatingEncounter;
         GameEngine.EndingEncounterStartedEvent += EndingEncounter;
+        GameEngine.LostEncounterStartedEvent += LostEncounter;
+        GameEngine.WonBreakStartedEvent += WonBreak;
         GameEngine.LevelOverStartedEvent += LevelOver;
     }
 
     private void UnsubscribeFromEvents()
     {
-        GameEngine.ShowingEnemyStartedEvent += ShowingEnemy;
+        GameEngine.BreakingBadStartedEvent -= BreakingBad;
+        GameEngine.ShowingEnemyStartedEvent -= ShowingEnemy;
         GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
-        GameEngine.ThinkingOfPropertyStartedEvent -= ThinkingOfProperty;
+        GameEngine.ShowingEnemyInMindStartedEvent -= ShowingEnemyInMind;
+        GameEngine.MovingToPropertyStartedEvent -= MovingToProperty;
         GameEngine.ShowingPropertyStartedEvent -= ShowingProperty;
         GameEngine.EvaluatingInputStartedEvent -= EvaluatingInput;
+        GameEngine.AnswerWrongStartedEvent -= AnswerWrong;
         GameEngine.TimedOutStartedEvent -= TimedOut;
+        GameEngine.MovingToEnemyStartedEvent -= MovingToEnemy;
+        GameEngine.EvaluatingEncounterStartedEvent -= EvaluatingEncounter;
         GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
+        GameEngine.LostEncounterStartedEvent -= LostEncounter;
+        GameEngine.WonBreakStartedEvent -= WonBreak;
         GameEngine.LevelOverStartedEvent -= LevelOver;
+    }
+
+    protected virtual void BreakingBad()
+    {
+        ShowingEnemy();
+        SettingUpMind();
+        
+        breakInstructions.SetActive(true);
+        mindUI.SetActive(true);
+        thoughtUI.SetActive(true);
+        StartCoroutine(AnimateShakePrompt());
+    }
+
+    protected virtual void WonBreak()
+    {
+        breakInstructions.SetActive(false);
+        mindUI.SetActive(false);
+        thoughtUI.SetActive(false);
+        distractionUI.SetActive(true);
+        StartPinhole(true, GameEngine.PlayerReset);
     }
 
     protected virtual void ShowingEnemy()
@@ -229,57 +266,75 @@ public class UIController : MonoBehaviour
     
     protected virtual void SettingUpMind()
     {
-        StartMind(GameEngine.MindStartTime);
+        distractionUI.SetActive(false);
+        StartPinhole(false, GameEngine.MindStartTime);
     }
     
-    protected virtual void ThinkingOfProperty(bool encounterOver)
-    {
-        if (encounterOver)
-            Idle(true);
-        else
-        {
-            // spotLight.SetActive(false);
-            StartThought(GameEngine.PullingTime);
-        }
+    protected virtual void MovingToProperty(TrialHandler.PropertyType propertyType)
+    { 
+        StartThought(propertyType);
     }
 
     protected virtual void ShowingProperty(Action<InputHandler.InputState> callback)
     {
         EndThought(GameEngine.EnemyTimeOut);
-        // spotLight.SetActive(true);
     }
 
-    protected virtual void EvaluatingInput()
+    protected virtual void EvaluatingInput(InputHandler.InputState input)
     {
-        // spotLight.SetActive(false);
         CancelTimer();
+    }
+
+    protected virtual void AnswerWrong()
+    {
+        // scramble.SetActive(true);
+        // StartCoroutine(AnimateScramble());
     }
 
     protected virtual void TimedOut()
     {
-        // spotLight.SetActive(false);
+    }
+
+    protected virtual void MovingToEnemy()
+    {
+        controlIndicatorUI.SetActive(false);
+    }
+
+    protected virtual void ShowingEnemyInMind()
+    {
+        mindUI.SetActive(true);
+    }
+
+    protected virtual void EvaluatingEncounter()
+    {
+        Idle();
+        StartPinhole(true, GameEngine.PlayerReset);
+    }
+
+    protected virtual void LostEncounter()
+    {
+        distractionUI.SetActive(true);
     }
 
     protected virtual void EndingEncounter()
     {
-        ExitMind();
+        distractionUI.SetActive(true);
     }
 
     protected virtual void LevelOver()
     {
-        StartCoroutine(AnimatePinhole(false));
-        endScreen.SetActive(true);
+        StartPinhole(false, GameEngine.LevelOverTime);
     }
 
-    private IEnumerator AnimatePinhole(bool opening)
+    private IEnumerator AnimatePinhole(bool opening, float duration)
     {
         stencil.localScale = opening ? Vector3.zero : Vector3.one;
         
         float startTime = Time.realtimeSinceStartup;
 
-        while (Time.realtimeSinceStartup < startTime + GameEngine.LevelOverTime)
+        while (Time.realtimeSinceStartup < startTime + duration)
         {
-            float x = ((Time.realtimeSinceStartup - startTime) / GameEngine.LevelOverTime);
+            float x = ((Time.realtimeSinceStartup - startTime) / duration);
             if (!opening)
                 x = 1 - x;
             stencil.localScale = new Vector3(x, x, 0);

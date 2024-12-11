@@ -19,7 +19,7 @@ public class LightingController : MonoBehaviour
 
     private void SubscribeToEvents()
     {
-        GameEngine.ThinkingOfPropertyStartedEvent += ThinkingOfProperty;
+        GameEngine.ShowingEnemyInMindStartedEvent += ShowingEnemyInMind;
         GameEngine.EvaluatingEncounterStartedEvent += EvaluatingEncounter;
     }
 
@@ -28,10 +28,9 @@ public class LightingController : MonoBehaviour
         
     }
 
-    protected virtual void ThinkingOfProperty(bool encounterOver)
-    {
-        if (!encounterOver)
-            RenderSettings.ambientIntensity = 0f;
+    protected virtual void ShowingEnemyInMind()
+    { 
+        RenderSettings.ambientIntensity = 0f;
     }
 
     protected virtual void EvaluatingEncounter()
