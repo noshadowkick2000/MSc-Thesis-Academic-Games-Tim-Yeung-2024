@@ -2472,6 +2472,7 @@ GameObject:
   - component: {fileID: 959961351}
   - component: {fileID: 959961353}
   - component: {fileID: 959961354}
+  - component: {fileID: 959961355}
   m_Layer: 0
   m_Name: Gamecontroller
   m_TagString: Untagged
@@ -2769,8 +2770,9 @@ MonoBehaviour:
   worldDeform: {fileID: 8300000, guid: 83e3026c437ec4849a60748734ee7efc, type: 3}
   goodFeedback: {fileID: 8300000, guid: a2835626abfa5a6478ec29fa55ee9b09, type: 3}
   badFeedback: {fileID: 8300000, guid: 6ed0cf7824e779246a680d5be5eccefb, type: 3}
-  cork: {fileID: 8300000, guid: 5caea8a9ef3227548ac8274548b4c6f8, type: 3}
+  cork: {fileID: 8300000, guid: 0085c75adb0365a4fad5bca72ec4f846, type: 3}
   corkPop: {fileID: 8300000, guid: b3096384b548ad44ba14ee7787d780d6, type: 3}
+  drinking: {fileID: 8300000, guid: 9cbfd6da22e66bd4587c5f2e8a215e48, type: 3}
   oneShotPlayer: {fileID: 366216253}
 --- !u!114 &959961349
 MonoBehaviour:
@@ -2915,6 +2917,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainObject: {fileID: 0}
   potion: {fileID: 6785390839495002921, guid: 39246f229a4cdb34dbe8d093b14b90bf, type: 3}
+--- !u!114 &959961355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 959961329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 122946d81330d2b479e9910626282453, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &962313184
 GameObject:
   m_ObjectHideFlags: 0
