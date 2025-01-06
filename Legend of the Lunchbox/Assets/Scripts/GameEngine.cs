@@ -86,6 +86,8 @@ namespace Assets
       PropertiesAndObjects = propertiesAndObjects;
       LevelId = levelId;
       
+      Random.InitState(12345);
+      
       trialHandler = GetComponent<TrialHandler>();
     }
 
