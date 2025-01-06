@@ -37,19 +37,14 @@ public class InputHandler : MonoBehaviour
     private float inputThreshold = 1;
     public static float InputAverage;
     private float inputAdd = .1f;
-    private float inputDecay = 10f;
+    private float inputDecay = 50f;
     private void Update()
     {
         _input = InputState.NONE;
         if (Input.GetButtonDown("Use")) { _input = InputState.USING; }
         if (Input.GetButtonDown("Discard")) { _input = InputState.DISCARDING; }
         if (_input != InputState.NONE) { Logger.Log($"Input: {_input.ToString()}"); }
-
-
-        InputAverage -= inputAdd / inputDecay;
-        if (InputAverage < 0)
-            InputAverage = 0;
-
+        
         if (acceptingInput == InputType.SINGLE && _input != InputState.NONE)
         {
             inputCallback?.Invoke(_input);
@@ -57,14 +52,11 @@ public class InputHandler : MonoBehaviour
         }
         else if (acceptingInput == InputType.RAPID && _input !=InputState.NONE)
         {
-            float multiplier = -Mathf.Pow((InputAverage / inputThreshold) - .1f, 4f) + 1f;
-            InputAverage += inputAdd * multiplier;
-
-            if (InputAverage > inputThreshold)
-            {
-                acceptingInput = InputType.NONE;
-            }
+            InputAverage += inputAdd;
         }
+        
+        InputAverage -= inputAdd / inputDecay;
+        InputAverage = Mathf.Clamp(InputAverage, 0, inputThreshold);
     }
     
     //-----------------------------------------------------
