@@ -18,6 +18,7 @@ public class SoundEngine : MonoBehaviour
     [SerializeField] private AudioClip badFeedback;
     [SerializeField] private AudioClip cork;
     [SerializeField] private AudioClip corkPop;
+    [SerializeField] private AudioClip drinking;
     [SerializeField] private AudioSource oneShotPlayer;
 
     private void Init()
@@ -86,10 +87,11 @@ public class SoundEngine : MonoBehaviour
 
     private void Update()
     {
-        if (breaking && (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow)))
-        {
-            oneShotPlayer.PlayOneShot(cork);
-        }
+        if (!breaking || oneShotPlayer.isPlaying ||
+            ((!Input.GetKeyDown(KeyCode.LeftArrow) && !Input.GetKeyDown(KeyCode.RightArrow)))) return;
+        oneShotPlayer.pitch = InputHandler.InputAverage + .5f;
+        oneShotPlayer.PlayOneShot(cork);
+        // oneShotPlayer.pitch = 1;
     }
 
     protected virtual void OnRail()
@@ -107,7 +109,7 @@ public class SoundEngine : MonoBehaviour
             runPlayer.Pause();
         }
         
-        oneShotPlayer.PlayOneShot(enemyAppear);
+        oneShotPlayer.PlayOneShot(enemyAppear, .6f);
     }
 
     protected virtual void StartingBreak()
@@ -124,7 +126,10 @@ public class SoundEngine : MonoBehaviour
     protected virtual void WonBreak()
     {
         breaking = false;
-        oneShotPlayer.PlayOneShot(corkPop);
+        oneShotPlayer.pitch = 1f;
+        oneShotPlayer.PlayOneShot(corkPop, .3f);
+        
+        oneShotPlayer.PlayOneShot(drinking, 2f);
     }
 
     protected virtual void SettingUpMind()
