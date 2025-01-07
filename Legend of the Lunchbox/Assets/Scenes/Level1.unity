@@ -2473,6 +2473,8 @@ GameObject:
   - component: {fileID: 959961353}
   - component: {fileID: 959961354}
   - component: {fileID: 959961355}
+  - component: {fileID: 959961356}
+  - component: {fileID: 959961357}
   m_Layer: 0
   m_Name: Gamecontroller
   m_TagString: Untagged
@@ -2929,6 +2931,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 122946d81330d2b479e9910626282453, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &959961356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 959961329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b83080a4a0e747d1b500a16b8a7143b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  localizationFileName: LOTL.csv
+--- !u!114 &959961357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 959961329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f10ce7244da7945a66428fd98ba2c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textMeshProUGUI:
+  - {fileID: 1923068681}
+  - {fileID: 1872610465}
+  - {fileID: 731660932}
+  - {fileID: 663062291}
+  localeEntryId: 05000000060000000700000008000000
 --- !u!1 &962313184
 GameObject:
   m_ObjectHideFlags: 0

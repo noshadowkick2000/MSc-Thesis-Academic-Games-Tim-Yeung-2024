@@ -59,18 +59,18 @@ public class UIController : MonoBehaviour
     {
         thoughtUI.SetActive(true);
         controlIndicatorUI.SetActive(false);
-        thoughtWords.text = "Hmm.. ";
+        thoughtWords.text = TextHolder.GetLocaleEntry(0);
 
         switch (propertyType)
         {
             case TrialHandler.PropertyType.ACTION:
-                thoughtWords.text += "how would this be used?";
+                thoughtWords.text += TextHolder.GetLocaleEntry(1);
                 break;
             case TrialHandler.PropertyType.SOUND:
-                thoughtWords.text += "what would this sound like?";
+                thoughtWords.text += TextHolder.GetLocaleEntry(2);
                 break;
             case TrialHandler.PropertyType.WORD:
-                thoughtWords.text += "could this be...";
+                thoughtWords.text += TextHolder.GetLocaleEntry(3);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(propertyType), propertyType, null);
@@ -126,7 +126,7 @@ public class UIController : MonoBehaviour
 
     private IEnumerator AnimateShakePrompt()
     {
-        thoughtWords.text = "press LEFT and RIGHT rapidly to loosen the cork!";
+        thoughtWords.text = TextHolder.GetLocaleEntry(4);
         
         float startTime = Time.realtimeSinceStartup;
         float x = 0;
