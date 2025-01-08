@@ -16,11 +16,11 @@ namespace Assets
     [field: Header("Experimental Variables")]
     public static float EncounterStartTime { get; } = 0.5f;
 
-    public static float EnemyShowTime { get; } = 3f;
+    public static float EnemyShowTime { get; } = 1.5f;
 
-    public static float MindStartTime { get; } = .5f;
+    public static float MindStartTime { get; } = 1f;
 
-    public static float EnemyMindShowTime { get; } = 2f;
+    public static float EnemyMindShowTime { get; } = 4f;
 
     public static float MindPropertyTransitionTime { get; } = 4f;
 
@@ -28,7 +28,7 @@ namespace Assets
 
     public static float EnemyTimeOut { get; } = 4.0f;
 
-    public static float FeedbackTime { get; } = 1.0f;
+    public static float FeedbackTime { get; } = 1f;
 
     public static float EncounterStopTime { get; } = 5f;
 

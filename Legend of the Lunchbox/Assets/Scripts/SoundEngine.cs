@@ -16,6 +16,7 @@ public class SoundEngine : MonoBehaviour
     [SerializeField] private AudioClip worldDeform; 
     [SerializeField] private AudioClip goodFeedback;
     [SerializeField] private AudioClip badFeedback;
+    [SerializeField] private AudioClip foundDiscoverable;
     [SerializeField] private AudioClip cork;
     [SerializeField] private AudioClip corkPop;
     [SerializeField] private AudioClip drinking;
@@ -59,12 +60,12 @@ public class SoundEngine : MonoBehaviour
         GameEngine.BreakingBadStartedEvent += BreakingBad;
         GameEngine.WonBreakStartedEvent += WonBreak;
         GameEngine.SettingUpMindStartedEvent += SettingUpMind;
+        GameEngine.ShowingEnemyInMindStartedEvent += ShowingEnemyInMind;
         GameEngine.ShowingPropertyStartedEvent += ShowingProperty;
         GameEngine.AnswerCorrectStartedEvent += AnswerCorrect;
         GameEngine.AnswerWrongStartedEvent += AnswerWrong;
         GameEngine.WonEncounterStartedEvent += WonEncounter;
         GameEngine.LostEncounterStartedEvent += LostEncounter;
-        // GameEngine.EndingEncounterStartedEvent += EndingEncounter;
         GameEngine.EvaluatingEncounterStartedEvent += EvaluatingEncounter;
     }
   
@@ -76,12 +77,12 @@ public class SoundEngine : MonoBehaviour
         GameEngine.BreakingBadStartedEvent -= BreakingBad;
         GameEngine.WonBreakStartedEvent -= WonBreak;
         GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
+        GameEngine.ShowingEnemyInMindStartedEvent -= ShowingEnemyInMind;
         GameEngine.ShowingPropertyStartedEvent -= ShowingProperty;
         GameEngine.AnswerCorrectStartedEvent -= AnswerCorrect;
         GameEngine.AnswerWrongStartedEvent -= AnswerWrong;
         GameEngine.WonEncounterStartedEvent -= WonEncounter;
         GameEngine.LostEncounterStartedEvent -= LostEncounter;
-        // GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
         GameEngine.EvaluatingEncounterStartedEvent -= EvaluatingEncounter;
     }
 
@@ -109,7 +110,7 @@ public class SoundEngine : MonoBehaviour
             runPlayer.Pause();
         }
         
-        oneShotPlayer.PlayOneShot(enemyAppear, .6f);
+        oneShotPlayer.PlayOneShot(foundDiscoverable);
     }
 
     protected virtual void StartingBreak()
@@ -145,6 +146,11 @@ public class SoundEngine : MonoBehaviour
         }
         
         oneShotPlayer.PlayOneShot(enterMind);
+    }
+
+    protected virtual void ShowingEnemyInMind()
+    {
+        oneShotPlayer.PlayOneShot(enemyAppear, .6f);
     }
 
     protected virtual void ThinkingOfProperty(bool encounterOver)

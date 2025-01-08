@@ -70,22 +70,28 @@ public class ObjectMover : MonoBehaviour
         }
     }
     
-    protected IEnumerator GrowObject()
+    protected IEnumerator GrowObject(float duration, float startingScaleMultiplier, float scaleMultiplier, bool destroy)
     {
-        Vector3 startScale = mainObject.localScale;
-        mainObject.localScale = Vector3.zero;
+        Vector3 endScale = scaleMultiplier * mainObject.localScale;
+        Vector3 startScale = startingScaleMultiplier * mainObject.localScale;
+        mainObject.localScale = startScale;
     
         float startTime = Time.realtimeSinceStartup;
-        while (Time.realtimeSinceStartup < startTime + (GameEngine.EnemyShowTime/4f))
+        while (Time.realtimeSinceStartup < startTime + (duration))
         {
-            float x = (Time.realtimeSinceStartup - startTime) / (GameEngine.EnemyShowTime/4f);
+            float x = (Time.realtimeSinceStartup - startTime) / (duration);
             float y = MathT.EasedT(x);
-            mainObject.localScale = new Vector3(startScale.x * y, startScale.y * y, startScale.z * y);
+            mainObject.localScale = Vector3.Lerp(startScale, endScale, y);
 
             yield return null;
         }
     
-        mainObject.localScale = startScale;
+        mainObject.localScale = endScale;
+
+        if (!destroy) yield break;
+        
+        Destroy(mainObject.gameObject);
+        mainObject = null;
     }
 
     private IEnumerator TransitionObject(Vector3 position, Quaternion rotation, float duration, bool ease)

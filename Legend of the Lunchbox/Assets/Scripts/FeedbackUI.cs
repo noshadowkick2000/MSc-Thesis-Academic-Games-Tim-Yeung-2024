@@ -26,7 +26,7 @@ public class FeedbackUI : MonoBehaviour
     private void ShowPositiveFeedback()
     {
         feedbackUI.SetActive(true);
-        // feedbackAnimation.Play("feedbackCorrect");
+        feedbackAnimation.Play("feedbackCorrect");
 
         StartCoroutine(PlayPositive());
     }
@@ -49,8 +49,8 @@ public class FeedbackUI : MonoBehaviour
 
     private void ShowNegativeFeedback()
     {
-        // feedbackUI.SetActive(true);
-        // feedbackAnimation.Play("feedbackIncorrect");
+        feedbackUI.SetActive(true);
+        feedbackAnimation.Play("feedbackIncorrect");
     }
 
     private void RemoveFeedback()
