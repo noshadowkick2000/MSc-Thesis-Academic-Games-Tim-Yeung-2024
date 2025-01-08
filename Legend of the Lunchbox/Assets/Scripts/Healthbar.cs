@@ -3,13 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using Assets;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Healthbar : MonoBehaviour
 {
-    [SerializeField] private GameObject healthBar;
-    [SerializeField] private float maxFill = -1f;
-    [SerializeField] private float minFill = 2.7f;
-    [SerializeField] private Liquid liquidScript;
+    // [SerializeField] private GameObject healthBar;
+    // [SerializeField] private float maxFill = -1f;
+    // [SerializeField] private float minFill = 2.7f;
+    [SerializeField] private Slider slider;
     
     private GameEngine gameEngine;
     // private float range;
@@ -19,7 +20,7 @@ public class Healthbar : MonoBehaviour
         // range = Mathf.Abs(maxFill - minFill);
         gameEngine = FindObjectOfType<GameEngine>();
         
-        liquidScript.fillAmount = CalculateFill();
+        slider.value = CalculateFill();
         
         SubscribeToEvents();
     }
@@ -31,52 +32,28 @@ public class Healthbar : MonoBehaviour
     
     private void SubscribeToEvents()
     {
-        GameEngine.SettingUpMindStartedEvent += SettingUpMind;
-        GameEngine.BreakingBadStartedEvent += BreakingBad;
         GameEngine.WonBreakStartedEvent += WonBreak;
         GameEngine.LostEncounterStartedEvent += LostEncounter;
-        GameEngine.EndingEncounterStartedEvent += EndingEncounter;
     }
 
     private void UnsubscribeToEvents()
     {
-        GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
-        GameEngine.BreakingBadStartedEvent -= BreakingBad;
         GameEngine.WonBreakStartedEvent -= WonBreak;
         GameEngine.LostEncounterStartedEvent -= LostEncounter;
-        GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
     }
     
     private float CalculateFill()
     {
-        float ratio = ((float) gameEngine.TotalHealth / (float) gameEngine.MaxHealth);
-        return ratio * maxFill + (1 - ratio) * minFill;
-    }
-
-    protected virtual void EndingEncounter()
-    {
-        healthBar.SetActive(true);
-    }
-
-    protected virtual void SettingUpMind()
-    {
-        healthBar.SetActive(false);
-    }
-
-    protected virtual void BreakingBad()
-    {
-        SettingUpMind();
+        return ((float) gameEngine.TotalHealth / (float) gameEngine.MaxHealth);
     }
 
     protected virtual void WonBreak()
     {
-        healthBar.SetActive(true);
         StartCoroutine(AnimateBar(0, GameEngine.WonBreakTime));
     }
 
     protected virtual void LostEncounter()
     {
-        healthBar.SetActive(true);
         StartCoroutine(AnimateBar(GameEngine.EncounterStopTime / 4, GameEngine.EncounterStopTime * .75f));
     }
 
@@ -87,22 +64,18 @@ public class Healthbar : MonoBehaviour
         float startTime = Time.realtimeSinceStartup;
         float x = 0;
 
-        float start = liquidScript.fillAmount;
+        float start = slider.value;
         float goal = CalculateFill();
-
-        Quaternion startPos = healthBar.transform.rotation;
         
         while (x < 1)
         {
             float y = MathT.EasedT(x);
-            liquidScript.fillAmount = y * goal + (1-y) * start;
-            healthBar.transform.rotation = startPos * Quaternion.Euler(0, 0, Mathf.PerlinNoise1D(Time.realtimeSinceStartup));
+            slider.value = y * goal + (1-y) * start;
             x = (Time.realtimeSinceStartup - startTime) / duration;
 
             yield return null;
         }
-        
-        healthBar.transform.rotation = startPos;
-        liquidScript.fillAmount = goal;
+
+        slider.value = goal;
     }
 }

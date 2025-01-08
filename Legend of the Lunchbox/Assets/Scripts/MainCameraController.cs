@@ -120,7 +120,7 @@ public class MainCameraController : ObjectMover
   protected virtual void StartingBreak()
   {
     StopBobbingCamera();
-    ImmediateToObject(LocationHolder.DiscoverableCameraLocation);
+    // ImmediateToObject(LocationHolder.DiscoverableCameraLocation);
     SmoothToObject(LocationHolder.EnemyCameraLocation, GameEngine.EncounterStartTime, true);
   }
 
@@ -132,7 +132,7 @@ public class MainCameraController : ObjectMover
   protected virtual void StartingEncounter()
   {
     StopBobbingCamera();
-    ImmediateToObject(LocationHolder.DiscoverableCameraLocation);
+    // ImmediateToObject(LocationHolder.DiscoverableCameraLocation);
     SmoothToObject(LocationHolder.EnemyCameraLocation, GameEngine.EncounterStartTime, true);
   }
 

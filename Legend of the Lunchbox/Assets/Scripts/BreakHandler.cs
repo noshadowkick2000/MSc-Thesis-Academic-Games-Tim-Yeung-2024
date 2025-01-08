@@ -49,7 +49,7 @@ public class BreakHandler : ObjectMover
         mainObject.position = LocationHolder.PropertyLocation.position;
         mainObject.rotation = Quaternion.identity;
 
-        StartCoroutine(GrowObject());
+        StartCoroutine(GrowObject(GameEngine.EnemyShowTime/4f, 0, 1, false));
     }
 
     bool breaking = false;

@@ -20,7 +20,8 @@ public class UIController : MonoBehaviour
     [SerializeField] private Image scrambleImage;
     [FormerlySerializedAs("thoughtSprites")] [SerializeField] private Sprite[] scrambleSprites;
     [SerializeField] private GameObject controlIndicatorUI;
-    [SerializeField] private GameObject distractionUI;
+    [SerializeField] private RectTransform progressBarUI;
+    [SerializeField] private RectTransform imaginationBarUI;
     [SerializeField] private GameObject endScreen;
     [SerializeField] private Transform stencil;
     [SerializeField] private GameObject flashBang;
@@ -147,24 +148,6 @@ public class UIController : MonoBehaviour
         thoughtWords.color = Color.clear;
     }
 
-    private IEnumerator AnimateScramble()
-    {
-        int counter = 0;
-        float endTime = Time.realtimeSinceStartup + GameEngine.FeedbackTime;
-        
-        while (Time.realtimeSinceStartup < endTime)
-        {
-            scrambleImage.sprite = scrambleSprites[counter];
-            counter++;
-            if (counter == scrambleSprites.Length)
-                counter = 0;
-            
-            yield return new WaitForSecondsRealtime(.2f);
-        }
-        
-        scramble.SetActive(false);
-    }
-
     Coroutine timerRoutine;
 
     private void EndThought(float timeOut) 
@@ -197,7 +180,7 @@ public class UIController : MonoBehaviour
     private void SubscribeToEvents()
     {
         GameEngine.BreakingBadStartedEvent += BreakingBad;
-        GameEngine.ShowingEnemyStartedEvent += ShowingEnemy;
+        // GameEngine.ShowingEnemyStartedEvent += ShowingEnemy;
         GameEngine.SettingUpMindStartedEvent += SettingUpMind;
         GameEngine.ShowingEnemyInMindStartedEvent += ShowingEnemyInMind;
         GameEngine.MovingToPropertyStartedEvent += MovingToProperty;
@@ -216,7 +199,7 @@ public class UIController : MonoBehaviour
     private void UnsubscribeFromEvents()
     {
         GameEngine.BreakingBadStartedEvent -= BreakingBad;
-        GameEngine.ShowingEnemyStartedEvent -= ShowingEnemy;
+        // GameEngine.ShowingEnemyStartedEvent -= ShowingEnemy;
         GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
         GameEngine.ShowingEnemyInMindStartedEvent -= ShowingEnemyInMind;
         GameEngine.MovingToPropertyStartedEvent -= MovingToProperty;
@@ -234,7 +217,7 @@ public class UIController : MonoBehaviour
 
     protected virtual void BreakingBad()
     {
-        ShowingEnemy();
+        Flash();
         SettingUpMind();
         
         breakInstructions.SetActive(true);
@@ -248,11 +231,11 @@ public class UIController : MonoBehaviour
         breakInstructions.SetActive(false);
         mindUI.SetActive(false);
         thoughtUI.SetActive(false);
-        distractionUI.SetActive(true);
-        StartPinhole(true, GameEngine.PlayerReset);
+        // progressBarUI.SetActive(true);
+        // StartPinhole(true, GameEngine.PlayerReset);
     }
 
-    protected virtual void ShowingEnemy()
+    private void Flash()
     {
         flashBang.SetActive(true);
         StartCoroutine(FlashOff());
@@ -266,8 +249,8 @@ public class UIController : MonoBehaviour
     
     protected virtual void SettingUpMind()
     {
-        distractionUI.SetActive(false);
-        StartPinhole(false, GameEngine.MindStartTime);
+        LeanTween.moveY(progressBarUI,  + 50f, GameEngine.MindStartTime).setEaseInElastic();
+        LeanTween.moveY(imaginationBarUI, -100f, GameEngine.MindStartTime).setEaseInElastic();
     }
     
     protected virtual void MovingToProperty(TrialHandler.PropertyType propertyType)
@@ -303,22 +286,30 @@ public class UIController : MonoBehaviour
     protected virtual void ShowingEnemyInMind()
     {
         mindUI.SetActive(true);
+        Flash();
     }
 
     protected virtual void EvaluatingEncounter()
     {
         Idle();
-        StartPinhole(true, GameEngine.PlayerReset);
+        // StartPinhole(true, GameEngine.PlayerReset);
     }
 
+    private bool lostAnimation = false;
     protected virtual void LostEncounter()
     {
-        distractionUI.SetActive(true);
+        LeanTween.moveY(imaginationBarUI, 20f, GameEngine.MindStartTime).setEaseOutElastic();
+        lostAnimation = true;
     }
 
     protected virtual void EndingEncounter()
     {
-        distractionUI.SetActive(true);
+        LeanTween.moveY(progressBarUI,  -10f, GameEngine.MindStartTime).setEaseOutElastic();
+
+        if (lostAnimation)
+            lostAnimation = false;
+        else
+            LeanTween.moveY(imaginationBarUI, 20f, GameEngine.MindStartTime).setEaseOutElastic();
     }
 
     protected virtual void LevelOver()

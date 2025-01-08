@@ -24,11 +24,13 @@ public class ObjectAnimator : ObjectMover
    private void SubscribeToEvents()
    {
       TrialHandler.OnObjectSpawnedEvent += ObjectSpawned;
-      GameEngine.ShowingEnemyStartedEvent += ShowingEnemy;
+      GameEngine.SettingUpMindStartedEvent += SettingUpMind;
+      GameEngine.ShowingEnemyInMindStartedEvent += ShowingEnemyInMind;
       GameEngine.MovingToPropertyStartedEvent += MovingToProperty;
       GameEngine.MovingToEnemyStartedEvent += MovingToEnemy;
       GameEngine.AnswerCorrectStartedEvent += CorrectAnswer;
       GameEngine.AnswerWrongStartedEvent += WrongAnswer;
+      GameEngine.EvaluatingEncounterStartedEvent += EvaluatingEncounter;
       GameEngine.LostEncounterStartedEvent += LostEncounter;
       GameEngine.WonEncounterStartedEvent += WonEncounter;
    }
@@ -36,11 +38,13 @@ public class ObjectAnimator : ObjectMover
    private void UnsubscribeFromEvents()
    {
       TrialHandler.OnObjectSpawnedEvent -= ObjectSpawned;
-      GameEngine.ShowingEnemyStartedEvent -= ShowingEnemy;
+      GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
+      GameEngine.ShowingEnemyInMindStartedEvent -= ShowingEnemyInMind;
       GameEngine.MovingToPropertyStartedEvent -= MovingToProperty;
       GameEngine.MovingToEnemyStartedEvent -= MovingToEnemy;
       GameEngine.AnswerCorrectStartedEvent -= CorrectAnswer;
       GameEngine.AnswerWrongStartedEvent -= WrongAnswer;
+      GameEngine.EvaluatingEncounterStartedEvent -= EvaluatingEncounter;
       GameEngine.LostEncounterStartedEvent -= LostEncounter;
       GameEngine.WonEncounterStartedEvent -= WonEncounter;
    }
@@ -62,12 +66,16 @@ public class ObjectAnimator : ObjectMover
       // SmoothToObject(LocationHolder.EnemyLocation, GameEngine.EncounterStartTime, true);
       // StartCoroutine(GrowObject());
    }
-
-   protected virtual void ShowingEnemy()
+   
+   protected virtual void SettingUpMind()
    {
       objectMat.SetFloat("_t", 1);
+   }
+   
+   protected virtual void ShowingEnemyInMind()
+   {
       mainObject.gameObject.SetActive(true);
-      StartCoroutine(GrowObject());
+      StartCoroutine(Fade(true, GameEngine.EnemyMindShowTime / 10));
    }
 
    protected virtual void MovingToProperty(TrialHandler.PropertyType propertyType)
@@ -97,17 +105,22 @@ public class ObjectAnimator : ObjectMover
 
    protected virtual void MovingToEnemy()
    {
-      StartCoroutine(Fade(true, GameEngine.MindPropertyTransitionTime / 2));
+      // StartCoroutine(Fade(true, GameEngine.MindPropertyTransitionTime / 2));
    }
 
    protected virtual void CorrectAnswer()
    {
-      StartCoroutine(Nod(GameEngine.FeedbackTime, .1f, 2, true));
+      // StartCoroutine(Nod(GameEngine.FeedbackTime, .1f, 2, true));
    }
 
    protected virtual void WrongAnswer()
    {
-      StartCoroutine(Nod(GameEngine.FeedbackTime, .1f, 2, false));
+      // StartCoroutine(Nod(GameEngine.FeedbackTime, .1f, 2, false));
+   }
+
+   protected virtual void EvaluatingEncounter()
+   {
+      ShowingEnemyInMind();
    }
 
    protected virtual void WonEncounter()
@@ -122,7 +135,7 @@ public class ObjectAnimator : ObjectMover
 
    private IEnumerator LostAnimation()
    {
-      Vector3 randomVector = new Vector3(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
+      // Vector3 randomVector = new Vector3(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
       
       yield return new WaitForSecondsRealtime(1f);
 

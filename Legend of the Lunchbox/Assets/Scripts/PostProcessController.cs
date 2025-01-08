@@ -32,18 +32,20 @@ public class PostProcessController : MonoBehaviour
 
     private void SubscribeToEvents()
     {
-        // TrialHandler.OnObjectSpawnedEvent += ObjectSpawned;
-        GameEngine.ShowingEnemyStartedEvent += ShowingEnemy;
+        GameEngine.ShowingEnemyInMindStartedEvent += SettingUpMind;
+        GameEngine.StartingBreakStartedEvent += SettingUpMind;
         GameEngine.EndingEncounterStartedEvent += EndingEncounter;
         GameEngine.LostEncounterStartedEvent += LostEncounter;
+        GameEngine.EndingBreakStartedEvent += EndingEncounter;
     }
 
     private void UnsubscribeFromEvents()
     {
-        // TrialHandler.OnObjectSpawnedEvent -= ObjectSpawned;
-        GameEngine.ShowingEnemyStartedEvent -= ShowingEnemy;
+        GameEngine.ShowingEnemyInMindStartedEvent += SettingUpMind;
+        GameEngine.StartingBreakStartedEvent -= SettingUpMind;
         GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
         GameEngine.LostEncounterStartedEvent -= LostEncounter;
+        GameEngine.EndingBreakStartedEvent += EndingEncounter;
     }
 
     // protected virtual void ObjectSpawned(Transform property)
@@ -51,14 +53,14 @@ public class PostProcessController : MonoBehaviour
     //     dof.focusDistance.Override(property.position.z);
     // }
 
-    protected virtual void ShowingEnemy()
+    protected virtual void SettingUpMind()
     {
         dof.focalLength.Override(35f);
     }
 
     protected virtual void EndingEncounter()
     {
-        dof.focalLength.Override(25f);
+        dof.focalLength.Override(26);
     }
 
     protected virtual void LostEncounter()

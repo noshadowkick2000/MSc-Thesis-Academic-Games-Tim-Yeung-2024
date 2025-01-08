@@ -41,9 +41,9 @@ public class EnvironmentHandler : ObjectMover
     {
         GameEngine.OnRailStartedEvent += OnRail;
         GameEngine.StartingBreakStartedEvent += StartingBreak;
-        GameEngine.EndingBreakStartedEvent += BreakingBad;
+        GameEngine.BreakingBadStartedEvent += BreakingBad;
         GameEngine.StartingEncounterStartedEvent += StartingEncounter;
-        GameEngine.ShowingEnemyStartedEvent += ShowingEnemy;
+        GameEngine.SettingUpMindStartedEvent += SettingUpMind;
         GameEngine.LevelOverStartedEvent += LevelOver;
     }
     
@@ -51,9 +51,9 @@ public class EnvironmentHandler : ObjectMover
     {
         GameEngine.OnRailStartedEvent -= OnRail;
         GameEngine.StartingBreakStartedEvent -= StartingBreak;
-        GameEngine.EndingBreakStartedEvent -= BreakingBad;
+        GameEngine.BreakingBadStartedEvent -= BreakingBad;
         GameEngine.StartingEncounterStartedEvent -= StartingEncounter;
-        GameEngine.ShowingEnemyStartedEvent -= ShowingEnemy;
+        GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
         GameEngine.LevelOverStartedEvent -= LevelOver;
     }
     
@@ -70,19 +70,26 @@ public class EnvironmentHandler : ObjectMover
 
     protected virtual void BreakingBad()
     {
-        ShowingEnemy();
+        SettingUpMind();
     }
     
     protected virtual void StartingEncounter()
     {
         Moving = false;
         mainObject = spawnedDiscoverable.transform;
-        SmoothToObject(LocationHolder.EnemyCameraLocation, GameEngine.EncounterStartTime, true);
+        SmoothToObject(LocationHolder.DiscoverableLocation, GameEngine.EncounterStartTime, true);
     }
 
-    protected virtual void ShowingEnemy()
+    protected virtual void SettingUpMind()
+    {
+        mainObject.parent = Camera.main.transform;
+        StartCoroutine(GrowObject(GameEngine.MindStartTime, 1, 2, true));
+    }
+
+    private void DestroyDiscoverable()
     {
         Destroy(spawnedDiscoverable);
+        mainObject = null;
     }
 
     protected virtual void LevelOver()
