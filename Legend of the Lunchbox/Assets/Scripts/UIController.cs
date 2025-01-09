@@ -20,6 +20,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private Image scrambleImage;
     [FormerlySerializedAs("thoughtSprites")] [SerializeField] private Sprite[] scrambleSprites;
     [SerializeField] private GameObject controlIndicatorUI;
+    [SerializeField] private GameObject[] controlButtonUI;
     [SerializeField] private RectTransform progressBarUI;
     [SerializeField] private RectTransform imaginationBarUI;
     [SerializeField] private GameObject endScreen;
@@ -179,46 +180,52 @@ public class UIController : MonoBehaviour
 
     private void SubscribeToEvents()
     {
+        GameEngine.StartingBreakStartedEvent += StartingBreak;
         GameEngine.BreakingBadStartedEvent += BreakingBad;
-        // GameEngine.ShowingEnemyStartedEvent += ShowingEnemy;
         GameEngine.SettingUpMindStartedEvent += SettingUpMind;
         GameEngine.ShowingEnemyInMindStartedEvent += ShowingEnemyInMind;
         GameEngine.MovingToPropertyStartedEvent += MovingToProperty;
         GameEngine.ShowingPropertyStartedEvent += ShowingProperty;
         GameEngine.EvaluatingInputStartedEvent += EvaluatingInput;
         GameEngine.AnswerWrongStartedEvent += AnswerWrong;
-        GameEngine.TimedOutStartedEvent += TimedOut;
+        GameEngine.TrialInputRegisteredStartedEvent += TrialInputRegistered;
         GameEngine.MovingToEnemyStartedEvent += MovingToEnemy;
         GameEngine.EvaluatingEncounterStartedEvent += EvaluatingEncounter;
         GameEngine.EndingEncounterStartedEvent += EndingEncounter;
         GameEngine.LostEncounterStartedEvent += LostEncounter;
         GameEngine.WonBreakStartedEvent += WonBreak;
+        GameEngine.EndingBreakStartedEvent += EndingBreak;
         GameEngine.LevelOverStartedEvent += LevelOver;
     }
 
     private void UnsubscribeFromEvents()
     {
+        GameEngine.StartingBreakStartedEvent -= StartingBreak;
         GameEngine.BreakingBadStartedEvent -= BreakingBad;
-        // GameEngine.ShowingEnemyStartedEvent -= ShowingEnemy;
         GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
         GameEngine.ShowingEnemyInMindStartedEvent -= ShowingEnemyInMind;
         GameEngine.MovingToPropertyStartedEvent -= MovingToProperty;
         GameEngine.ShowingPropertyStartedEvent -= ShowingProperty;
         GameEngine.EvaluatingInputStartedEvent -= EvaluatingInput;
         GameEngine.AnswerWrongStartedEvent -= AnswerWrong;
-        GameEngine.TimedOutStartedEvent -= TimedOut;
+        GameEngine.TrialInputRegisteredStartedEvent -= TrialInputRegistered;
         GameEngine.MovingToEnemyStartedEvent -= MovingToEnemy;
         GameEngine.EvaluatingEncounterStartedEvent -= EvaluatingEncounter;
         GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
         GameEngine.LostEncounterStartedEvent -= LostEncounter;
         GameEngine.WonBreakStartedEvent -= WonBreak;
+        GameEngine.EndingBreakStartedEvent -= EndingBreak;
         GameEngine.LevelOverStartedEvent -= LevelOver;
+    }
+
+    protected virtual void StartingBreak()
+    {
+        SettingUpMind();
     }
 
     protected virtual void BreakingBad()
     {
         Flash();
-        SettingUpMind();
         
         breakInstructions.SetActive(true);
         mindUI.SetActive(true);
@@ -231,8 +238,13 @@ public class UIController : MonoBehaviour
         breakInstructions.SetActive(false);
         mindUI.SetActive(false);
         thoughtUI.SetActive(false);
-        // progressBarUI.SetActive(true);
-        // StartPinhole(true, GameEngine.PlayerReset);
+        
+        LostEncounter();
+    }
+
+    protected virtual void EndingBreak()
+    {
+        EndingEncounter();
     }
 
     private void Flash()
@@ -274,13 +286,20 @@ public class UIController : MonoBehaviour
         // StartCoroutine(AnimateScramble());
     }
 
-    protected virtual void TimedOut()
-    {
-    }
-
     protected virtual void MovingToEnemy()
     {
         controlIndicatorUI.SetActive(false);
+
+        foreach (var button in controlButtonUI)
+        {
+            button.transform.localScale = Vector3.one;
+        }
+    }
+    
+    private void TrialInputRegistered(InputHandler.InputState input)
+    {
+        int ind = (int)input - 1;
+        LeanTween.scale(controlButtonUI[ind], 1.1f * Vector3.one, .1f);
     }
 
     protected virtual void ShowingEnemyInMind()

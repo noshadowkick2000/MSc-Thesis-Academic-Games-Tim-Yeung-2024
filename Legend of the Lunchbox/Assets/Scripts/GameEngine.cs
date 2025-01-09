@@ -23,6 +23,8 @@ namespace Assets
     public static float EnemyMindShowTime { get; } = 4f;
 
     public static float MindPropertyTransitionTime { get; } = 4f;
+    
+    public static float PropertyMindTransitionTime { get; } = 2f;
 
     public static float PullingTime { get; } = 2f;
 
@@ -117,8 +119,9 @@ namespace Assets
     public static event StateChangeEventTyped MovingToPropertyStartedEvent;
     public static event StateChangeEvent ThinkingOfPropertyStartedEvent;
     public static event StateChangeEventCallback ShowingPropertyStartedEvent;
+    public static event StateChangeEventInput TrialInputRegisteredStartedEvent;
     public static event StateChangeEventInput EvaluatingInputStartedEvent;
-    public static event StateChangeEvent TimedOutStartedEvent;
+    public static event StateChangeEventInput TimedOutStartedEvent;
     public static event StateChangeEvent AnswerWrongStartedEvent;
     public static event StateChangeEvent AnswerCorrectStartedEvent;
     public static event StateChangeEvent MovingToEnemyStartedEvent;
@@ -225,12 +228,11 @@ namespace Assets
       StartCoroutine(Timer(PullingTime, ShowingProperty));
     }
     
-    Coroutine timerRoutine;
     private void ShowingProperty()
     {
       ShowingPropertyStartedEvent?.Invoke(EvaluatingInput);
       
-      timerRoutine = StartCoroutine(Timer(EnemyTimeOut, TimedOut));
+      StartCoroutine(Timer(EnemyTimeOut, TimedOut));
     }
     
     // private void InputAvailable(InputHandler.InputState input)
@@ -238,21 +240,27 @@ namespace Assets
     //   EvaluatingInput(input);
     // }
 
+    private InputHandler.InputState currentInput;
     private void EvaluatingInput(InputHandler.InputState input)
     {
-      EvaluatingInputStartedEvent?.Invoke(input);
+      currentInput = input;
       
-      StopCoroutine(timerRoutine);
-      timerRoutine = null;
-
-      MovingToEnemy(trialHandler.EvaluateProperty(input));
+      TrialInputRegisteredStartedEvent?.Invoke(input);
     }
 
     private void TimedOut()
     {
-      TimedOutStartedEvent?.Invoke();
+      bool correct = false;
+      if (currentInput == InputHandler.InputState.NONE)
+        TimedOutStartedEvent?.Invoke(currentInput);
+      else
+      {
+        EvaluatingInputStartedEvent?.Invoke(currentInput);
+        correct = trialHandler.EvaluateProperty(currentInput);
+      }
 
-      MovingToEnemy(false);
+      MovingToEnemy(correct);
+      currentInput = InputHandler.InputState.NONE;
     }
     
     private void MovingToEnemy(bool answerCorrect)
@@ -260,9 +268,9 @@ namespace Assets
       MovingToEnemyStartedEvent?.Invoke();
       
       if (answerCorrect)
-        StartCoroutine(Timer(MindPropertyTransitionTime, AnswerCorrect));
+        StartCoroutine(Timer(PropertyMindTransitionTime, AnswerCorrect));
       else
-        StartCoroutine(Timer(MindPropertyTransitionTime, AnswerWrong));
+        StartCoroutine(Timer(PropertyMindTransitionTime, AnswerWrong));
     }
     
     private void AnswerWrong()

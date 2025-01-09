@@ -194,10 +194,7 @@ public class TrialHandler : MonoBehaviour
   {
     int propid = encounters[encounterCounter].GetCurrentPropertyId();
     Transform property = objectDictionary[propid];
-    property.gameObject.SetActive(true);
-    float offset = Vector3.Distance(LocationHolder.PropertyLocation.position, LocationHolder.MindCameraLocation.position);
-    property.position = (offset * PropertyCameraController.PropertyCamTransform.forward) + PropertyCameraController.PropertyCamTransform.position;
-    StartCoroutine(ActivateProperty(property));
+    
     OnPropertySpawnedEvent?.Invoke(property);
   }
 
@@ -209,75 +206,14 @@ public class TrialHandler : MonoBehaviour
   /// <returns></returns>
   public bool EvaluateProperty(InputHandler.InputState input)
   {
-    StartCoroutine(DeActivateProperty(input)); // Fix
-    // int propid = encounters[encounterCounter].GetCurrentPropertyId();
-    // objectDictionary[propid].gameObject.SetActive(false);
-    
+    // StartCoroutine(DeSpawnProperty());
     return encounters[encounterCounter].EvaluateInput(input == InputHandler.InputState.USING);
   }
 
   private void SkipProperty()
   {
-    StartCoroutine(DeActivateProperty(InputHandler.InputState.NONE));
-    // int propid = encounters[encounterCounter].GetCurrentPropertyId();
-    // objectDictionary[propid].gameObject.SetActive(false);
-    
+    // StartCoroutine(DeSpawnProperty());
     encounters[encounterCounter].SkipProperty();
-  }
-
-  private IEnumerator ActivateProperty(Transform property)
-  {
-    float duration = .2f;
-  
-    Vector3 startScale = property.localScale;
-    Quaternion startRotation = property.rotation;
-    Quaternion randomRotation = property.rotation * Quaternion.Euler(Random.Range(20f, 30f), 0, Random.Range(20f, 30f)); 
-    property.localScale = Vector3.zero;
-    
-    float startTime = Time.realtimeSinceStartup;
-    while (Time.realtimeSinceStartup < startTime + duration)
-    {
-      float x = (Time.realtimeSinceStartup - startTime) / duration;
-      float y = MathT.EasedT(x);
-      property.localScale = new Vector3(startScale.x * y, startScale.y * y, startScale.z * y);
-      property.rotation = Quaternion.Lerp(randomRotation, startRotation, y);
-      yield return null;
-    }
-    
-    property.localScale = startScale;
-    property.rotation = startRotation;
-  }
-
-  private IEnumerator DeActivateProperty(InputHandler.InputState input)
-  {
-    int propid = encounters[encounterCounter].GetCurrentPropertyId();
-    Transform property = objectDictionary[propid];
-    float duration = GameEngine.MindPropertyTransitionTime / 2;
-
-    // if (input != InputHandler.InputState.USING)
-    // {
-    //   Vector3 basePosition = property.position;
-    //   
-    //   float movement = Random.Range(0.02f, 0.06f);
-    //   float direction = Random.Range(0, 2) == 0 ? -1 : 1;
-    //
-    //   float startTime = Time.realtimeSinceStartup;
-    //   while (Time.realtimeSinceStartup < startTime + duration)
-    //   {
-    //     float x = (Time.realtimeSinceStartup - startTime) / duration;
-    //     // property.localScale = new Vector3(x, x, x);
-    //     if (input != InputHandler.InputState.NONE)
-    //       property.position = basePosition +
-    //                           new Vector3(property.position.x + direction * movement * x, (-4 * MathF.Pow(x - .25f, 2) + .25f), 0);
-    //     yield return null;
-    //   }
-    // }
-    // else
-    // {
-      yield return new WaitForSecondsRealtime(duration);
-    // }
-
-    property.gameObject.SetActive(false);
   }
 
   public void DamageEncounter()
@@ -343,9 +279,10 @@ public class TrialHandler : MonoBehaviour
     SpawnProperty();
   }
 
-  protected virtual void TimedOut()
+  protected virtual void TimedOut(InputHandler.InputState input)
   {
-    SkipProperty();
+    if (input == InputHandler.InputState.NONE) 
+      SkipProperty();
   }
 
   protected virtual void AnswerCorrect()

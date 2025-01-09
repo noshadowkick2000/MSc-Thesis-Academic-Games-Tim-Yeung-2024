@@ -93,7 +93,7 @@ public class InputHandler : MonoBehaviour
         inputCallback = callback;
     }
 
-    protected virtual void TimedOut()
+    protected virtual void TimedOut(InputState input)
     {
         acceptingInput = InputType.NONE;
     }
