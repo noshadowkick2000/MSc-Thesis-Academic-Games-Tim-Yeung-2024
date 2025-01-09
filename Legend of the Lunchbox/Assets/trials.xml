@@ -1,6 +1,6 @@
 <root>
     <level>
-        <encounter enemy="hammer" health="2" wait="20000">
+        <encounter enemy="hammer" health="2" wait="2000">
             <property correct="true" type="0">hammering</property>
             <property correct="true" type="1">hammersound</property>
         </encounter>

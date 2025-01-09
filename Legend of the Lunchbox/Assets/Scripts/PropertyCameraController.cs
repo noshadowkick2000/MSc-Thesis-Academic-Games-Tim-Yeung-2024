@@ -51,6 +51,6 @@ public class PropertyCameraController : ObjectMover
 
     protected virtual void MovingToEnemy()
     {
-        SmoothToObject(LocationHolder.MindCameraLocation, GameEngine.MindPropertyTransitionTime, true);
+        SmoothToObject(LocationHolder.MindCameraLocation, GameEngine.PropertyMindTransitionTime, true);
     }
 }

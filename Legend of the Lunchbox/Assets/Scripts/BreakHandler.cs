@@ -25,7 +25,7 @@ public class BreakHandler : ObjectMover
 
     private void SubscribeToEvents()
     {
-        GameEngine.StartingBreakStartedEvent += StartingBreak;
+        // GameEngine.StartingBreakStartedEvent += StartingBreak;
         GameEngine.BreakingBadStartedEvent += BreakingBad;
         GameEngine.WonBreakStartedEvent += WonBreak;
         GameEngine.EndingBreakStartedEvent += EndingBreak;
@@ -34,7 +34,7 @@ public class BreakHandler : ObjectMover
 
     private void UnsubscribeToEvents()
     {
-        GameEngine.StartingBreakStartedEvent -= StartingBreak;
+        // GameEngine.StartingBreakStartedEvent -= StartingBreak;
         GameEngine.BreakingBadStartedEvent -= BreakingBad;
         GameEngine.WonBreakStartedEvent -= WonBreak;
         GameEngine.EndingBreakStartedEvent -= EndingBreak;
@@ -55,6 +55,7 @@ public class BreakHandler : ObjectMover
     bool breaking = false;
     protected virtual void BreakingBad()
     {
+        StartingBreak();
         breaking = true;
     }
 

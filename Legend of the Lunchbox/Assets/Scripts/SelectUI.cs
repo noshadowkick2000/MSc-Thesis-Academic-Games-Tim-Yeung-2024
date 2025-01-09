@@ -62,7 +62,7 @@ public class SelectUI : MonoBehaviour
             y = 1 - MathF.Pow(x, 16);
             circleColor.a = y;
             circleRenderer.color = circleColor;
-            x = (Time.realtimeSinceStartup - startTime) / (GameEngine.MindPropertyTransitionTime / 2);
+            x = (Time.realtimeSinceStartup - startTime) / (GameEngine.PropertyMindTransitionTime);
             
             yield return null;
         }
@@ -88,7 +88,7 @@ public class SelectUI : MonoBehaviour
             y = 1 - MathF.Pow(x, 16);
             circleColor.a = y;
             circleRenderer.color = circleColor;
-            x = (Time.realtimeSinceStartup - startTime) / (GameEngine.MindPropertyTransitionTime / 2);
+            x = (Time.realtimeSinceStartup - startTime) / (GameEngine.PropertyMindTransitionTime);
             
             yield return null;
         }
