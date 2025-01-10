@@ -41,7 +41,7 @@ public class FeedbackUI : MonoBehaviour
         {
             y = MathT.EasedT(x) * 4f;
             burstLines.localScale = new Vector3(y, y, y);
-            x = (Time.realtimeSinceStartup - startTime) / GameEngine.FeedbackTime;
+            x = (Time.realtimeSinceStartup - startTime) / GameEngine.StaticTimeVariables.TrialFeedbackDuration;
 
             yield return null;
         }

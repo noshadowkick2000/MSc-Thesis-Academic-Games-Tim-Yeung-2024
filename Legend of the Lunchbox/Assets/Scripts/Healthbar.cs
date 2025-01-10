@@ -49,12 +49,12 @@ public class Healthbar : MonoBehaviour
 
     protected virtual void WonBreak()
     {
-        StartCoroutine(AnimateBar(0, GameEngine.WonBreakTime));
+        StartCoroutine(AnimateBar(0, GameEngine.StaticTimeVariables.BreakFeedbackDuration));
     }
 
     protected virtual void LostEncounter()
     {
-        StartCoroutine(AnimateBar(GameEngine.EncounterStopTime / 4, GameEngine.EncounterStopTime * .75f));
+        StartCoroutine(AnimateBar(GameEngine.StaticTimeVariables.EncounterEvaluationDuration / 4, GameEngine.StaticTimeVariables.EncounterEvaluationDuration * .75f));
     }
 
     private IEnumerator AnimateBar(float delay, float duration)

@@ -13,35 +13,31 @@ namespace Assets
   [RequireComponent(typeof(TrialHandler))]
   public class GameEngine : MonoBehaviour
   {
-    [field: Header("Experimental Variables")]
-    public static float EncounterStartTime { get; } = 0.5f;
+    public class TimingData
+    {
+      public float EncounterStartDuration { get; set; }
+      public float EncounterDiscoverableDuration { get; set; }
+      public float EncounterTrialStartDuration { get; set; }
 
-    public static float EnemyShowTime { get; } = 1.5f;
+      public float ExplanationPromptDuration { get; set; }
+      public float FixationDuration { get; set; }
+      public float TrialDuration { get; set; }
+      public float TrialEndDuration { get; set; }
+      public float TrialFeedbackDuration { get; set; }
+      public float EncounterEvaluationDuration { get; set; }
+      public float EncounterEndDuration { get; set; }
 
-    public static float MindStartTime { get; } = 1f;
+      public float BreakDuration { get; set; }
+      public float BreakFeedbackDuration { get; set; }
+
+      public float LevelTransitionDuration { get; set; }
+    }
+    
+    public static TimingData StaticTimeVariables;
 
     public static float EnemyMindShowTime { get; } = 4f;
 
-    public static float MindPropertyTransitionTime { get; } = 4f;
-    
-    public static float PropertyMindTransitionTime { get; } = 2f;
-
-    public static float PullingTime { get; } = 2f;
-
-    public static float EnemyTimeOut { get; } = 4.0f;
-
-    public static float FeedbackTime { get; } = 1f;
-
-    public static float EncounterStopTime { get; } = 5f;
-
-    public static float PlayerReset { get; } = 2f;
-    
-    public static float BreakTimeOut { get; } = 5f;
-    public static float WonBreakTime { get; } = 4f;
-
-    public static float LevelOverTime { get; } = 3f;
-
-    public static float RailDuration { get; private set; }
+    public static float CurrentRailDuration { get; private set; }
 
 
     [Header("Assets")]
@@ -149,28 +145,28 @@ namespace Assets
 
     private void OnRail()
     { 
-      RailDuration = trialHandler.GetCurrentWaitTime();
+      CurrentRailDuration = trialHandler.GetCurrentWaitTime();
       
       OnRailStartedEvent?.Invoke();
       
       if (trialHandler.EncounterIsObject())
-        StartCoroutine(Timer(RailDuration, StartingEncounter));
+        StartCoroutine(Timer(CurrentRailDuration, StartingEncounter));
       else
-        StartCoroutine(Timer(RailDuration, StartingBreak));
+        StartCoroutine(Timer(CurrentRailDuration, StartingBreak));
     }
 
     private void StartingBreak()
     {
       StartingBreakStartedEvent?.Invoke();
       
-      StartCoroutine(Timer(EncounterStartTime, BreakingBad));
+      StartCoroutine(Timer(StaticTimeVariables.EncounterStartDuration, BreakingBad));
     }
 
     private void BreakingBad()
     {
       BreakingBadStartedEvent?.Invoke();
 
-      StartCoroutine(Timer(BreakTimeOut, WonBreak));
+      StartCoroutine(Timer(StaticTimeVariables.BreakDuration, WonBreak));
     }
 
     private void WonBreak()
@@ -179,28 +175,28 @@ namespace Assets
       
       WonBreakStartedEvent?.Invoke();
 
-      StartCoroutine(Timer(WonBreakTime, EndingBreak));
+      StartCoroutine(Timer(StaticTimeVariables.BreakFeedbackDuration, EndingBreak));
     }
 
     private void StartingEncounter()
     {
       StartingEncounterStartedEvent?.Invoke();
 
-      StartCoroutine(Timer(EncounterStartTime, ShowingEnemy));
+      StartCoroutine(Timer(StaticTimeVariables.EncounterStartDuration, ShowingEnemy));
     }
 
     private void ShowingEnemy()
     {
       ShowingEnemyStartedEvent?.Invoke();
       
-      StartCoroutine(Timer(EnemyShowTime, SettingUpMind));
+      StartCoroutine(Timer(StaticTimeVariables.EncounterDiscoverableDuration, SettingUpMind));
     }
 
     private void SettingUpMind()
     {
       SettingUpMindStartedEvent?.Invoke();
       
-      StartCoroutine(Timer(MindStartTime, ShowingEnemyInMind));
+      StartCoroutine(Timer(StaticTimeVariables.EncounterTrialStartDuration, ShowingEnemyInMind));
     }
 
     private void ShowingEnemyInMind()
@@ -218,21 +214,21 @@ namespace Assets
     {
       MovingToPropertyStartedEvent?.Invoke(trialHandler.GetCurrentEncounterType());
 
-      StartCoroutine(Timer(MindPropertyTransitionTime, ThinkingOfProperty));
+      StartCoroutine(Timer(StaticTimeVariables.ExplanationPromptDuration, ThinkingOfProperty));
     }
     
     private void ThinkingOfProperty()
     {
       ThinkingOfPropertyStartedEvent?.Invoke();
       
-      StartCoroutine(Timer(PullingTime, ShowingProperty));
+      StartCoroutine(Timer(StaticTimeVariables.FixationDuration, ShowingProperty));
     }
     
     private void ShowingProperty()
     {
       ShowingPropertyStartedEvent?.Invoke(EvaluatingInput);
       
-      StartCoroutine(Timer(EnemyTimeOut, TimedOut));
+      StartCoroutine(Timer(StaticTimeVariables.TrialDuration, TimedOut));
     }
     
     // private void InputAvailable(InputHandler.InputState input)
@@ -268,23 +264,23 @@ namespace Assets
       MovingToEnemyStartedEvent?.Invoke();
       
       if (answerCorrect)
-        StartCoroutine(Timer(PropertyMindTransitionTime, AnswerCorrect));
+        StartCoroutine(Timer(StaticTimeVariables.TrialEndDuration, AnswerCorrect));
       else
-        StartCoroutine(Timer(PropertyMindTransitionTime, AnswerWrong));
+        StartCoroutine(Timer(StaticTimeVariables.TrialEndDuration, AnswerWrong));
     }
     
     private void AnswerWrong()
     {
       AnswerWrongStartedEvent?.Invoke();
       
-      StartCoroutine(Timer(FeedbackTime, ShowingEnemyInMind));
+      StartCoroutine(Timer(StaticTimeVariables.TrialFeedbackDuration, ShowingEnemyInMind));
     }
 
     private void AnswerCorrect()
     {
       AnswerCorrectStartedEvent?.Invoke();
       
-      StartCoroutine(Timer(FeedbackTime, ShowingEnemyInMind));
+      StartCoroutine(Timer(StaticTimeVariables.TrialFeedbackDuration, ShowingEnemyInMind));
     }
 
     private void EvaluatingEncounter()
@@ -303,7 +299,7 @@ namespace Assets
     {
       WonEncounterStartedEvent?.Invoke();
       
-      StartCoroutine(Timer(EncounterStopTime, EndingEncounter));
+      StartCoroutine(Timer(StaticTimeVariables.EncounterEvaluationDuration, EndingEncounter));
     }
 
     private void LostEncounter()
@@ -312,7 +308,7 @@ namespace Assets
       
       LostEncounterStartedEvent?.Invoke();
       
-      StartCoroutine(Timer(EncounterStopTime, EndingEncounter));
+      StartCoroutine(Timer(StaticTimeVariables.EncounterEvaluationDuration, EndingEncounter));
     }
 
     private void EndingEncounter()
@@ -322,12 +318,12 @@ namespace Assets
       if (PlayerIsDead())
       { 
         Logger.Log("Played died");
-        StartCoroutine(Timer(PlayerReset, CutScene)); // TODO animations etc
+        StartCoroutine(Timer(StaticTimeVariables.EncounterEndDuration, CutScene)); // TODO animations etc
       }
       else if (trialHandler.LevelOver)
-        StartCoroutine(Timer(PlayerReset, LevelOver));
+        StartCoroutine(Timer(StaticTimeVariables.EncounterEndDuration, LevelOver));
       else
-        StartCoroutine(Timer(PlayerReset, OnRail));
+        StartCoroutine(Timer(StaticTimeVariables.EncounterEndDuration, OnRail));
     }
 
     private void EndingBreak()
@@ -335,9 +331,9 @@ namespace Assets
       EndingBreakStartedEvent?.Invoke();
       
       if (trialHandler.LevelOver)
-        StartCoroutine(Timer(PlayerReset, LevelOver));
+        StartCoroutine(Timer(StaticTimeVariables.EncounterEndDuration, LevelOver));
       else
-        StartCoroutine(Timer(PlayerReset, OnRail));
+        StartCoroutine(Timer(StaticTimeVariables.EncounterEndDuration, OnRail));
     }
 
     private void LevelOver()

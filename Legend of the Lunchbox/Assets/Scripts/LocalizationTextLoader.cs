@@ -10,7 +10,7 @@ using Unity.VisualScripting;
 
 namespace Assets
 {
-    public class TextHolder : MonoBehaviour
+    public class LocalizationTextLoader : MonoBehaviour
     {
         [SerializeField] private string localizationFileName;
         private static LocaleEntry[] localeEntries;

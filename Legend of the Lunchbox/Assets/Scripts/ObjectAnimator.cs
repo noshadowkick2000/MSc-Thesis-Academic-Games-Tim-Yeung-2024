@@ -63,7 +63,7 @@ public class ObjectAnimator : ObjectMover
       mainObject.gameObject.SetActive(false);
       
       // ImmediateToObject(LocationHolder.EnemyLocation.position + Vector3.down, mainObject.transform.rotation);
-      // SmoothToObject(LocationHolder.EnemyLocation, GameEngine.EncounterStartTime, true);
+      // SmoothToObject(LocationHolder.EnemyLocation, GameEngine.StaticTimeVariables.EncounterStartDuration, true);
       // StartCoroutine(GrowObject());
    }
    
@@ -80,7 +80,7 @@ public class ObjectAnimator : ObjectMover
 
    protected virtual void MovingToProperty(TrialHandler.PropertyType propertyType)
    {
-      StartCoroutine(Fade(false, GameEngine.MindPropertyTransitionTime / 6));
+      StartCoroutine(Fade(false, GameEngine.StaticTimeVariables.ExplanationPromptDuration / 6));
    }
 
    private IEnumerator Fade(bool fadingIn, float duration)
@@ -105,17 +105,17 @@ public class ObjectAnimator : ObjectMover
 
    protected virtual void MovingToEnemy()
    {
-      // StartCoroutine(Fade(true, GameEngine.MindPropertyTransitionTime / 2));
+      // StartCoroutine(Fade(true, GameEngine.StaticTimeVariables.ExplanationPromptDuration / 2));
    }
 
    protected virtual void CorrectAnswer()
    {
-      // StartCoroutine(Nod(GameEngine.FeedbackTime, .1f, 2, true));
+      // StartCoroutine(Nod(GameEngine.StaticTimeVariables.TrialFeedbackDuration, .1f, 2, true));
    }
 
    protected virtual void WrongAnswer()
    {
-      // StartCoroutine(Nod(GameEngine.FeedbackTime, .1f, 2, false));
+      // StartCoroutine(Nod(GameEngine.StaticTimeVariables.TrialFeedbackDuration, .1f, 2, false));
    }
 
    protected virtual void EvaluatingEncounter()
@@ -146,7 +146,7 @@ public class ObjectAnimator : ObjectMover
    {
       float startTime = Time.realtimeSinceStartup;
       float t = 0f;
-      float duration = GameEngine.EncounterStopTime * .3f;
+      float duration = GameEngine.StaticTimeVariables.EncounterEvaluationDuration * .3f;
 
       while (t < 1)
       {
@@ -166,7 +166,7 @@ public class ObjectAnimator : ObjectMover
       float h = 0;
       startTime = Time.realtimeSinceStartup;
       t = 0f;
-      duration = GameEngine.EncounterStopTime * .7f;
+      duration = GameEngine.StaticTimeVariables.EncounterEvaluationDuration * .7f;
       int repetitions = 10;
       float maxSpeed = 2f;
       

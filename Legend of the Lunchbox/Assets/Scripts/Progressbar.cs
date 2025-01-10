@@ -48,11 +48,11 @@ public class Progressbar : MonoBehaviour
         float startTime = Time.realtimeSinceStartup;
         float x = 0;
         float startProgress = progress;
-        float addedProgress = GameEngine.RailDuration / total;
+        float addedProgress = GameEngine.CurrentRailDuration / total;
             
         while (x < 1)
         {
-            x = (Time.realtimeSinceStartup - startTime) / GameEngine.RailDuration;
+            x = (Time.realtimeSinceStartup - startTime) / GameEngine.CurrentRailDuration;
             float y = x * addedProgress;
 
             progress = startProgress + y;

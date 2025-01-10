@@ -29,7 +29,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private Image timerUI;
     [SerializeField] private GameObject breakInstructions;
     
-    void Awake()
+    void Start()
     {
         thoughtUI.SetActive(false);
         mindUI.SetActive(false);
@@ -38,8 +38,11 @@ public class UIController : MonoBehaviour
         scramble.SetActive(false);
         breakInstructions.SetActive(false);
 
-        StartPinhole(true, GameEngine.LevelOverTime);
-        
+        StartPinhole(true, GameEngine.StaticTimeVariables.LevelTransitionDuration);
+    }
+
+    private void Awake()
+    {
         SubscribeToEvents();
     }
 
@@ -61,18 +64,18 @@ public class UIController : MonoBehaviour
     {
         thoughtUI.SetActive(true);
         controlIndicatorUI.SetActive(false);
-        thoughtWords.text = TextHolder.GetLocaleEntry(0);
+        thoughtWords.text = LocalizationTextLoader.GetLocaleEntry(0);
 
         switch (propertyType)
         {
             case TrialHandler.PropertyType.ACTION:
-                thoughtWords.text += TextHolder.GetLocaleEntry(1);
+                thoughtWords.text += LocalizationTextLoader.GetLocaleEntry(1);
                 break;
             case TrialHandler.PropertyType.SOUND:
-                thoughtWords.text += TextHolder.GetLocaleEntry(2);
+                thoughtWords.text += LocalizationTextLoader.GetLocaleEntry(2);
                 break;
             case TrialHandler.PropertyType.WORD:
-                thoughtWords.text += TextHolder.GetLocaleEntry(3);
+                thoughtWords.text += LocalizationTextLoader.GetLocaleEntry(3);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(propertyType), propertyType, null);
@@ -101,7 +104,7 @@ public class UIController : MonoBehaviour
             y = x < .5f ? 1 - Mathf.Pow(x-1, power) : 1 - Mathf.Pow(x, power);
             a.a = y;
             thoughtWords.color = a;
-            x = (Time.realtimeSinceStartup - startTime) / GameEngine.MindPropertyTransitionTime;
+            x = (Time.realtimeSinceStartup - startTime) / GameEngine.StaticTimeVariables.ExplanationPromptDuration;
 
             yield return null;
         }
@@ -115,7 +118,7 @@ public class UIController : MonoBehaviour
             y = x < .5f ? 1 - Mathf.Pow(x-1, power) : 1 - Mathf.Pow(x, power);
             a.a = y;
             thoughtWords.color = a;
-            x = (Time.realtimeSinceStartup - startTime) / GameEngine.PullingTime;
+            x = (Time.realtimeSinceStartup - startTime) / GameEngine.StaticTimeVariables.FixationDuration;
 
             if (x > .66f)
                 thoughtWords.text = "...";
@@ -128,7 +131,7 @@ public class UIController : MonoBehaviour
 
     private IEnumerator AnimateShakePrompt()
     {
-        thoughtWords.text = TextHolder.GetLocaleEntry(4);
+        thoughtWords.text = LocalizationTextLoader.GetLocaleEntry(4);
         
         float startTime = Time.realtimeSinceStartup;
         float x = 0;
@@ -141,7 +144,7 @@ public class UIController : MonoBehaviour
             y = x < .5f ? 1 - Mathf.Pow(x-1, power) : 1 - Mathf.Pow(x, power);
             a.a = y;
             thoughtWords.color = a;
-            x = (Time.realtimeSinceStartup - startTime) / (GameEngine.BreakTimeOut / 2f);
+            x = (Time.realtimeSinceStartup - startTime) / (GameEngine.StaticTimeVariables.BreakDuration / 2f);
 
             yield return null;
         }
@@ -261,8 +264,8 @@ public class UIController : MonoBehaviour
     
     protected virtual void SettingUpMind()
     {
-        LeanTween.moveY(progressBarUI,  + 50f, GameEngine.MindStartTime).setEaseInElastic();
-        LeanTween.moveY(imaginationBarUI, -100f, GameEngine.MindStartTime).setEaseInElastic();
+        LeanTween.moveY(progressBarUI,  + 50f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseInElastic();
+        LeanTween.moveY(imaginationBarUI, -100f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseInElastic();
     }
     
     protected virtual void MovingToProperty(TrialHandler.PropertyType propertyType)
@@ -272,7 +275,7 @@ public class UIController : MonoBehaviour
 
     protected virtual void ShowingProperty(Action<InputHandler.InputState> callback)
     {
-        EndThought(GameEngine.EnemyTimeOut);
+        EndThought(GameEngine.StaticTimeVariables.TrialDuration);
     }
 
     protected virtual void EvaluatingInput(InputHandler.InputState input)
@@ -311,29 +314,29 @@ public class UIController : MonoBehaviour
     protected virtual void EvaluatingEncounter()
     {
         Idle();
-        // StartPinhole(true, GameEngine.PlayerReset);
+        // StartPinhole(true, GameEngine.StaticTimeVariables.EncounterEndDuration);
     }
 
     private bool lostAnimation = false;
     protected virtual void LostEncounter()
     {
-        LeanTween.moveY(imaginationBarUI, 20f, GameEngine.MindStartTime).setEaseOutElastic();
+        LeanTween.moveY(imaginationBarUI, 20f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseOutElastic();
         lostAnimation = true;
     }
 
     protected virtual void EndingEncounter()
     {
-        LeanTween.moveY(progressBarUI,  -10f, GameEngine.MindStartTime).setEaseOutElastic();
+        LeanTween.moveY(progressBarUI,  -10f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseOutElastic();
 
         if (lostAnimation)
             lostAnimation = false;
         else
-            LeanTween.moveY(imaginationBarUI, 20f, GameEngine.MindStartTime).setEaseOutElastic();
+            LeanTween.moveY(imaginationBarUI, 20f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseOutElastic();
     }
 
     protected virtual void LevelOver()
     {
-        StartPinhole(false, GameEngine.LevelOverTime);
+        StartPinhole(false, GameEngine.StaticTimeVariables.LevelTransitionDuration);
     }
 
     private IEnumerator AnimatePinhole(bool opening, float duration)

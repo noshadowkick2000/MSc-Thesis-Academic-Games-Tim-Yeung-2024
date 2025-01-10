@@ -2515,10 +2515,10 @@ GameObject:
   - component: {fileID: 959961351}
   - component: {fileID: 959961353}
   - component: {fileID: 959961354}
-  - component: {fileID: 959961355}
   - component: {fileID: 959961356}
   - component: {fileID: 959961357}
   - component: {fileID: 959961358}
+  - component: {fileID: 959961359}
   m_Layer: 0
   m_Name: Gamecontroller
   m_TagString: Untagged
@@ -2965,18 +2965,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainObject: {fileID: 0}
   potion: {fileID: 6785390839495002921, guid: 39246f229a4cdb34dbe8d093b14b90bf, type: 3}
---- !u!114 &959961355
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 959961329}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 122946d81330d2b479e9910626282453, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &959961356
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2989,7 +2977,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b83080a4a0e747d1b500a16b8a7143b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  localizationFileName: LOTL.csv
+  localizationFileName: LOTL_locale.csv
 --- !u!114 &959961357
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3020,6 +3008,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de49ff758688f6744a84acd7c6ed5520, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &959961359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 959961329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18a646b447ae57843b0d5e0984a4e547, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timingFileName: LOTL_timing.csv
 --- !u!1 &962313184
 GameObject:
   m_ObjectHideFlags: 0
