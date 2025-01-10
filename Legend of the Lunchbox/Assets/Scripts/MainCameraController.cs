@@ -121,19 +121,19 @@ public class MainCameraController : ObjectMover
   {
     StopBobbingCamera();
     // ImmediateToObject(LocationHolder.DiscoverableCameraLocation);
-    SmoothToObject(LocationHolder.EnemyCameraLocation, GameEngine.EncounterStartTime, true);
+    SmoothToObject(LocationHolder.EnemyCameraLocation, GameEngine.StaticTimeVariables.EncounterStartDuration, true);
   }
 
   protected virtual void EndingBreak()
   {
-    SmoothToObject(LocationHolder.BaseCameraLocation, GameEngine.PlayerReset, true);
+    SmoothToObject(LocationHolder.BaseCameraLocation, GameEngine.StaticTimeVariables.EncounterEndDuration, true);
   }
 
   protected virtual void StartingEncounter()
   {
     StopBobbingCamera();
     // ImmediateToObject(LocationHolder.DiscoverableCameraLocation);
-    SmoothToObject(LocationHolder.EnemyCameraLocation, GameEngine.EncounterStartTime, true);
+    SmoothToObject(LocationHolder.EnemyCameraLocation, GameEngine.StaticTimeVariables.EncounterStartDuration, true);
   }
 
   protected virtual void SettingUpMind()
@@ -141,12 +141,12 @@ public class MainCameraController : ObjectMover
     // ImmediateToObject(LocationHolder.MindCameraLocation);
     // OrthoCamera();
     
-    SmoothToObject(LocationHolder.DiscoverableLocation, GameEngine.MindStartTime, true);
+    SmoothToObject(LocationHolder.DiscoverableLocation, GameEngine.StaticTimeVariables.EncounterTrialStartDuration, true);
   }
 
   protected virtual void EvaluatingEncounter()
   {
-    SmoothToObject(LocationHolder.EnemyCameraLocation, GameEngine.PlayerReset, true);
+    SmoothToObject(LocationHolder.EnemyCameraLocation, GameEngine.StaticTimeVariables.EncounterEndDuration, true);
   }
 
   protected virtual void LostEncounter()
@@ -156,7 +156,7 @@ public class MainCameraController : ObjectMover
 
   protected virtual void EndingEncounter()
   {
-    SmoothToObject(LocationHolder.BaseCameraLocation, GameEngine.PlayerReset, true);
+    SmoothToObject(LocationHolder.BaseCameraLocation, GameEngine.StaticTimeVariables.EncounterEndDuration, true);
   }
 
   protected virtual void LevelOver()

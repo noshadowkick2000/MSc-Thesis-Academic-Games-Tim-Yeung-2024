@@ -46,7 +46,7 @@ public class ExclamationMark : MonoBehaviour
 
         while (x < 1)
         {
-            x = (Time.realtimeSinceStartup - startTime) / (GameEngine.EncounterStartTime/2);
+            x = (Time.realtimeSinceStartup - startTime) / (GameEngine.StaticTimeVariables.EncounterStartDuration/2);
             c.a = x;
             p.y = x * height;
 

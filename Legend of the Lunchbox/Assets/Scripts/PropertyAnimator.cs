@@ -42,7 +42,7 @@ public class PropertyAnimator : MonoBehaviour
    
    // private IEnumerator DeSpawnProperty(Transform property)
    // {
-   //    yield return new WaitForSecondsRealtime(GameEngine.PropertyMindTransitionTime);
+   //    yield return new WaitForSecondsRealtime(GameEngine.StaticTimeVariables.TrialEndDuration);
    //  
    //    property.gameObject.SetActive(false);
    // }
@@ -92,13 +92,13 @@ public class PropertyAnimator : MonoBehaviour
    protected virtual void EvaluatingInput(InputHandler.InputState input)
    {
       // StartCoroutine(DeSpawnProperty(currentProperty));
-      LeanTween.scale(currentProperty.gameObject, Vector3.zero, GameEngine.PropertyMindTransitionTime);
+      LeanTween.scale(currentProperty.gameObject, Vector3.zero, GameEngine.StaticTimeVariables.TrialEndDuration);
    }
 
    protected virtual void TimedOut(InputHandler.InputState input)
    {
       // StartCoroutine(DeSpawnProperty(currentProperty));
-      LeanTween.scale(currentProperty.gameObject, Vector3.zero, GameEngine.PropertyMindTransitionTime);
+      LeanTween.scale(currentProperty.gameObject, Vector3.zero, GameEngine.StaticTimeVariables.TrialEndDuration);
    }
 
    protected virtual void ClearProperty()

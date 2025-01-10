@@ -49,7 +49,7 @@ public class BreakHandler : ObjectMover
         mainObject.position = LocationHolder.PropertyLocation.position;
         mainObject.rotation = Quaternion.identity;
 
-        StartCoroutine(GrowObject(GameEngine.EnemyShowTime/4f, 0, 1, false));
+        StartCoroutine(GrowObject(GameEngine.StaticTimeVariables.EncounterDiscoverableDuration/4f, 0, 1, false));
     }
 
     bool breaking = false;
@@ -65,12 +65,12 @@ public class BreakHandler : ObjectMover
         breaking = false;
         print("WON");
         p.RemoveCap();
-        SmoothToObject(LocationHolder.PropertyLocation.position, Quaternion.Euler(60, 0, 0), GameEngine.WonBreakTime/2, true);
+        SmoothToObject(LocationHolder.PropertyLocation.position, Quaternion.Euler(60, 0, 0), GameEngine.StaticTimeVariables.BreakFeedbackDuration/2, true);
     }
 
     protected virtual void EndingBreak()
     {
-        SmoothToObject(mainObject.position + Vector3.down, mainObject.rotation, GameEngine.PlayerReset, true);
+        SmoothToObject(mainObject.position + Vector3.down, mainObject.rotation, GameEngine.StaticTimeVariables.EncounterEndDuration, true);
     }
 
     protected virtual void OnRail()

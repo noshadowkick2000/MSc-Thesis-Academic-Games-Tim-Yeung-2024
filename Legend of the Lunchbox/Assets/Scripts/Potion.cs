@@ -19,7 +19,7 @@ public class Potion : ObjectMover
     public void RemoveCap()
     {
         StartCoroutine(DrainLiquid());
-        SmoothToObject(cap.position + cap.up, Quaternion.identity, GameEngine.WonBreakTime / 2f, true);
+        SmoothToObject(cap.position + cap.up, Quaternion.identity, GameEngine.StaticTimeVariables.BreakFeedbackDuration / 2f, true);
     }
 
     private IEnumerator DrainLiquid()
@@ -32,7 +32,7 @@ public class Potion : ObjectMover
         {
             potionLiquid.fillAmount = Mathf.Lerp(startAmount, drainGoal, x);
             
-            x = (Time.realtimeSinceStartup - startTime) / GameEngine.WonBreakTime;
+            x = (Time.realtimeSinceStartup - startTime) / GameEngine.StaticTimeVariables.BreakFeedbackDuration;
             yield return null;
         }
     }

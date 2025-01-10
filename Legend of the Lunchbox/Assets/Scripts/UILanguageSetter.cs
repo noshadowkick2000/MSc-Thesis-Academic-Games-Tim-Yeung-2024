@@ -17,7 +17,7 @@ public class UILanguageSetter : MonoBehaviour
         
         for (int i = 0; i < textMeshProUGUI.Length; i++)
         {
-            textMeshProUGUI[i].text = TextHolder.GetLocaleEntry(localeEntryId[i]);
+            textMeshProUGUI[i].text = LocalizationTextLoader.GetLocaleEntry(localeEntryId[i]);
         }
     }
 }

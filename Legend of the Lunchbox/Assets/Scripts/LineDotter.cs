@@ -60,7 +60,7 @@ public class LineDotter : MonoBehaviour
     //     
     //     while (x < 1)
     //     {
-    //         x = (Time.realtimeSinceStartup - startTime) / GameEngine.MindPropertyTransitionTime;
+    //         x = (Time.realtimeSinceStartup - startTime) / GameEngine.StaticTimeVariables.ExplanationPromptDuration;
     //         Vector3 pos = Vector3.Lerp(startPos, endPosition, MathT.EasedT(x));
     //         lineRenderer.SetPosition(1, pos);
     //         

@@ -60,7 +60,7 @@ public class EnvironmentHandler : ObjectMover
     protected virtual void OnRail()
     {
         Moving = true;
-        spawnedDiscoverable = Instantiate(discoverable, new Vector3(0, .2f, (GameEngine.RailDuration) * speedMultiplier + (LocationHolder.DiscoverableLocation.position.z)), Quaternion.identity, loadedTerrains.Last().transform);
+        spawnedDiscoverable = Instantiate(discoverable, new Vector3(0, .2f, (GameEngine.CurrentRailDuration) * speedMultiplier + (LocationHolder.DiscoverableLocation.position.z)), Quaternion.identity, loadedTerrains.Last().transform);
     }
 
     protected virtual void StartingBreak()
@@ -77,13 +77,13 @@ public class EnvironmentHandler : ObjectMover
     {
         Moving = false;
         mainObject = spawnedDiscoverable.transform;
-        SmoothToObject(LocationHolder.DiscoverableLocation, GameEngine.EncounterStartTime, true);
+        SmoothToObject(LocationHolder.DiscoverableLocation, GameEngine.StaticTimeVariables.EncounterStartDuration, true);
     }
 
     protected virtual void SettingUpMind()
     {
         mainObject.parent = Camera.main.transform;
-        StartCoroutine(GrowObject(GameEngine.MindStartTime, 1, 2, true));
+        StartCoroutine(GrowObject(GameEngine.StaticTimeVariables.EncounterTrialStartDuration, 1, 2, true));
     }
 
     private void DestroyDiscoverable()

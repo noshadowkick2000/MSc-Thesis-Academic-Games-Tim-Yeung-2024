@@ -46,11 +46,11 @@ public class PropertyCameraController : ObjectMover
     private Coroutine cameraRoutine;
     protected virtual void MovingToProperty(TrialHandler.PropertyType propertyType)
     {
-        cameraRoutine = SmoothToObject(mainObject.position + Vector3.forward, mainObject.rotation, GameEngine.MindPropertyTransitionTime / 4, true);
+        cameraRoutine = SmoothToObject(mainObject.position + Vector3.forward, mainObject.rotation, GameEngine.StaticTimeVariables.ExplanationPromptDuration / 4, true);
     }
 
     protected virtual void MovingToEnemy()
     {
-        SmoothToObject(LocationHolder.MindCameraLocation, GameEngine.PropertyMindTransitionTime, true);
+        SmoothToObject(LocationHolder.MindCameraLocation, GameEngine.StaticTimeVariables.TrialEndDuration, true);
     }
 }
