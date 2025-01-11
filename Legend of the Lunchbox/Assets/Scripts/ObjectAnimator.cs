@@ -78,7 +78,7 @@ public class ObjectAnimator : ObjectMover
       StartCoroutine(Fade(true, GameEngine.EnemyMindShowTime / 10));
    }
 
-   protected virtual void MovingToProperty(TrialHandler.PropertyType propertyType)
+   protected virtual void MovingToProperty(EncounterData.PropertyType propertyType)
    {
       StartCoroutine(Fade(false, GameEngine.StaticTimeVariables.ExplanationPromptDuration / 6));
    }
@@ -93,7 +93,7 @@ public class ObjectAnimator : ObjectMover
 
       while (x < 1)
       {
-         tempColor.a = fadingIn ? MathT.EasedT(x) : MathT.EasedT(1-x);
+         tempColor.a = fadingIn ? UtilsT.EasedT(x) : UtilsT.EasedT(1-x);
          objectRenderer.color = tempColor;
          
          x = (Time.realtimeSinceStartup - startTime) / duration;

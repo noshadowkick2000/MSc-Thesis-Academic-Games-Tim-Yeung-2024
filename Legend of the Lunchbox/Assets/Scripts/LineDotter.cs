@@ -39,7 +39,7 @@ public class LineDotter : MonoBehaviour
     }
 
     private bool followingCam = false;
-    protected virtual void MovingToProperty(TrialHandler.PropertyType propertyType)
+    protected virtual void MovingToProperty(EncounterData.PropertyType propertyType)
     {
         followingCam = true;
         // StartCoroutine(AnimateLine(PropertyCameraController.PropertyCamTransform.));

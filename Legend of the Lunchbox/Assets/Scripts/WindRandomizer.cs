@@ -54,7 +54,7 @@ public class WindRandomizer : MonoBehaviour
 
     private int NextAvailableBuffer()
     {
-        windBuffer = MathT.Shuffle(windBuffer);
+        windBuffer = UtilsT.Shuffle(windBuffer);
         for (int i = 0; i < windBuffer.Length; i++)
         {
             if (!windBuffer[i].activeSelf)

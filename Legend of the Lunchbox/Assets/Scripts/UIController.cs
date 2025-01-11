@@ -60,7 +60,7 @@ public class UIController : MonoBehaviour
 
     private Coroutine thoughtRoutine;
 
-    private void StartThought(TrialHandler.PropertyType propertyType) 
+    private void StartThought(EncounterData.PropertyType propertyType) 
     {
         thoughtUI.SetActive(true);
         controlIndicatorUI.SetActive(false);
@@ -68,13 +68,13 @@ public class UIController : MonoBehaviour
 
         switch (propertyType)
         {
-            case TrialHandler.PropertyType.ACTION:
+            case EncounterData.PropertyType.ACTION:
                 thoughtWords.text += LocalizationTextLoader.GetLocaleEntry(1);
                 break;
-            case TrialHandler.PropertyType.SOUND:
+            case EncounterData.PropertyType.SOUND:
                 thoughtWords.text += LocalizationTextLoader.GetLocaleEntry(2);
                 break;
-            case TrialHandler.PropertyType.WORD:
+            case EncounterData.PropertyType.WORD:
                 thoughtWords.text += LocalizationTextLoader.GetLocaleEntry(3);
                 break;
             default:
@@ -268,7 +268,7 @@ public class UIController : MonoBehaviour
         LeanTween.moveY(imaginationBarUI, -100f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseInElastic();
     }
     
-    protected virtual void MovingToProperty(TrialHandler.PropertyType propertyType)
+    protected virtual void MovingToProperty(EncounterData.PropertyType propertyType)
     { 
         StartThought(propertyType);
     }

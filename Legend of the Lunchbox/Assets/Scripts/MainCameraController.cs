@@ -46,7 +46,7 @@ public class MainCameraController : ObjectMover
         negativeMovement = !negativeMovement;
       }
 
-      float y = negativeMovement ? 1 - MathT.EasedT(x) : Mathf.Sin(x * .5f * MathF.PI);
+      float y = negativeMovement ? 1 - UtilsT.EasedT(x) : Mathf.Sin(x * .5f * MathF.PI);
       
       mainObject.position = basePosition + new Vector3(0, bobbingOffset * y, 0);
       yield return null;

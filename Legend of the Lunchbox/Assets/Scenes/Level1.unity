@@ -2546,8 +2546,6 @@ MonoBehaviour:
   - {fileID: 6806196982842212982, guid: 04257fc67c30b644d95bd27ec0697f7a, type: 3}
   - {fileID: 6806196982842212982, guid: 4dc459f3bc79f8b4588e368b599d8353, type: 3}
   logFolderInDocs: LotL
-  pathToTrials: C:\Users\nsk20\Documents\GitHub\MSc-Thesis-Academic-Games-Tim-Yeung-2024\Legend
-    of the Lunchbox\Assets\trials.xml
   MaxHealth: 6
 --- !u!4 &959961331
 Transform:
@@ -2581,6 +2579,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e5f316fa98ca6a4c879d8cd08f72b08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  trialsFileName: LOTL_trials.csv
 --- !u!114 &959961334
 MonoBehaviour:
   m_ObjectHideFlags: 0
