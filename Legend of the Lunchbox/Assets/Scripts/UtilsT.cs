@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using CsvHelper;
+using CsvHelper.Configuration;
+using CsvHelper.TypeConversion;
 using UnityEngine;
 using Random = System.Random;
 
-public class MathT : MonoBehaviour
+public class UtilsT : MonoBehaviour
 {
     private static Dictionary<int, float> fibValues = new Dictionary<int, float>{{0, 0}, {1, 1}};
 
@@ -32,5 +35,17 @@ public class MathT : MonoBehaviour
         }
 
         return array;
+    }
+    
+    public class MillisToSeconds : DefaultTypeConverter
+    {
+        public override object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
+        {
+            if (int.TryParse(text, out int intValue))
+            {
+                return intValue / 1000f;
+            }
+            throw new CsvHelperException(row.Context, $"Cannot convert '{text}' to float.");
+        }
     }
 }

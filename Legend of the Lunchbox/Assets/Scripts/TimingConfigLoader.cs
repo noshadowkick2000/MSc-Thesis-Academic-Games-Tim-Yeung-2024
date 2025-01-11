@@ -20,7 +20,7 @@ public class TimingConfigLoader : MonoBehaviour
         using (StreamReader reader = new StreamReader(Application.streamingAssetsPath+"/"+timingFileName))
         using (CsvReader csv = new CsvReader(reader, CultureInfo.InvariantCulture))
         {
-            csv.Context.TypeConverterCache.AddConverter<float>(new MillisToSeconds());
+            csv.Context.TypeConverterCache.AddConverter<float>(new UtilsT.MillisToSeconds());
 
             csv.Read();
             csv.ReadHeader();
@@ -30,17 +30,5 @@ public class TimingConfigLoader : MonoBehaviour
         }
         
         print(GameEngine.StaticTimeVariables.EncounterStartDuration);
-    }
-    
-    private class MillisToSeconds : DefaultTypeConverter
-    {
-        public override object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
-        {
-            if (int.TryParse(text, out int intValue))
-            {
-                return intValue / 1000f;
-            }
-            throw new CsvHelperException(row.Context, $"Cannot convert '{text}' to float.");
-        }
     }
 }

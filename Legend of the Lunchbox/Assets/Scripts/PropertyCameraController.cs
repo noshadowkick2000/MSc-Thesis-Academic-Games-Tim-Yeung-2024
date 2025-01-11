@@ -44,7 +44,7 @@ public class PropertyCameraController : ObjectMover
     }
 
     private Coroutine cameraRoutine;
-    protected virtual void MovingToProperty(TrialHandler.PropertyType propertyType)
+    protected virtual void MovingToProperty(EncounterData.PropertyType propertyType)
     {
         cameraRoutine = SmoothToObject(mainObject.position + Vector3.forward, mainObject.rotation, GameEngine.StaticTimeVariables.ExplanationPromptDuration / 4, true);
     }

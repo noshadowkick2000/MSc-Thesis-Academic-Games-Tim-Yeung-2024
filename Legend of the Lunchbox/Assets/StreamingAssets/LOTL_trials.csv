@@ -1,0 +1,6 @@
+﻿BlockDelay,ObjectType,StimulusObject,PropertyType,StimulusProperty,ValidProperty,PropertyDelay,ITI
+1000,BREAK,None,None,None,FALSE,0,0
+2000,IMAGE,HammerImage,ACTION,Swinging,TRUE,0,19000
+0,IMAGE,HammerImage,SOUND,HammerSound,TRUE,2000,24500
+2000,WORD,HammerWord,WORD,Metal,TRUE,1500,17100
+0,WORD,HammerWord,WORD,Swung,TRUE,100,0

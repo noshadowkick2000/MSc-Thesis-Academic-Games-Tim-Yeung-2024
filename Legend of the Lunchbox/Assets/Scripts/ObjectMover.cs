@@ -45,7 +45,7 @@ public class ObjectMover : MonoBehaviour
 
         while (x < 1)
         {
-            float y = Mathf.Sin((MathT.EasedT(x) * repetitions * Mathf.PI));
+            float y = Mathf.Sin((UtilsT.EasedT(x) * repetitions * Mathf.PI));
             mainObject.rotation = Quaternion.Euler(0, 0, maxAngle * y) * baseRot;
             x = (Time.realtimeSinceStartup - startTime) / duration;
             yield return null;
@@ -63,7 +63,7 @@ public class ObjectMover : MonoBehaviour
         
         while (x < 1)
         {
-            float y = Mathf.Sin((MathT.EasedT(x) * repetitions * Mathf.PI));
+            float y = Mathf.Sin((UtilsT.EasedT(x) * repetitions * Mathf.PI));
             mainObject.position = start + new Vector3(vertical ? 0 : maxOffset * y, vertical ? maxOffset * y : 0, 0);
             x = (Time.realtimeSinceStartup - startTime) / duration;
             yield return null;
@@ -80,7 +80,7 @@ public class ObjectMover : MonoBehaviour
         while (Time.realtimeSinceStartup < startTime + (duration))
         {
             float x = (Time.realtimeSinceStartup - startTime) / (duration);
-            float y = MathT.EasedT(x);
+            float y = UtilsT.EasedT(x);
             mainObject.localScale = Vector3.Lerp(startScale, endScale, y);
 
             yield return null;
@@ -104,7 +104,7 @@ public class ObjectMover : MonoBehaviour
         {
             float x = (Time.realtimeSinceStartup - startTime) / duration;
             if (ease)
-                x = MathT.EasedT(x);
+                x = UtilsT.EasedT(x);
                 // x = x < .5 ? 16 * x * x * x * x * x : 1 - Mathf.Pow(-2 * x + 2, 5) / 2;
             mainObject.position = Vector3.Lerp(startingPos, position, x);
             mainObject.rotation = Quaternion.Lerp(startingRot, rotation, x);

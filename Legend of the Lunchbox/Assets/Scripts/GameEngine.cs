@@ -47,8 +47,6 @@ namespace Assets
     [Header("Paths")]
     [SerializeField] private string logFolderInDocs = "LotL";
     public static string LogFolderInDocs;
-    [SerializeField] private string pathToTrials;
-    public static string PathToTrials;
 
     // Other
     private int levelId = 0;
@@ -80,7 +78,6 @@ namespace Assets
     private void Awake()
     {
       LogFolderInDocs = logFolderInDocs;
-      PathToTrials= pathToTrials;
       PropertiesAndObjects = propertiesAndObjects;
       LevelId = levelId;
       
@@ -100,7 +97,7 @@ namespace Assets
     }
 
     public delegate void StateChangeEvent();
-    public delegate void StateChangeEventTyped(TrialHandler.PropertyType propertyType);
+    public delegate void StateChangeEventTyped(EncounterData.PropertyType propertyType);
     public delegate void StateChangeEventInput(InputHandler.InputState input);
     public delegate void StateChangeEventCallback(Action<InputHandler.InputState> callback);
 

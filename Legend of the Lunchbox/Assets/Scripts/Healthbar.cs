@@ -69,7 +69,7 @@ public class Healthbar : MonoBehaviour
         
         while (x < 1)
         {
-            float y = MathT.EasedT(x);
+            float y = UtilsT.EasedT(x);
             slider.value = y * goal + (1-y) * start;
             x = (Time.realtimeSinceStartup - startTime) / duration;
 

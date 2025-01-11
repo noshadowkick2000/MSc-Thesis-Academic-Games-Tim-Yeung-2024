@@ -2,9 +2,12 @@ using Assets;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using CsvHelper;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Windows;
@@ -12,14 +15,16 @@ using Random = UnityEngine.Random;
 
 public class TrialHandler : MonoBehaviour
 {
-  private readonly List<Encounter> encounters = new List<Encounter>();
+  [SerializeField] private string trialsFileName;
+  
+  private readonly List<EncounterData> encounters = new List<EncounterData>();
   private int encounterCounter = 0;
   
   public delegate void SpawnEvent(Transform property);
 
-  private int GetId(string name)
+  private int GetId(string objectName)
   {
-    return (name.Aggregate(0, (current, c) => (current * 31) + c));
+    return (objectName.Aggregate(0, (current, c) => (current * 31) + c));
   }
 
   private void Awake()
@@ -33,65 +38,109 @@ public class TrialHandler : MonoBehaviour
   {
     UnSubscribeToEvents();
   }
-
-  private void LoadEncounters()
+  
+  private class EncounterEntry
   {
-    XmlDocument doc = new XmlDocument();
-    doc.Load(@GameEngine.PathToTrials);
-
-    XmlNode level = doc.DocumentElement.ChildNodes[GameEngine.LevelId];
-
-    Transform objectRoot = new GameObject("EncounterHolder").transform;
-    objectRoot.parent = transform;
-
-    try
-    {
-      foreach (XmlNode encounter in level.ChildNodes)
-      {
-        if (encounter.Name == "encounter")
-          CreateEncounter(objectRoot, encounter);
-        else if (encounter.Name == "break")
-          CreateBreak(objectRoot, encounter);
-      }
-
-      Logger.Log($"Finished loading successfully, {encounters.Count} encounters loaded");
-    }
-    catch (Exception ex)
-    {
-      Logger.Log(ex.ToString());
-      Logger.Log("Failed to load all encounters");
-    }
-  }
-
-  private void CreateEncounter(Transform objectRoot, XmlNode encounter)
-  {
-    Encounter enc = objectRoot.AddComponent<Encounter>();
-    int health = int.Parse(encounter.Attributes["health"].Value);
-    int enemyId = GetId(encounter.Attributes["enemy"].Value);
-    int waitTimeMillis = int.Parse(encounter.Attributes["wait"].Value);
-    List<int> propertyIds = new List<int>();
-    List<bool> correctProperty = new List<bool>();
-    List<PropertyType> propertyTypes = new List<PropertyType>();
-    foreach (XmlNode node in encounter.ChildNodes)
-    {
-      //print(node.InnerText);
-      propertyIds.Add(GetId(node.InnerText));
-      correctProperty.Add(Convert.ToBoolean(node.Attributes["correct"].Value));
-      propertyTypes.Add((PropertyType)int.Parse(node.Attributes["type"].Value));
-    }
-    enc.Init(enemyId, health, propertyIds.ToArray(), correctProperty.ToArray(), propertyTypes.ToArray(), waitTimeMillis/1000f);
-    Logger.Log($"Loaded encounter: {Environment.NewLine}{enc.ToString()}");
-    encounters.Add(enc);
+    public float BlockDelay { get; set; }
+    public string ObjectType { get; set; }
+    public string StimulusObject { get; set; }
+    public string PropertyType { get; set; }
+    public string StimulusProperty { get; set; }
+    public bool ValidProperty { get; set; }
+    public float PropertyDelay { get; set; }
+    public float ITI { get; set; }
   }
   
-  private void CreateBreak(Transform objectRoot, XmlNode encounter)
+  private void LoadEncounters()
   {
-    Encounter enc = objectRoot.AddComponent<Encounter>();
-    int health = int.Parse(encounter.Attributes["health"].Value);
-    int waitTimeMillis = int.Parse(encounter.Attributes["wait"].Value);
-    enc.Init(health, waitTimeMillis/1000f);
-    Logger.Log($"Loaded break");
-    encounters.Add(enc);
+    EncounterData.ObjectType ConvertStringObjectType(string objectType)
+    {
+      switch (objectType)
+      {
+        case "BREAK":
+          return EncounterData.ObjectType.BREAK;
+        case "IMAGE":
+          return EncounterData.ObjectType.IMAGE;
+        case "WORD":
+          return EncounterData.ObjectType.WORD;
+        default:
+          return EncounterData.ObjectType.BREAK;
+      }
+    }
+
+    EncounterData.PropertyType ConvertStringPropertyType(string propertyType)
+    {
+      switch (propertyType)
+      {
+        case "BREAK":
+          return EncounterData.PropertyType.ACTION;
+        case "IMAGE":
+          return EncounterData.PropertyType.SOUND;
+        case "WORD":
+          return EncounterData.PropertyType.WORD;
+        default: 
+          return EncounterData.PropertyType.WORD;
+      }
+    }
+    
+    using (StreamReader reader = new StreamReader(Application.streamingAssetsPath+"/"+trialsFileName))
+    using (CsvReader csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+    {
+      csv.Context.TypeConverterCache.AddConverter<float>(new UtilsT.MillisToSeconds());
+      csv.Read(); // Reads the header row
+      csv.ReadHeader(); // Sets the HeaderRecord property
+
+      csv.Read();
+      bool exit = false;
+
+      while (!exit)
+      {
+        EncounterData lastEncounter = new EncounterData();
+        EncounterEntry encounterEntry = csv.GetRecord<EncounterEntry>();
+
+        lastEncounter.EncounterBlockDelay = encounterEntry.BlockDelay;
+        lastEncounter.EncounterObjectType = ConvertStringObjectType(encounterEntry.ObjectType);
+
+        if (lastEncounter.EncounterObjectType ==
+            EncounterData.ObjectType.BREAK) // break: load and go back to next entry as new encounter
+        {
+          encounters.Add(lastEncounter);
+          if (!csv.Read())
+            break;
+        }
+        else // Not a break: load encounter general data and then iterate through properties
+        {
+          lastEncounter.StimulusObjectId = GetId(encounterEntry.StimulusObject);
+          string lastStimulusObject = encounterEntry.StimulusObject;
+
+          int propertyCounter = 0;
+          
+          while (lastStimulusObject == encounterEntry.StimulusObject)
+          {
+            EncounterData.PropertyTrial propertyTrial = new EncounterData.PropertyTrial();
+            propertyTrial.PropertyId = GetId(encounterEntry.StimulusProperty);
+            propertyTrial.PropertyType = ConvertStringPropertyType(encounterEntry.PropertyType);
+            propertyTrial.ValidProperty = encounterEntry.ValidProperty;
+            lastEncounter.PropertyTrials.Add(propertyTrial);
+
+            if (!csv.Read())
+            {
+              exit = true;
+              break;
+            }
+
+            lastStimulusObject = encounterEntry.StimulusObject;
+            propertyCounter++;
+            encounterEntry = csv.GetRecord<EncounterEntry>();
+          }
+
+          lastEncounter.Health = propertyCounter; // Health by default is number of properties -1? TEMP
+          encounters.Add(lastEncounter);
+        }
+      }
+                
+      print(encounters.Count);
+    }
   }
 
   private GameObject GetModel(int id)
@@ -129,9 +178,9 @@ public class TrialHandler : MonoBehaviour
     SpawnAddToDictionary(GetModel(GetCurrentEncounterId()), GetCurrentEncounterId());
 
     // Add property gameobjects
-    foreach (var propertyId in encounters[encounterCounter].GetAllPropertyIds())
+    foreach (var propertyTrial in encounters[encounterCounter].PropertyTrials)
     {
-      SpawnAddToDictionary(GetModel(propertyId), propertyId);
+      SpawnAddToDictionary(GetModel(propertyTrial.PropertyId), propertyTrial.PropertyId);
     }
   }
   
@@ -147,7 +196,7 @@ public class TrialHandler : MonoBehaviour
 
   public float GetCurrentWaitTime()
   {
-    return encounters[encounterCounter].GetWaitTime();
+    return encounters[encounterCounter].EncounterBlockDelay;
   }
 
   public float GetTotalWaitTime()
@@ -155,37 +204,25 @@ public class TrialHandler : MonoBehaviour
     float wt = 0;
     foreach (var encounter in encounters)
     {
-      wt += encounter.GetWaitTime();
+      wt += encounter.EncounterBlockDelay;
     }
 
     return wt;
   }
 
-  public enum PropertyType
-  {
-    ACTION,
-    SOUND,
-    WORD
-  }
-
-  public PropertyType GetCurrentEncounterType()
+  public EncounterData.PropertyType GetCurrentEncounterType()
   {
     return encounters[encounterCounter].GetCurrentPropertyType();
   }
 
   public bool EncounterIsObject()
   {
-    return encounters[encounterCounter].IsObject;
+    return encounters[encounterCounter].EncounterObjectType != EncounterData.ObjectType.BREAK;
   }
 
   private int GetCurrentEncounterId()
   {
-    return encounters[encounterCounter].GetEnemyId();
-  }
-
-  private string GetCurrentPropertyInfo()
-  {
-    return encounters[encounterCounter].CurrentPropertyInfo();
+    return encounters[encounterCounter].StimulusObjectId;
   }
   
   public static event SpawnEvent OnPropertySpawnedEvent;
@@ -294,4 +331,9 @@ public class TrialHandler : MonoBehaviour
   {
     KillEncounter();
   }
+
+  // public class TrialData()
+  // {
+  //   
+  // }
 }
