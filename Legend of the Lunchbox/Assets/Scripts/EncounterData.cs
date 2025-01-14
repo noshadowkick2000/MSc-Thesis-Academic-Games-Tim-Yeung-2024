@@ -24,6 +24,7 @@ public class EncounterData
   public class PropertyTrial
   {
     public int PropertyId;
+    public string PropertyName;
     public PropertyType PropertyType;
     public bool ValidProperty;
   }
@@ -31,6 +32,7 @@ public class EncounterData
   public float EncounterBlockDelay;
   public ObjectType EncounterObjectType;
   public int StimulusObjectId;
+  public string StimulusObjectName;
   public int Health;
   public List<PropertyTrial> PropertyTrials = new List<PropertyTrial>();
   

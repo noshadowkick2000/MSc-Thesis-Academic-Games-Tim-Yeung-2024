@@ -41,8 +41,8 @@ namespace Assets
 
 
     [Header("Assets")]
-    [SerializeField] private GameObject[] propertiesAndObjects;
-    public static GameObject[] PropertiesAndObjects;
+    // [SerializeField] private GameObject[] propertiesAndObjects;
+    // public static GameObject[] PropertiesAndObjects;
 
     [Header("Paths")]
     [SerializeField] private string logFolderInDocs = "LotL";
@@ -78,7 +78,7 @@ namespace Assets
     private void Awake()
     {
       LogFolderInDocs = logFolderInDocs;
-      PropertiesAndObjects = propertiesAndObjects;
+      // PropertiesAndObjects = propertiesAndObjects;
       LevelId = levelId;
       
       Random.InitState(12345);
@@ -209,7 +209,7 @@ namespace Assets
 
     private void MovingToProperty()
     {
-      MovingToPropertyStartedEvent?.Invoke(trialHandler.GetCurrentEncounterType());
+      MovingToPropertyStartedEvent?.Invoke(trialHandler.GetCurrentEncounterPropertyType());
 
       StartCoroutine(Timer(StaticTimeVariables.ExplanationPromptDuration, ThinkingOfProperty));
     }

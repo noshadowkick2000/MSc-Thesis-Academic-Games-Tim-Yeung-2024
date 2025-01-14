@@ -50,15 +50,15 @@ public class ObjectAnimator : ObjectMover
    }
 
    // private Rigidbody objectRb;
-   private GameObject face;
+   // private GameObject face;
    protected virtual void ObjectSpawned(Transform objectTransform)
    {
       // objectRb = objectTransform.GetComponentInChildren<Rigidbody>();
-      face = objectTransform.GetComponentInChildren<Animation>().gameObject;
-      objectRenderer = objectTransform.GetComponentInChildren<TrialObject>().MainSprite;
+      // face = objectTransform.GetComponentInChildren<Animation>().gameObject;
+      objectRenderer = objectTransform.GetComponentInChildren<TrialObject>().MainSpriteRenderer;
       objectMat = objectRenderer.material;
       
-      face.SetActive(false);
+      // face.SetActive(false);
       mainObject = objectTransform;
       mainObject.gameObject.SetActive(false);
       
@@ -158,7 +158,7 @@ public class ObjectAnimator : ObjectMover
       
       objectMat.SetFloat("_t", 0);
       
-      face.gameObject.SetActive(true);
+      // face.gameObject.SetActive(true);
 
       Vector3 startPosition = mainObject.transform.position;
       float speed = 0f;
