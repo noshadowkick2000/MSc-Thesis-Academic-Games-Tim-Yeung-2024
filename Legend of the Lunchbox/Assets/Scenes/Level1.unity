@@ -2519,6 +2519,7 @@ GameObject:
   - component: {fileID: 959961357}
   - component: {fileID: 959961358}
   - component: {fileID: 959961359}
+  - component: {fileID: 959961360}
   m_Layer: 0
   m_Name: Gamecontroller
   m_TagString: Untagged
@@ -2538,13 +2539,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4699e469c746f943a034079f95e34c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  propertiesAndObjects:
-  - {fileID: 3325396727792927804, guid: 6f08ed87df57ca14796085a27df20763, type: 3}
-  - {fileID: 6806196982842212982, guid: 6e6ed93ea61d317409380b46386ac984, type: 3}
-  - {fileID: 4271499101438882681, guid: 94313708d07f35448831f0c3db0fb208, type: 3}
-  - {fileID: 3325396727792927804, guid: cefa31f54fea6934d8be5075b3175b3c, type: 3}
-  - {fileID: 6806196982842212982, guid: 04257fc67c30b644d95bd27ec0697f7a, type: 3}
-  - {fileID: 6806196982842212982, guid: 4dc459f3bc79f8b4588e368b599d8353, type: 3}
   logFolderInDocs: LotL
   MaxHealth: 6
 --- !u!4 &959961331
@@ -2580,6 +2574,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trialsFileName: LOTL_trials.csv
+  currentLevel: 1
 --- !u!114 &959961334
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3020,6 +3015,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timingFileName: LOTL_timing.csv
+--- !u!114 &959961360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 959961329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8014f798bac0f1247b6a05a623584936, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  assetTemplate:
+  - {fileID: 3325396727792927804, guid: b8f9e2d50ea6f004b8b6099365138690, type: 3}
+  - {fileID: 3325396727792927804, guid: b8f9e2d50ea6f004b8b6099365138690, type: 3}
+  - {fileID: 4271499101438882681, guid: 51599086a535b19479166afc9d07207d, type: 3}
+  - {fileID: 6806196982842212982, guid: 9c67ea46a366e564f83eade872ca2db7, type: 3}
+  assetSubFolder: ASSETS
 --- !u!1 &962313184
 GameObject:
   m_ObjectHideFlags: 0

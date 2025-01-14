@@ -4,9 +4,45 @@ using System.Collections.Generic;
 using System.IO;
 using Assets;
 using UnityEngine;
+using CsvHelper;
+using CsvHelper.Configuration;
 
 public static class Logger
 {
+  private class LogEntry
+  {
+    public string DateTime { get; set; }
+    public string Object { get; set; }
+    public int InternalTime { get; set; }
+    public string EventType { get; set; }
+    public string Code { get; set; }
+  }
+
+  public enum Event
+  {
+    STIMULUS,
+    PROMPT,
+    FIXATE,
+    INPUT,
+    OTHER
+  }
+
+  public enum CodeTypes
+  {
+    OBJECT_IMAGE,
+    OBJECT_WORD,
+    OBJECT_STOP,
+    PROPERTY_ACTION,
+    PROPERTY_SOUND,
+    PROPERTY_WORD,
+    PROPERTY_STOP,
+    INPUT_POSITIVE,
+    INPUT_NEGATIVE,
+    INPUT_TIMEOUT,
+    FEEDBACK_POSITIVE,
+    FEEDBACK_NEGATIVE,
+  }
+  
   private static StreamWriter _output;
   private static string _folderName;
 

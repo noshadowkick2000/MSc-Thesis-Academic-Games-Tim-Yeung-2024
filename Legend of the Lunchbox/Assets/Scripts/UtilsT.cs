@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
@@ -35,6 +36,11 @@ public class UtilsT : MonoBehaviour
         }
 
         return array;
+    }
+    
+    public static int GetId(string objectName)
+    {
+        return (objectName.Aggregate(0, (current, c) => (current * 31) + c));
     }
     
     public class MillisToSeconds : DefaultTypeConverter
