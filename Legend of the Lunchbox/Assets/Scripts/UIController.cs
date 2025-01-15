@@ -367,7 +367,7 @@ public class UIController : MonoBehaviour
 
     protected virtual void EndingEncounter()
     {
-        LeanTween.moveY(progressBarUI,  -10f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseOutElastic();
+        LeanTween.moveY(progressBarUI,  -15f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseOutElastic();
 
         if (lostAnimation)
             lostAnimation = false;
