@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Assets;
+using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -9,6 +10,7 @@ using Random = UnityEngine.Random;
 public class ObjectAnimator : ObjectMover
 {
    private SpriteRenderer objectRenderer;
+   private TextMeshPro textMesh;
    private Material objectMat;
    
    private void Awake()
@@ -51,12 +53,24 @@ public class ObjectAnimator : ObjectMover
 
    // private Rigidbody objectRb;
    // private GameObject face;
+
+   private bool isWord = false;
+   
    protected virtual void ObjectSpawned(Transform objectTransform)
    {
       // objectRb = objectTransform.GetComponentInChildren<Rigidbody>();
       // face = objectTransform.GetComponentInChildren<Animation>().gameObject;
-      objectRenderer = objectTransform.GetComponentInChildren<TrialObject>().MainSpriteRenderer;
-      objectMat = objectRenderer.material;
+
+      if (objectTransform.GetComponentInChildren<TrialObject>() == null)
+      {
+         isWord = true;
+         textMesh = objectTransform.GetComponentInChildren<TextMeshPro>();
+      }
+      else
+      {
+         objectRenderer = objectTransform.GetComponentInChildren<TrialObject>().MainSpriteRenderer;
+         objectMat = objectRenderer.material;
+      }
       
       // face.SetActive(false);
       mainObject = objectTransform;
@@ -69,6 +83,8 @@ public class ObjectAnimator : ObjectMover
    
    protected virtual void SettingUpMind()
    {
+      if (isWord) return;
+      
       objectMat.SetFloat("_t", 1);
    }
    
@@ -85,7 +101,10 @@ public class ObjectAnimator : ObjectMover
 
    private IEnumerator Fade(bool fadingIn, float duration)
    {
-      objectRenderer.color = fadingIn ? Color.clear : Color.white;
+      if (isWord)
+         textMesh.color = fadingIn ? Color.clear : Color.white;
+      else
+         objectRenderer.color = fadingIn ? Color.clear : Color.white;
 
       float startTime = Time.realtimeSinceStartup;
       float x = 0;
@@ -94,13 +113,20 @@ public class ObjectAnimator : ObjectMover
       while (x < 1)
       {
          tempColor.a = fadingIn ? UtilsT.EasedT(x) : UtilsT.EasedT(1-x);
-         objectRenderer.color = tempColor;
+         
+         if (isWord)
+            textMesh.color = tempColor;
+         else
+            objectRenderer.color = tempColor;
          
          x = (Time.realtimeSinceStartup - startTime) / duration;
          yield return null;
       }
       
-      objectRenderer.color = fadingIn ? Color.white : Color.clear;
+      if (isWord)
+         textMesh.color = fadingIn ? Color.white : Color.clear;
+      else
+         objectRenderer.color = fadingIn ? Color.white : Color.clear;
    }
 
    protected virtual void MovingToEnemy()
@@ -148,15 +174,22 @@ public class ObjectAnimator : ObjectMover
       float t = 0f;
       float duration = GameEngine.StaticTimeVariables.EncounterEvaluationDuration * .3f;
 
-      while (t < 1)
+      if (isWord)
       {
-         objectMat.SetFloat("_t", 1-t);
-         
-         t = (Time.realtimeSinceStartup - startTime) / duration;
-         yield return null;
+         yield return new WaitForSecondsRealtime(duration);
       }
-      
-      objectMat.SetFloat("_t", 0);
+      else
+      {
+         while (t < 1)
+         {
+            objectMat.SetFloat("_t", 1-t);
+         
+            t = (Time.realtimeSinceStartup - startTime) / duration;
+            yield return null;
+         }  
+         
+         objectMat.SetFloat("_t", 0);
+      }
       
       // face.gameObject.SetActive(true);
 
