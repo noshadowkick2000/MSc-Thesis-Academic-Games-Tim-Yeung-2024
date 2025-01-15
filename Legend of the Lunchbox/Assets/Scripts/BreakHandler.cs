@@ -81,8 +81,10 @@ public class BreakHandler : ObjectMover
     private void Update()
     {
         if (!breaking) return;
+
+        float rotation = (Mathf.PingPong(Time.realtimeSinceStartup * 10f, 2) - 1f) * (60f * InputHandler.InputAverage);
         
-        mainObject.position = Vector3.Lerp(LocationHolder.PropertyLocation.position, LocationHolder.MindCameraLocation.position, InputHandler.InputAverage / 2);
-        mainObject.rotation = Quaternion.Euler(0, 0, (Mathf.PingPong(Time.realtimeSinceStartup * 10f, 2) - 1f) * (60f * InputHandler.InputAverage));
+        mainObject.position = Vector3.Lerp(LocationHolder.PropertyLocation.position + new Vector3(rotation * .002f, 0, 0), LocationHolder.MindCameraLocation.position, InputHandler.InputAverage / 2);
+        mainObject.rotation = Quaternion.Euler(0, 0, rotation);
     }
 }
