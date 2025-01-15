@@ -32,7 +32,7 @@ public class PostProcessController : MonoBehaviour
 
     private void SubscribeToEvents()
     {
-        GameEngine.ShowingEnemyInMindStartedEvent += SettingUpMind;
+        GameEngine.ObjectDelayStartedEvent += SettingUpMind;
         GameEngine.StartingBreakStartedEvent += SettingUpMind;
         GameEngine.EndingEncounterStartedEvent += EndingEncounter;
         GameEngine.LostEncounterStartedEvent += LostEncounter;
@@ -41,7 +41,7 @@ public class PostProcessController : MonoBehaviour
 
     private void UnsubscribeFromEvents()
     {
-        GameEngine.ShowingEnemyInMindStartedEvent += SettingUpMind;
+        GameEngine.ObjectDelayStartedEvent += SettingUpMind;
         GameEngine.StartingBreakStartedEvent -= SettingUpMind;
         GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
         GameEngine.LostEncounterStartedEvent -= LostEncounter;

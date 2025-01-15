@@ -60,7 +60,7 @@ public class SoundEngine : MonoBehaviour
         GameEngine.BreakingBadStartedEvent += BreakingBad;
         GameEngine.WonBreakStartedEvent += WonBreak;
         GameEngine.SettingUpMindStartedEvent += SettingUpMind;
-        GameEngine.ShowingEnemyInMindStartedEvent += ShowingEnemyInMind;
+        GameEngine.ShowingObjectInMindStartedEvent += ShowingObjectInMind;
         GameEngine.ShowingPropertyStartedEvent += ShowingProperty;
         GameEngine.AnswerCorrectStartedEvent += AnswerCorrect;
         GameEngine.AnswerWrongStartedEvent += AnswerWrong;
@@ -77,7 +77,7 @@ public class SoundEngine : MonoBehaviour
         GameEngine.BreakingBadStartedEvent -= BreakingBad;
         GameEngine.WonBreakStartedEvent -= WonBreak;
         GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
-        GameEngine.ShowingEnemyInMindStartedEvent -= ShowingEnemyInMind;
+        GameEngine.ShowingObjectInMindStartedEvent -= ShowingObjectInMind;
         GameEngine.ShowingPropertyStartedEvent -= ShowingProperty;
         GameEngine.AnswerCorrectStartedEvent -= AnswerCorrect;
         GameEngine.AnswerWrongStartedEvent -= AnswerWrong;
@@ -148,7 +148,7 @@ public class SoundEngine : MonoBehaviour
         oneShotPlayer.PlayOneShot(enterMind);
     }
 
-    protected virtual void ShowingEnemyInMind()
+    protected virtual void ShowingObjectInMind()
     {
         oneShotPlayer.PlayOneShot(enemyAppear, .6f);
     }

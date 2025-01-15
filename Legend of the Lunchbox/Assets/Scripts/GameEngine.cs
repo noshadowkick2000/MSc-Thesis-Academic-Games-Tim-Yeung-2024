@@ -106,9 +106,11 @@ namespace Assets
     public static event StateChangeEvent StartingEncounterStartedEvent;
     public static event StateChangeEvent StartingBreakStartedEvent;
     public static event StateChangeEvent BreakingBadStartedEvent;
-    public static event StateChangeEvent ShowingEnemyStartedEvent;
+    public static event StateChangeEvent ShowingDiscoverableStartedEvent;
     public static event StateChangeEvent SettingUpMindStartedEvent;
-    public static event StateChangeEvent ShowingEnemyInMindStartedEvent;
+
+    public static event StateChangeEvent ObjectDelayStartedEvent;
+    public static event StateChangeEvent ShowingObjectInMindStartedEvent;
     public static event StateChangeEventTyped MovingToPropertyStartedEvent;
     public static event StateChangeEvent ThinkingOfPropertyStartedEvent;
     public static event StateChangeEventCallback ShowingPropertyStartedEvent;
@@ -142,7 +144,7 @@ namespace Assets
 
     private void OnRail()
     { 
-      CurrentRailDuration = trialHandler.GetCurrentWaitTime();
+      CurrentRailDuration = trialHandler.GetCurrentBlockDelay();
       
       OnRailStartedEvent?.Invoke();
       
@@ -179,12 +181,12 @@ namespace Assets
     {
       StartingEncounterStartedEvent?.Invoke();
 
-      StartCoroutine(Timer(StaticTimeVariables.EncounterStartDuration, ShowingEnemy));
+      StartCoroutine(Timer(StaticTimeVariables.EncounterStartDuration, ShowingDiscoverable));
     }
 
-    private void ShowingEnemy()
+    private void ShowingDiscoverable()
     {
-      ShowingEnemyStartedEvent?.Invoke();
+      ShowingDiscoverableStartedEvent?.Invoke();
       
       StartCoroutine(Timer(StaticTimeVariables.EncounterDiscoverableDuration, SettingUpMind));
     }
@@ -193,18 +195,24 @@ namespace Assets
     {
       SettingUpMindStartedEvent?.Invoke();
       
-      StartCoroutine(Timer(StaticTimeVariables.EncounterTrialStartDuration, ShowingEnemyInMind));
+      StartCoroutine(Timer(StaticTimeVariables.EncounterTrialStartDuration, ObjectDelay));
     }
 
-    private void ShowingEnemyInMind()
+    private void ObjectDelay()
     {
       if (trialHandler.EncounterOver)
         EvaluatingEncounter();
       else
       {
-        ShowingEnemyInMindStartedEvent?.Invoke();
-        StartCoroutine(Timer(EnemyMindShowTime, MovingToProperty));
+        ObjectDelayStartedEvent?.Invoke();
+        StartCoroutine(Timer(trialHandler.GetCurrentTrialDelay(), ShowingObjectInMind));
       }
+    }
+
+    private void ShowingObjectInMind()
+    {
+      ShowingObjectInMindStartedEvent?.Invoke();
+      StartCoroutine(Timer(EnemyMindShowTime, MovingToProperty));
     }
 
     private void MovingToProperty()
@@ -270,14 +278,14 @@ namespace Assets
     {
       AnswerWrongStartedEvent?.Invoke();
       
-      StartCoroutine(Timer(StaticTimeVariables.TrialFeedbackDuration, ShowingEnemyInMind));
+      StartCoroutine(Timer(StaticTimeVariables.TrialFeedbackDuration, ObjectDelay));
     }
 
     private void AnswerCorrect()
     {
       AnswerCorrectStartedEvent?.Invoke();
       
-      StartCoroutine(Timer(StaticTimeVariables.TrialFeedbackDuration, ShowingEnemyInMind));
+      StartCoroutine(Timer(StaticTimeVariables.TrialFeedbackDuration, ObjectDelay));
     }
 
     private void EvaluatingEncounter()

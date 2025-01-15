@@ -44,7 +44,6 @@ public class TrialHandler : MonoBehaviour
         public string PropertyType { get; set; }
         public string StimulusProperty { get; set; }
         public bool ValidProperty { get; set; }
-        public float PropertyDelay { get; set; }
         public float ITI { get; set; }
     }
 
@@ -131,6 +130,7 @@ public class TrialHandler : MonoBehaviour
                         propertyTrial.PropertyId = UtilsT.GetId(encounterEntry.StimulusProperty);
                         propertyTrial.PropertyName = encounterEntry.StimulusProperty;
                         propertyTrial.PropertyType = ConvertStringPropertyType(encounterEntry.PropertyType);
+                        propertyTrial.ITI = encounterEntry.ITI;
                         propertyTrial.ValidProperty = encounterEntry.ValidProperty;
                         lastEncounter.PropertyTrials.Add(propertyTrial);
 
@@ -213,12 +213,17 @@ public class TrialHandler : MonoBehaviour
         OnObjectSpawnedEvent?.Invoke(obj);
     }
 
-    public float GetCurrentWaitTime()
+    public float GetCurrentBlockDelay()
     {
         return encounters[encounterCounter].EncounterBlockDelay;
     }
 
-    public float GetTotalWaitTime()
+    public float GetCurrentTrialDelay()
+    {
+        return encounters[encounterCounter].GetCurrentTrialDelay();
+    }
+
+    public float GetTotalBlockDelay()
     {
         float wt = 0;
         foreach (var encounter in encounters)

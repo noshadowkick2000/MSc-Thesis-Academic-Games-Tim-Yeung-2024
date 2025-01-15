@@ -26,6 +26,7 @@ public class EncounterData
     public int PropertyId;
     public string PropertyName;
     public PropertyType PropertyType;
+    public float ITI;
     public bool ValidProperty;
   }
   
@@ -42,6 +43,8 @@ public class EncounterData
   public int GetCurrentPropertyId() { return PropertyTrials[currentProperty].PropertyId; }
   
   public PropertyType GetCurrentPropertyType() { return PropertyTrials[currentProperty].PropertyType; }
+
+  public float GetCurrentTrialDelay() { return PropertyTrials[currentProperty].ITI; }
 
   public bool EncounterOver => currentProperty >= PropertyTrials.Count;
 

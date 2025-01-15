@@ -19,7 +19,7 @@ public class LightingController : MonoBehaviour
 
     private void SubscribeToEvents()
     {
-        GameEngine.ShowingEnemyInMindStartedEvent += ShowingEnemyInMind;
+        GameEngine.ObjectDelayStartedEvent += ObjectDelay;
         GameEngine.EvaluatingEncounterStartedEvent += EvaluatingEncounter;
     }
 
@@ -28,7 +28,7 @@ public class LightingController : MonoBehaviour
         
     }
 
-    protected virtual void ShowingEnemyInMind()
+    protected virtual void ObjectDelay()
     { 
         RenderSettings.ambientIntensity = 0f;
     }
