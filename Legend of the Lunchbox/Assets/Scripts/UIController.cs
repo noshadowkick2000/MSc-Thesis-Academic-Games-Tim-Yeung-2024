@@ -158,7 +158,10 @@ public class UIController : MonoBehaviour
     
     private IEnumerator FadeScreen(bool fadingIn, float duration)
     {
-        mindBG.color = fadingIn ? Color.clear : maxColorBg;
+        Color startColor = fadingIn ? Color.clear : maxColorBg;
+        Color endColor = fadingIn ? maxColorBg : Color.clear;
+        
+        mindBG.color = startColor;
 
         float startTime = Time.realtimeSinceStartup;
         float x = 0;
@@ -166,7 +169,7 @@ public class UIController : MonoBehaviour
 
         while (x < 1)
         {
-            tempColor.a = fadingIn ? UtilsT.EasedT(x) : UtilsT.EasedT(1-x);
+            tempColor.a = Mathf.Lerp(startColor.a, endColor.a, UtilsT.EasedT(x));
          
             mindBG.color = tempColor;
          
@@ -174,7 +177,7 @@ public class UIController : MonoBehaviour
             yield return null;
         }
       
-        mindBG.color = fadingIn ? maxColorBg : Color.clear;
+        mindBG.color = endColor;
     }
 
     Coroutine timerRoutine;
@@ -338,6 +341,8 @@ public class UIController : MonoBehaviour
     protected virtual void ObjectDelay()
     {
         // mindBG.SetActive(true);
+        if (mindBG.color.a != 0) return;
+        
         StartCoroutine(FadeScreen(true, .1f));
 
     }
