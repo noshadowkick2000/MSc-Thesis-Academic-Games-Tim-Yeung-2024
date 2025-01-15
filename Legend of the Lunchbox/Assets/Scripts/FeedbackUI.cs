@@ -5,7 +5,7 @@ using Assets;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class FeedbackUI : MonoBehaviour
+public class FeedbackUI : ObjectMover
 {
     [SerializeField] private GameObject feedbackUI;
     [SerializeField] private Animation feedbackAnimation;
@@ -14,6 +14,7 @@ public class FeedbackUI : MonoBehaviour
     private void Awake()
     {
         feedbackUI.SetActive(false);
+        mainObject = feedbackUI.transform;
         
         SubscribeToEvents();
     }
@@ -50,6 +51,8 @@ public class FeedbackUI : MonoBehaviour
     private void ShowNegativeFeedback()
     {
         feedbackUI.SetActive(true);
+        StartCoroutine(Nod(GameEngine.StaticTimeVariables.TrialFeedbackDuration/2, .1f, 20, false));
+        
         feedbackAnimation.Play("feedbackIncorrect");
     }
 
