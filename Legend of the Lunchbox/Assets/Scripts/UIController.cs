@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
-    [SerializeField] private GameObject mindUI;
+    [FormerlySerializedAs("mindUI")] [SerializeField] private Image mindBG;
     // [SerializeField] private Image mindPanel;
     [SerializeField] private Color spotColor;
     [SerializeField] private GameObject spotLight;
@@ -28,11 +28,14 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject flashBang;
     [SerializeField] private Image timerUI;
     [SerializeField] private GameObject breakInstructions;
+
+    private Color maxColorBg;
     
     void Start()
     {
         thoughtUI.SetActive(false);
-        mindUI.SetActive(false);
+        maxColorBg = mindBG.color;
+        mindBG.color = Color.clear;
         controlIndicatorUI.SetActive(false);
         flashBang.SetActive(false);
         scramble.SetActive(false);
@@ -54,7 +57,8 @@ public class UIController : MonoBehaviour
     private void Idle()
     {
         controlIndicatorUI.SetActive(false);
-        mindUI.SetActive(false);
+        // mindBG.SetActive(false);
+        StartCoroutine(FadeScreen(false, .1f));
         thoughtUI.SetActive(false);
     }
 
@@ -151,6 +155,27 @@ public class UIController : MonoBehaviour
         
         thoughtWords.color = Color.clear;
     }
+    
+    private IEnumerator FadeScreen(bool fadingIn, float duration)
+    {
+        mindBG.color = fadingIn ? Color.clear : maxColorBg;
+
+        float startTime = Time.realtimeSinceStartup;
+        float x = 0;
+        Color tempColor = maxColorBg;
+
+        while (x < 1)
+        {
+            tempColor.a = fadingIn ? UtilsT.EasedT(x) : UtilsT.EasedT(1-x);
+         
+            mindBG.color = tempColor;
+         
+            x = (Time.realtimeSinceStartup - startTime) / duration;
+            yield return null;
+        }
+      
+        mindBG.color = fadingIn ? maxColorBg : Color.clear;
+    }
 
     Coroutine timerRoutine;
 
@@ -186,7 +211,8 @@ public class UIController : MonoBehaviour
         GameEngine.StartingBreakStartedEvent += StartingBreak;
         GameEngine.BreakingBadStartedEvent += BreakingBad;
         GameEngine.SettingUpMindStartedEvent += SettingUpMind;
-        GameEngine.ShowingEnemyInMindStartedEvent += ShowingEnemyInMind;
+        GameEngine.ObjectDelayStartedEvent += ObjectDelay;
+        GameEngine.ShowingObjectInMindStartedEvent += ShowingObjectInMind;
         GameEngine.MovingToPropertyStartedEvent += MovingToProperty;
         GameEngine.ShowingPropertyStartedEvent += ShowingProperty;
         GameEngine.EvaluatingInputStartedEvent += EvaluatingInput;
@@ -206,7 +232,8 @@ public class UIController : MonoBehaviour
         GameEngine.StartingBreakStartedEvent -= StartingBreak;
         GameEngine.BreakingBadStartedEvent -= BreakingBad;
         GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
-        GameEngine.ShowingEnemyInMindStartedEvent -= ShowingEnemyInMind;
+        GameEngine.ObjectDelayStartedEvent -= ObjectDelay;
+        GameEngine.ShowingObjectInMindStartedEvent -= ShowingObjectInMind;
         GameEngine.MovingToPropertyStartedEvent -= MovingToProperty;
         GameEngine.ShowingPropertyStartedEvent -= ShowingProperty;
         GameEngine.EvaluatingInputStartedEvent -= EvaluatingInput;
@@ -231,7 +258,8 @@ public class UIController : MonoBehaviour
         Flash();
         
         breakInstructions.SetActive(true);
-        mindUI.SetActive(true);
+        // mindBG.SetActive(true);
+        StartCoroutine(FadeScreen(true, .1f));
         thoughtUI.SetActive(true);
         StartCoroutine(AnimateShakePrompt());
     }
@@ -239,7 +267,9 @@ public class UIController : MonoBehaviour
     protected virtual void WonBreak()
     {
         breakInstructions.SetActive(false);
-        mindUI.SetActive(false);
+        // mindBG.SetActive(false);
+        StartCoroutine(FadeScreen(false, .1f));
+
         thoughtUI.SetActive(false);
         
         LostEncounter();
@@ -305,9 +335,15 @@ public class UIController : MonoBehaviour
         LeanTween.scale(controlButtonUI[ind], 1.1f * Vector3.one, .1f);
     }
 
-    protected virtual void ShowingEnemyInMind()
+    protected virtual void ObjectDelay()
     {
-        mindUI.SetActive(true);
+        // mindBG.SetActive(true);
+        StartCoroutine(FadeScreen(true, .1f));
+
+    }
+
+    protected virtual void ShowingObjectInMind()
+    {
         Flash();
     }
 

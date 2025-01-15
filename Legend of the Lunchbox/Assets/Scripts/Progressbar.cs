@@ -17,7 +17,7 @@ public class Progressbar : MonoBehaviour
     
     private void Start()
     {
-        total = FindObjectOfType<TrialHandler>().GetTotalWaitTime();
+        total = FindObjectOfType<TrialHandler>().GetTotalBlockDelay();
         SubscribeToEvents();
         
         bGoal.localScale = baseSize;

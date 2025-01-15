@@ -41,19 +41,19 @@ public class PlayerController : MonoBehaviour
 
   private void SubscribeToEvents()
   {
-    GameEngine.ShowingEnemyStartedEvent += ShowingEnemy;
+    GameEngine.ShowingDiscoverableStartedEvent += ShowingDiscoverable;
     GameEngine.SettingUpMindStartedEvent += SettingUpMind;
     GameEngine.EvaluatingEncounterStartedEvent += EvaluatingEncounter;
   }
 
   private void UnsubscribeFromEvents()
   {
-    GameEngine.ShowingEnemyStartedEvent -= ShowingEnemy;
+    GameEngine.ShowingDiscoverableStartedEvent -= ShowingDiscoverable;
     GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
     GameEngine.EvaluatingEncounterStartedEvent -= EvaluatingEncounter;
   }
 
-  protected virtual void ShowingEnemy()
+  protected virtual void ShowingDiscoverable()
   {
     Idle();
   }

@@ -64,7 +64,7 @@ public class FeedbackUI : MonoBehaviour
     {
         GameEngine.AnswerCorrectStartedEvent += ShowPositiveFeedback;
         GameEngine.AnswerWrongStartedEvent += ShowNegativeFeedback;
-        GameEngine.ShowingEnemyInMindStartedEvent += RemoveFeedback;
+        GameEngine.ObjectDelayStartedEvent += RemoveFeedback;
         GameEngine.EvaluatingEncounterStartedEvent += RemoveFeedback;
     }
     
@@ -72,7 +72,7 @@ public class FeedbackUI : MonoBehaviour
     {
         GameEngine.AnswerCorrectStartedEvent -= ShowPositiveFeedback;
         GameEngine.AnswerWrongStartedEvent -= ShowNegativeFeedback;
-        GameEngine.ShowingEnemyInMindStartedEvent -= RemoveFeedback;
+        GameEngine.ObjectDelayStartedEvent -= RemoveFeedback;
         GameEngine.EvaluatingEncounterStartedEvent -= RemoveFeedback;
     }
 }

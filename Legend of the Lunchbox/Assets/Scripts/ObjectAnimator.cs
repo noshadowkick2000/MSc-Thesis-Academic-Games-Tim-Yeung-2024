@@ -27,7 +27,7 @@ public class ObjectAnimator : ObjectMover
    {
       TrialHandler.OnObjectSpawnedEvent += ObjectSpawned;
       GameEngine.SettingUpMindStartedEvent += SettingUpMind;
-      GameEngine.ShowingEnemyInMindStartedEvent += ShowingEnemyInMind;
+      GameEngine.ShowingObjectInMindStartedEvent += ShowingObjectInMind;
       GameEngine.MovingToPropertyStartedEvent += MovingToProperty;
       GameEngine.MovingToEnemyStartedEvent += MovingToEnemy;
       GameEngine.AnswerCorrectStartedEvent += CorrectAnswer;
@@ -41,7 +41,7 @@ public class ObjectAnimator : ObjectMover
    {
       TrialHandler.OnObjectSpawnedEvent -= ObjectSpawned;
       GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
-      GameEngine.ShowingEnemyInMindStartedEvent -= ShowingEnemyInMind;
+      GameEngine.ShowingObjectInMindStartedEvent -= ShowingObjectInMind;
       GameEngine.MovingToPropertyStartedEvent -= MovingToProperty;
       GameEngine.MovingToEnemyStartedEvent -= MovingToEnemy;
       GameEngine.AnswerCorrectStartedEvent -= CorrectAnswer;
@@ -88,7 +88,7 @@ public class ObjectAnimator : ObjectMover
       objectMat.SetFloat("_t", 1);
    }
    
-   protected virtual void ShowingEnemyInMind()
+   protected virtual void ShowingObjectInMind()
    {
       mainObject.gameObject.SetActive(true);
       StartCoroutine(Fade(true, GameEngine.EnemyMindShowTime / 10));
@@ -146,7 +146,7 @@ public class ObjectAnimator : ObjectMover
 
    protected virtual void EvaluatingEncounter()
    {
-      ShowingEnemyInMind();
+      ShowingObjectInMind();
    }
 
    protected virtual void WonEncounter()

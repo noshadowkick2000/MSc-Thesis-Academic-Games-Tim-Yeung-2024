@@ -86,12 +86,6 @@ public class EnvironmentHandler : ObjectMover
         StartCoroutine(GrowObject(GameEngine.StaticTimeVariables.EncounterTrialStartDuration, 1, 2, true));
     }
 
-    private void DestroyDiscoverable()
-    {
-        Destroy(spawnedDiscoverable);
-        mainObject = null;
-    }
-
     protected virtual void LevelOver()
     {
         Moving = true;
