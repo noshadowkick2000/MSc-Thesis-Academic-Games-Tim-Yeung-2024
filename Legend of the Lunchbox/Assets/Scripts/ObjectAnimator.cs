@@ -29,7 +29,7 @@ public class ObjectAnimator : ObjectMover
       GameEngine.SettingUpMindStartedEvent += SettingUpMind;
       GameEngine.ShowingObjectInMindStartedEvent += ShowingObjectInMind;
       GameEngine.MovingToPropertyStartedEvent += MovingToProperty;
-      GameEngine.MovingToEnemyStartedEvent += MovingToEnemy;
+      GameEngine.MovingToObjectStartedEvent += MovingToObject;
       GameEngine.AnswerCorrectStartedEvent += CorrectAnswer;
       GameEngine.AnswerWrongStartedEvent += WrongAnswer;
       GameEngine.EvaluatingEncounterStartedEvent += EvaluatingEncounter;
@@ -43,7 +43,7 @@ public class ObjectAnimator : ObjectMover
       GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
       GameEngine.ShowingObjectInMindStartedEvent -= ShowingObjectInMind;
       GameEngine.MovingToPropertyStartedEvent -= MovingToProperty;
-      GameEngine.MovingToEnemyStartedEvent -= MovingToEnemy;
+      GameEngine.MovingToObjectStartedEvent -= MovingToObject;
       GameEngine.AnswerCorrectStartedEvent -= CorrectAnswer;
       GameEngine.AnswerWrongStartedEvent -= WrongAnswer;
       GameEngine.EvaluatingEncounterStartedEvent -= EvaluatingEncounter;
@@ -129,7 +129,7 @@ public class ObjectAnimator : ObjectMover
          objectRenderer.color = fadingIn ? Color.white : Color.clear;
    }
 
-   protected virtual void MovingToEnemy()
+   protected virtual void MovingToObject()
    {
       // StartCoroutine(Fade(true, GameEngine.StaticTimeVariables.ExplanationPromptDuration / 2));
    }

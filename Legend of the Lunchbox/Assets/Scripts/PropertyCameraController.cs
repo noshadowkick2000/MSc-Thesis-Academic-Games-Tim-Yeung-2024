@@ -28,14 +28,14 @@ public class PropertyCameraController : ObjectMover
     {
         GameEngine.StartingEncounterStartedEvent += StartingEncounter;
         GameEngine.MovingToPropertyStartedEvent += MovingToProperty;
-        GameEngine.MovingToEnemyStartedEvent += MovingToEnemy;
+        GameEngine.MovingToObjectStartedEvent += MovingToObject;
     }
   
     private void UnSubscribeToEvents()
     {
         GameEngine.StartingEncounterStartedEvent -= StartingEncounter;
         GameEngine.MovingToPropertyStartedEvent -= MovingToProperty;
-        GameEngine.MovingToEnemyStartedEvent -= MovingToEnemy;
+        GameEngine.MovingToObjectStartedEvent -= MovingToObject;
     }
 
     protected virtual void StartingEncounter()
@@ -49,7 +49,7 @@ public class PropertyCameraController : ObjectMover
         cameraRoutine = SmoothToObject(mainObject.position + Vector3.forward, mainObject.rotation, GameEngine.StaticTimeVariables.ExplanationPromptDuration / 4, true);
     }
 
-    protected virtual void MovingToEnemy()
+    protected virtual void MovingToObject()
     {
         SmoothToObject(LocationHolder.MindCameraLocation, GameEngine.StaticTimeVariables.TrialEndDuration, true);
     }
