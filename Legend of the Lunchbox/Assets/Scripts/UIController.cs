@@ -221,7 +221,7 @@ public class UIController : MonoBehaviour
         GameEngine.EvaluatingInputStartedEvent += EvaluatingInput;
         GameEngine.AnswerWrongStartedEvent += AnswerWrong;
         GameEngine.TrialInputRegisteredStartedEvent += TrialInputRegistered;
-        GameEngine.MovingToEnemyStartedEvent += MovingToEnemy;
+        GameEngine.MovingToObjectStartedEvent += MovingToObject;
         GameEngine.EvaluatingEncounterStartedEvent += EvaluatingEncounter;
         GameEngine.EndingEncounterStartedEvent += EndingEncounter;
         GameEngine.LostEncounterStartedEvent += LostEncounter;
@@ -242,7 +242,7 @@ public class UIController : MonoBehaviour
         GameEngine.EvaluatingInputStartedEvent -= EvaluatingInput;
         GameEngine.AnswerWrongStartedEvent -= AnswerWrong;
         GameEngine.TrialInputRegisteredStartedEvent -= TrialInputRegistered;
-        GameEngine.MovingToEnemyStartedEvent -= MovingToEnemy;
+        GameEngine.MovingToObjectStartedEvent -= MovingToObject;
         GameEngine.EvaluatingEncounterStartedEvent -= EvaluatingEncounter;
         GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
         GameEngine.LostEncounterStartedEvent -= LostEncounter;
@@ -297,8 +297,8 @@ public class UIController : MonoBehaviour
     
     protected virtual void SettingUpMind()
     {
-        LeanTween.moveY(progressBarUI,  + 50f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseInElastic();
-        LeanTween.moveY(imaginationBarUI, -100f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseInElastic();
+        LeanTween.moveY(progressBarUI,  + 50f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseInBack();
+        LeanTween.moveY(imaginationBarUI, -100f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseInBack();
     }
     
     protected virtual void MovingToProperty(EncounterData.PropertyType propertyType)
@@ -322,7 +322,7 @@ public class UIController : MonoBehaviour
         // StartCoroutine(AnimateScramble());
     }
 
-    protected virtual void MovingToEnemy()
+    protected virtual void MovingToObject()
     {
         controlIndicatorUI.SetActive(false);
 
@@ -361,18 +361,18 @@ public class UIController : MonoBehaviour
     private bool lostAnimation = false;
     protected virtual void LostEncounter()
     {
-        LeanTween.moveY(imaginationBarUI, 20f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseOutElastic();
+        LeanTween.moveY(imaginationBarUI, 20f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseOutBack();
         lostAnimation = true;
     }
 
     protected virtual void EndingEncounter()
     {
-        LeanTween.moveY(progressBarUI,  -15f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseOutElastic();
+        LeanTween.moveY(progressBarUI,  -15f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseOutBack();
 
         if (lostAnimation)
             lostAnimation = false;
         else
-            LeanTween.moveY(imaginationBarUI, 20f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseOutElastic();
+            LeanTween.moveY(imaginationBarUI, 20f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseOutBack();
     }
 
     protected virtual void LevelOver()

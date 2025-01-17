@@ -78,8 +78,9 @@ namespace Assets
     private void Awake()
     {
       LogFolderInDocs = logFolderInDocs;
-      // PropertiesAndObjects = propertiesAndObjects;
       LevelId = levelId;
+
+      feedbackEnabled = PlayerPrefs.GetInt(MainMenuHandler.FeedbackKey) == 1;
       
       Random.InitState(12345);
       
@@ -119,7 +120,7 @@ namespace Assets
     public static event StateChangeEventInput TimedOutStartedEvent;
     public static event StateChangeEvent AnswerWrongStartedEvent;
     public static event StateChangeEvent AnswerCorrectStartedEvent;
-    public static event StateChangeEvent MovingToEnemyStartedEvent;
+    public static event StateChangeEvent MovingToObjectStartedEvent;
     public static event StateChangeEvent EvaluatingEncounterStartedEvent;
     public static event StateChangeEvent WonBreakStartedEvent;
     public static event StateChangeEvent WonEncounterStartedEvent;
@@ -260,32 +261,36 @@ namespace Assets
         correct = trialHandler.EvaluateProperty(currentInput);
       }
 
-      MovingToEnemy(correct);
+      MovingToObject(correct);
       currentInput = InputHandler.InputState.NONE;
     }
-    
-    private void MovingToEnemy(bool answerCorrect)
+
+    private bool feedbackEnabled;
+    private void MovingToObject(bool answerCorrect)
     {
-      MovingToEnemyStartedEvent?.Invoke();
+      MovingToObjectStartedEvent?.Invoke();
       
-      if (answerCorrect)
-        StartCoroutine(Timer(StaticTimeVariables.TrialEndDuration, AnswerCorrect));
-      else
-        StartCoroutine(Timer(StaticTimeVariables.TrialEndDuration, AnswerWrong));
+      StartCoroutine(Timer(StaticTimeVariables.TrialEndDuration, answerCorrect ? AnswerCorrect : AnswerWrong));
     }
     
     private void AnswerWrong()
     {
       AnswerWrongStartedEvent?.Invoke();
-      
-      StartCoroutine(Timer(StaticTimeVariables.TrialFeedbackDuration, ObjectDelay));
+     
+      if (feedbackEnabled)
+        StartCoroutine(Timer(StaticTimeVariables.TrialFeedbackDuration, ObjectDelay));
+      else
+        ObjectDelay();
     }
 
     private void AnswerCorrect()
     {
       AnswerCorrectStartedEvent?.Invoke();
       
-      StartCoroutine(Timer(StaticTimeVariables.TrialFeedbackDuration, ObjectDelay));
+      if (feedbackEnabled)
+        StartCoroutine(Timer(StaticTimeVariables.TrialFeedbackDuration, ObjectDelay));
+      else
+        ObjectDelay();
     }
 
     private void EvaluatingEncounter()

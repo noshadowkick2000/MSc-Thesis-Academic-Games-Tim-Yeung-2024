@@ -42,9 +42,13 @@ public class SoundEngine : MonoBehaviour
     
     private void Awake()
     {
-        Init();
-        
-        SubscribeToEvents();
+        if (PlayerPrefs.GetInt(MainMenuHandler.SoundKey) == 1)
+        {
+            Init();
+            SubscribeToEvents();
+        }
+        else
+            Destroy(this);
     }
 
     private void OnDestroy()

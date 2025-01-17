@@ -16,7 +16,8 @@ public class FeedbackUI : ObjectMover
         feedbackUI.SetActive(false);
         mainObject = feedbackUI.transform;
         
-        SubscribeToEvents();
+        if (PlayerPrefs.GetInt(MainMenuHandler.FeedbackKey) == 1)
+            SubscribeToEvents();
     }
 
     private void OnDestroy()
