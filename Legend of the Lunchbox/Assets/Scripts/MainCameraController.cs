@@ -34,14 +34,14 @@ public class MainCameraController : ObjectMover
   {
     Vector3 basePosition = mainObject.position;
 
-    float startTime = Time.realtimeSinceStartup;
+    float startTime = Time.time;
     bool negativeMovement = false;
     while (true)
     {
-      float x = (Time.realtimeSinceStartup - startTime) / bobbingTime;
+      float x = (Time.time - startTime) / bobbingTime;
       if (x >= 1f)
       {
-        startTime = Time.realtimeSinceStartup;
+        startTime = Time.time;
         x = 0;
         negativeMovement = !negativeMovement;
       }
@@ -59,12 +59,12 @@ public class MainCameraController : ObjectMover
   //   Vector3 basePosition = mainObject.position;
   //   Vector3 offset = Vector3.zero;
   //
-  //   float startTime = Time.realtimeSinceStartup;
+  //   float startTime = Time.time;
   //   float x = 0;
   //   
   //   while (x < 1f)
   //   {
-  //     x = (Time.realtimeSinceStartup - startTime) / shakingTime;
+  //     x = (Time.time - startTime) / shakingTime;
   //     offset = new Vector3((Mathf.PerlinNoise1D(x) - .5f) * 2, (Mathf.PerlinNoise1D(x / 2) - .5f) * 2, 0);
   //     mainObject.position = basePosition + offset;
   //     yield return null;

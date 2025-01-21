@@ -59,9 +59,9 @@ public class Healthbar : MonoBehaviour
 
     private IEnumerator AnimateBar(float delay, float duration)
     {
-        yield return new WaitForSecondsRealtime(delay);
+        yield return new WaitForSeconds(delay);
         
-        float startTime = Time.realtimeSinceStartup;
+        float startTime = Time.time;
         float x = 0;
 
         float start = slider.value;
@@ -71,7 +71,7 @@ public class Healthbar : MonoBehaviour
         {
             float y = UtilsT.EasedT(x);
             slider.value = y * goal + (1-y) * start;
-            x = (Time.realtimeSinceStartup - startTime) / duration;
+            x = (Time.time - startTime) / duration;
 
             yield return null;
         }

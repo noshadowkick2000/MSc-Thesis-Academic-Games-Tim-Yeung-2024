@@ -22,12 +22,12 @@ public class Bob : MonoBehaviour
         RectTransform rt = transform as RectTransform;
         while (true)
         {
-            float startTime = Time.realtimeSinceStartup;
+            float startTime = Time.time;
             float x = 0;
             
             while (x < 1)
             {
-                x = (Time.realtimeSinceStartup - startTime) / duration;
+                x = (Time.time - startTime) / duration;
                 float y = Mathf.Sin(x * 2 * MathF.PI);
                 rt.anchoredPosition = new Vector2(0, y);
                 yield return null;

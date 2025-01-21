@@ -97,7 +97,7 @@ public class UIController : MonoBehaviour
 
     private IEnumerator AnimateThought()
     {
-        float startTime = Time.realtimeSinceStartup;
+        float startTime = Time.time;
         float x = 0;
         float y;
         float power = 10f;
@@ -108,12 +108,12 @@ public class UIController : MonoBehaviour
             y = x < .5f ? 1 - Mathf.Pow(x-1, power) : 1 - Mathf.Pow(x, power);
             a.a = y;
             thoughtWords.color = a;
-            x = (Time.realtimeSinceStartup - startTime) / GameEngine.StaticTimeVariables.ExplanationPromptDuration;
+            x = (Time.time - startTime) / GameEngine.StaticTimeVariables.ExplanationPromptDuration;
 
             yield return null;
         }
 
-        startTime = Time.realtimeSinceStartup;
+        startTime = Time.time;
         x = 0;
         thoughtWords.text = ".";
 
@@ -122,7 +122,7 @@ public class UIController : MonoBehaviour
             y = x < .5f ? 1 - Mathf.Pow(x-1, power) : 1 - Mathf.Pow(x, power);
             a.a = y;
             thoughtWords.color = a;
-            x = (Time.realtimeSinceStartup - startTime) / GameEngine.StaticTimeVariables.FixationDuration;
+            x = (Time.time - startTime) / GameEngine.StaticTimeVariables.FixationDuration;
 
             if (x > .66f)
                 thoughtWords.text = "...";
@@ -137,7 +137,7 @@ public class UIController : MonoBehaviour
     {
         thoughtWords.text = LocalizationTextLoader.GetLocaleEntry(4);
         
-        float startTime = Time.realtimeSinceStartup;
+        float startTime = Time.time;
         float x = 0;
         float y;
         float power = 10f;
@@ -148,7 +148,7 @@ public class UIController : MonoBehaviour
             y = x < .5f ? 1 - Mathf.Pow(x-1, power) : 1 - Mathf.Pow(x, power);
             a.a = y;
             thoughtWords.color = a;
-            x = (Time.realtimeSinceStartup - startTime) / (GameEngine.StaticTimeVariables.BreakDuration / 2f);
+            x = (Time.time - startTime) / (GameEngine.StaticTimeVariables.BreakDuration / 2f);
 
             yield return null;
         }
@@ -163,7 +163,7 @@ public class UIController : MonoBehaviour
         
         mindBG.color = startColor;
 
-        float startTime = Time.realtimeSinceStartup;
+        float startTime = Time.time;
         float x = 0;
         Color tempColor = maxColorBg;
 
@@ -173,7 +173,7 @@ public class UIController : MonoBehaviour
          
             mindBG.color = tempColor;
          
-            x = (Time.realtimeSinceStartup - startTime) / duration;
+            x = (Time.time - startTime) / duration;
             yield return null;
         }
       
@@ -198,11 +198,11 @@ public class UIController : MonoBehaviour
 
     private IEnumerator AnimateTimer(float timeOut)
     {
-        float startTime = Time.realtimeSinceStartup;
+        float startTime = Time.time;
         timerUI.fillAmount = 0;
-        while (Time.realtimeSinceStartup < startTime + timeOut)
+        while (Time.time < startTime + timeOut)
         {
-            timerUI.fillAmount = (Time.realtimeSinceStartup - startTime) / timeOut;
+            timerUI.fillAmount = (Time.time - startTime) / timeOut;
             yield return null;
         }
 
@@ -291,14 +291,14 @@ public class UIController : MonoBehaviour
 
     private IEnumerator FlashOff()
     {
-        yield return new WaitForSecondsRealtime(.1f);
+        yield return new WaitForSeconds(.1f);
         flashBang.SetActive(false);
     }
     
     protected virtual void SettingUpMind()
     {
-        LeanTween.moveY(progressBarUI,  + 50f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseInBack();
-        LeanTween.moveY(imaginationBarUI, -100f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseInBack();
+        LeanTween.moveY(progressBarUI,  + 50f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseInBounce();
+        LeanTween.moveY(imaginationBarUI, -100f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseInBounce();
     }
     
     protected virtual void MovingToProperty(EncounterData.PropertyType propertyType)
@@ -361,18 +361,18 @@ public class UIController : MonoBehaviour
     private bool lostAnimation = false;
     protected virtual void LostEncounter()
     {
-        LeanTween.moveY(imaginationBarUI, 20f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseOutBack();
+        LeanTween.moveY(imaginationBarUI, 20f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseInBounce();
         lostAnimation = true;
     }
 
     protected virtual void EndingEncounter()
     {
-        LeanTween.moveY(progressBarUI,  -15f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseOutBack();
+        LeanTween.moveY(progressBarUI,  -15f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseInBounce();
 
         if (lostAnimation)
             lostAnimation = false;
         else
-            LeanTween.moveY(imaginationBarUI, 20f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseOutBack();
+            LeanTween.moveY(imaginationBarUI, 20f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseInBounce();
     }
 
     protected virtual void LevelOver()
@@ -384,11 +384,11 @@ public class UIController : MonoBehaviour
     {
         stencil.localScale = opening ? Vector3.zero : Vector3.one;
         
-        float startTime = Time.realtimeSinceStartup;
+        float startTime = Time.time;
 
-        while (Time.realtimeSinceStartup < startTime + duration)
+        while (Time.time < startTime + duration)
         {
-            float x = ((Time.realtimeSinceStartup - startTime) / duration);
+            float x = ((Time.time - startTime) / duration);
             if (!opening)
                 x = 1 - x;
             stencil.localScale = new Vector3(x, x, 0);

@@ -25,13 +25,13 @@ public class Runner : MonoBehaviour
     
     private IEnumerator MoveLine()
     {
-        float startTime = Time.realtimeSinceStartup;
+        float startTime = Time.time;
         float x = 0;
         float startProgress = runnerMaterial.GetTextureOffset("_MainTex").x;
             
         while (x < 1)
         {
-            x = (Time.realtimeSinceStartup - startTime) / GameEngine.CurrentRailDuration;
+            x = (Time.time - startTime) / GameEngine.CurrentRailDuration;
 
             startProgress += Time.deltaTime;
             
