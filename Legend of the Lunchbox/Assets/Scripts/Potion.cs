@@ -24,7 +24,7 @@ public class Potion : ObjectMover
 
     private IEnumerator DrainLiquid()
     {
-        float startTime = Time.realtimeSinceStartup;
+        float startTime = Time.time;
         float x = 0;
         float startAmount = potionLiquid.fillAmount;
 
@@ -32,7 +32,7 @@ public class Potion : ObjectMover
         {
             potionLiquid.fillAmount = Mathf.Lerp(startAmount, drainGoal, x);
             
-            x = (Time.realtimeSinceStartup - startTime) / GameEngine.StaticTimeVariables.BreakFeedbackDuration;
+            x = (Time.time - startTime) / GameEngine.StaticTimeVariables.BreakFeedbackDuration;
             yield return null;
         }
     }

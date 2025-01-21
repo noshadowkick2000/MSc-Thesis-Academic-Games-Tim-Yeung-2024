@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainMenuHandler : MonoBehaviour
@@ -14,7 +15,25 @@ public class MainMenuHandler : MonoBehaviour
     
     public void StartGame()
     {
+        LeanTween.moveX(MainMenu, -500f, .5f).setEaseInBack();
         
+        Invoke(nameof(Load), .5f);
+    }
+
+    private void Load()
+    {
+        StartCoroutine(LoadingScene());
+    }
+
+    private IEnumerator LoadingScene()
+    {
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(1);
+
+        // Wait until the asynchronous scene fully loads
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
     }
 
     public void OpenSettings()

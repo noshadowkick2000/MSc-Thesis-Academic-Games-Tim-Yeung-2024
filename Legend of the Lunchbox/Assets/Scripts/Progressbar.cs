@@ -10,7 +10,8 @@ public class Progressbar : MonoBehaviour
     [SerializeField] private Slider progressSlider;
     [SerializeField] private Transform bGoal;
 
-    private Vector3 baseSize = .5f * Vector3.one;
+    [SerializeField] private Vector3 baseSize = .5f * Vector3.one;
+    [SerializeField] private Vector3 goalSize = Vector3.one;
 
     private float total;
     private float progress;
@@ -45,19 +46,19 @@ public class Progressbar : MonoBehaviour
 
     private IEnumerator MoveSlider()
     {
-        float startTime = Time.realtimeSinceStartup;
+        float startTime = Time.time;
         float x = 0;
         float startProgress = progress;
         float addedProgress = GameEngine.CurrentRailDuration / total;
             
         while (x < 1)
         {
-            x = (Time.realtimeSinceStartup - startTime) / GameEngine.CurrentRailDuration;
+            x = (Time.time - startTime) / GameEngine.CurrentRailDuration;
             float y = x * addedProgress;
 
             progress = startProgress + y;
             progressSlider.value = progress;
-            bGoal.localScale = progress * baseSize + baseSize;
+            bGoal.localScale = Vector3.Lerp(baseSize, goalSize, y);
             
             yield return null;
         }

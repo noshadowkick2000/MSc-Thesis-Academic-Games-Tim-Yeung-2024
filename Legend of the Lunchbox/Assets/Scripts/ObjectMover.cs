@@ -40,14 +40,14 @@ public class ObjectMover : MonoBehaviour
     {
         Quaternion baseRot = mainObject.rotation;
       
-        float startTime = Time.realtimeSinceStartup;
+        float startTime = Time.time;
         float x = 0;
 
         while (x < 1)
         {
             float y = Mathf.Sin((UtilsT.EasedT(x) * repetitions * Mathf.PI));
             mainObject.rotation = Quaternion.Euler(0, 0, maxAngle * y) * baseRot;
-            x = (Time.realtimeSinceStartup - startTime) / duration;
+            x = (Time.time - startTime) / duration;
             yield return null;
         }
       
@@ -58,14 +58,14 @@ public class ObjectMover : MonoBehaviour
     {
         Vector3 start = mainObject.position;
 
-        float startTime = Time.realtimeSinceStartup;
+        float startTime = Time.time;
         float x = 0;
         
         while (x < 1)
         {
             float y = Mathf.Sin((UtilsT.EasedT(x) * repetitions * Mathf.PI));
             mainObject.position = start + new Vector3(vertical ? 0 : maxOffset * y, vertical ? maxOffset * y : 0, 0);
-            x = (Time.realtimeSinceStartup - startTime) / duration;
+            x = (Time.time - startTime) / duration;
             yield return null;
         }
     }
@@ -76,10 +76,10 @@ public class ObjectMover : MonoBehaviour
         Vector3 startScale = startingScaleMultiplier * mainObject.localScale;
         mainObject.localScale = startScale;
     
-        float startTime = Time.realtimeSinceStartup;
-        while (Time.realtimeSinceStartup < startTime + (duration))
+        float startTime = Time.time;
+        while (Time.time < startTime + (duration))
         {
-            float x = (Time.realtimeSinceStartup - startTime) / (duration);
+            float x = (Time.time - startTime) / (duration);
             float y = UtilsT.EasedT(x);
             mainObject.localScale = Vector3.Lerp(startScale, endScale, y);
 
@@ -99,10 +99,10 @@ public class ObjectMover : MonoBehaviour
         Vector3 startingPos = mainObject.position;
         Quaternion startingRot = mainObject.rotation;
 
-        float startTime = Time.realtimeSinceStartup;
-        while (Time.realtimeSinceStartup < startTime + duration)
+        float startTime = Time.time;
+        while (Time.time < startTime + duration)
         {
-            float x = (Time.realtimeSinceStartup - startTime) / duration;
+            float x = (Time.time - startTime) / duration;
             if (ease)
                 x = UtilsT.EasedT(x);
                 // x = x < .5 ? 16 * x * x * x * x * x : 1 - Mathf.Pow(-2 * x + 2, 5) / 2;

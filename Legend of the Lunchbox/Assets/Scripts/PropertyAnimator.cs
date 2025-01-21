@@ -26,10 +26,10 @@ public class PropertyAnimator : MonoBehaviour
    //    Quaternion randomRotation = property.rotation * Quaternion.Euler(Random.Range(20f, 30f), 0, Random.Range(20f, 30f)); 
    //    property.localScale = Vector3.zero;
    //  
-   //    float startTime = Time.realtimeSinceStartup;
-   //    while (Time.realtimeSinceStartup < startTime + duration)
+   //    float startTime = Time.time;
+   //    while (Time.time < startTime + duration)
    //    {
-   //       float x = (Time.realtimeSinceStartup - startTime) / duration;
+   //       float x = (Time.time - startTime) / duration;
    //       float y = MathT.EasedT(x);
    //       property.localScale = new Vector3(startScale.x * y, startScale.y * y, startScale.z * y);
    //       property.rotation = Quaternion.Lerp(randomRotation, startRotation, y);
@@ -42,7 +42,7 @@ public class PropertyAnimator : MonoBehaviour
    
    // private IEnumerator DeSpawnProperty(Transform property)
    // {
-   //    yield return new WaitForSecondsRealtime(GameEngine.StaticTimeVariables.TrialEndDuration);
+   //    yield return new WaitForSeconds(GameEngine.StaticTimeVariables.TrialEndDuration);
    //  
    //    property.gameObject.SetActive(false);
    // }

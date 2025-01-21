@@ -16,7 +16,7 @@ public class LiquidHandle : MonoBehaviour
         float counter = 0;
         foreach (var wave in waves)
         {
-            float timeVal = 0.2f * (Time.realtimeSinceStartup - counter);
+            float timeVal = 0.2f * (Time.time - counter);
             wave.uvRect = new Rect(timeVal, 0, wave.uvRect.width, Mathf.PingPong(timeVal, 2 * margin) + (waveHeight - margin));
             counter += offset;
         }

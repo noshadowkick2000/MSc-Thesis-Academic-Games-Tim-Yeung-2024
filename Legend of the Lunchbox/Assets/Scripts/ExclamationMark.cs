@@ -34,7 +34,7 @@ public class ExclamationMark : MonoBehaviour
 
     private IEnumerator AnimateExclamationMark()
     {
-        float startTime = Time.realtimeSinceStartup;
+        float startTime = Time.time;
         float x = 0;
         float height = 7f;
         Vector2 p = ap;
@@ -46,7 +46,7 @@ public class ExclamationMark : MonoBehaviour
 
         while (x < 1)
         {
-            x = (Time.realtimeSinceStartup - startTime) / (GameEngine.StaticTimeVariables.EncounterStartDuration/2);
+            x = (Time.time - startTime) / (GameEngine.StaticTimeVariables.EncounterStartDuration/2);
             c.a = x;
             p.y = x * height;
 

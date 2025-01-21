@@ -53,14 +53,14 @@
 //
 //     // private IEnumerator AnimateLine(Vector3 endPosition)
 //     // {
-//     //     float startTime = Time.realtimeSinceStartup;
+//     //     float startTime = Time.time;
 //     //     float x = 0;
 //     //     
 //     //     Vector3 startPos = lineRenderer.GetPosition(0);
 //     //     
 //     //     while (x < 1)
 //     //     {
-//     //         x = (Time.realtimeSinceStartup - startTime) / GameEngine.StaticTimeVariables.ExplanationPromptDuration;
+//     //         x = (Time.time - startTime) / GameEngine.StaticTimeVariables.ExplanationPromptDuration;
 //     //         Vector3 pos = Vector3.Lerp(startPos, endPosition, MathT.EasedT(x));
 //     //         lineRenderer.SetPosition(1, pos);
 //     //         

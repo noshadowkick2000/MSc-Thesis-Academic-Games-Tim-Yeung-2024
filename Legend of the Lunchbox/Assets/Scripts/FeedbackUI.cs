@@ -35,7 +35,7 @@ public class FeedbackUI : ObjectMover
 
     private IEnumerator PlayPositive()
     {
-        float startTime = Time.realtimeSinceStartup;
+        float startTime = Time.time;
         float x = 0;
         float y;
 
@@ -43,7 +43,7 @@ public class FeedbackUI : ObjectMover
         {
             y = UtilsT.EasedT(x) * 4f;
             burstLines.localScale = new Vector3(y, y, y);
-            x = (Time.realtimeSinceStartup - startTime) / GameEngine.StaticTimeVariables.TrialFeedbackDuration;
+            x = (Time.time - startTime) / GameEngine.StaticTimeVariables.TrialFeedbackDuration;
 
             yield return null;
         }

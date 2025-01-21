@@ -71,14 +71,14 @@ public class PostProcessController : MonoBehaviour
     private IEnumerator ShockWave()
     {
         float duration = .5f;
-        float startTime = Time.realtimeSinceStartup;
+        float startTime = Time.time;
         float x = 0;
         float saturationStart = ca.saturation.value;
         float saturationGoal = saturationStart - 20f;
 
         while (x < 1)
         {
-            x = (Time.realtimeSinceStartup - startTime) / duration;
+            x = (Time.time - startTime) / duration;
 
             ld.intensity.Override((1-x) * Mathf.Sin(x * 6 * Mathf.PI));
             ca.saturation.Override(x * saturationGoal + (1-x) * saturationStart);

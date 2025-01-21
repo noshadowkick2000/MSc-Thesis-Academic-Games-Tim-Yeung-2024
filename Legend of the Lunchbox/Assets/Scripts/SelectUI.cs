@@ -49,7 +49,7 @@ public class SelectUI : MonoBehaviour
     private IEnumerator AnimateCross()
     {
         circleRenderer.sprite = crossSprites[0];
-        float startTime = Time.realtimeSinceStartup;
+        float startTime = Time.time;
         float x = 0;
         float y;
         Color circleColor = circleRenderer.color;
@@ -62,7 +62,7 @@ public class SelectUI : MonoBehaviour
             y = 1 - MathF.Pow(x, 16);
             circleColor.a = y;
             circleRenderer.color = circleColor;
-            x = (Time.realtimeSinceStartup - startTime) / (GameEngine.StaticTimeVariables.TrialEndDuration);
+            x = (Time.time - startTime) / (GameEngine.StaticTimeVariables.TrialEndDuration);
             
             yield return null;
         }
@@ -75,7 +75,7 @@ public class SelectUI : MonoBehaviour
     private IEnumerator AnimateCircle()
     {
         circleRenderer.sprite = circleSprites[0];
-        float startTime = Time.realtimeSinceStartup;
+        float startTime = Time.time;
         float x = 0;
         float y;
         Color circleColor = circleRenderer.color;
@@ -88,7 +88,7 @@ public class SelectUI : MonoBehaviour
             y = 1 - MathF.Pow(x, 16);
             circleColor.a = y;
             circleRenderer.color = circleColor;
-            x = (Time.realtimeSinceStartup - startTime) / (GameEngine.StaticTimeVariables.TrialEndDuration);
+            x = (Time.time - startTime) / (GameEngine.StaticTimeVariables.TrialEndDuration);
             
             yield return null;
         }

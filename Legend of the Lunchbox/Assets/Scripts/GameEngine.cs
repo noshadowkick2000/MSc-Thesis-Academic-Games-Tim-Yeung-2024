@@ -89,7 +89,7 @@ namespace Assets
 
     private void Start()
     {
-      Invoke(nameof(OnRail), 2f);
+      Invoke(nameof(OnRail), StaticTimeVariables.LevelTransitionDuration);
     }
 
     private void OnDestroy()
@@ -131,7 +131,7 @@ namespace Assets
 
     private IEnumerator Timer(float duration, Action nextState)
     {
-      yield return new WaitForSecondsRealtime(duration);
+      yield return new WaitForSeconds(duration);
 
       nextState();
     }

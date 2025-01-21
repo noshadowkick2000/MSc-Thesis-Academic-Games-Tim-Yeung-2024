@@ -106,7 +106,7 @@ public class ObjectAnimator : ObjectMover
       else
          objectRenderer.color = fadingIn ? Color.clear : Color.white;
 
-      float startTime = Time.realtimeSinceStartup;
+      float startTime = Time.time;
       float x = 0;
       Color tempColor = Color.white;
 
@@ -119,7 +119,7 @@ public class ObjectAnimator : ObjectMover
          else
             objectRenderer.color = tempColor;
          
-         x = (Time.realtimeSinceStartup - startTime) / duration;
+         x = (Time.time - startTime) / duration;
          yield return null;
       }
       
@@ -163,20 +163,20 @@ public class ObjectAnimator : ObjectMover
    {
       // Vector3 randomVector = new Vector3(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
       
-      yield return new WaitForSecondsRealtime(1f);
+      yield return new WaitForSeconds(1f);
 
       SmoothToObject(mainObject.position + Vector3.down, mainObject.rotation, .5f, true);
    }
 
    private IEnumerator WinAnimation()
    {
-      float startTime = Time.realtimeSinceStartup;
+      float startTime = Time.time;
       float t = 0f;
       float duration = GameEngine.StaticTimeVariables.EncounterEvaluationDuration * .3f;
 
       if (isWord)
       {
-         yield return new WaitForSecondsRealtime(duration);
+         yield return new WaitForSeconds(duration);
       }
       else
       {
@@ -184,7 +184,7 @@ public class ObjectAnimator : ObjectMover
          {
             objectMat.SetFloat("_t", 1-t);
          
-            t = (Time.realtimeSinceStartup - startTime) / duration;
+            t = (Time.time - startTime) / duration;
             yield return null;
          }  
          
@@ -197,7 +197,7 @@ public class ObjectAnimator : ObjectMover
       float speed = 0f;
       float acceleration = .2f;
       float h = 0;
-      startTime = Time.realtimeSinceStartup;
+      startTime = Time.time;
       t = 0f;
       duration = GameEngine.StaticTimeVariables.EncounterEvaluationDuration * .7f;
       int repetitions = 10;
@@ -214,7 +214,7 @@ public class ObjectAnimator : ObjectMover
 
          if (speed < maxSpeed)
             speed += acceleration * Time.deltaTime;
-         t = (Time.realtimeSinceStartup - startTime) / duration;
+         t = (Time.time - startTime) / duration;
          yield return null;
       }
    }

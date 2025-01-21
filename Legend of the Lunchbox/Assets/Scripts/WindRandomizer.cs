@@ -34,9 +34,9 @@ public class WindRandomizer : MonoBehaviour
 
     private void Update()
     {
-        if (Time.realtimeSinceStartup > spawnTime)
+        if (Time.time > spawnTime)
         {
-            spawnTime = Time.realtimeSinceStartup + Random.Range(minTimeDelay, maxTimeDelay);
+            spawnTime = Time.time + Random.Range(minTimeDelay, maxTimeDelay);
             int nextAvailableIndex = NextAvailableBuffer();
             if (nextAvailableIndex == -1)
                 return;
@@ -76,7 +76,7 @@ public class WindRandomizer : MonoBehaviour
 
     private IEnumerator DeSpawnWind(int id)
     {
-        yield return new WaitForSecondsRealtime(duration);
+        yield return new WaitForSeconds(duration);
         windBuffer[id].SetActive(false);
     }
 }
