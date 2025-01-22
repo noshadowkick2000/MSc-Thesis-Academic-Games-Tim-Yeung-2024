@@ -59,6 +59,8 @@ public class TutorialEngine : MonoBehaviour
         GameEngine.WonEncounterStartedEvent += WonEncounter;
         GameEngine.LostEncounterStartedEvent += LostEncounter;
         GameEngine.LevelOverStartedEvent += LevelOver;
+        GameEngine.StartingBreakStartedEvent += StartingBreak;
+        GameEngine.WonBreakStartedEvent += WonBreak;
     }
 
     private void UnSubscribeToEvents()
@@ -73,6 +75,8 @@ public class TutorialEngine : MonoBehaviour
         GameEngine.WonEncounterStartedEvent -= WonEncounter;
         GameEngine.LostEncounterStartedEvent -= LostEncounter;
         GameEngine.LevelOverStartedEvent -= LevelOver;
+        GameEngine.StartingBreakStartedEvent -= StartingBreak;
+        GameEngine.WonBreakStartedEvent -= WonBreak;
     }
 
     private int railCounter = 0;
@@ -158,6 +162,16 @@ public class TutorialEngine : MonoBehaviour
     private void LevelOver()
     {
         SetText(43, true);
+    }
+
+    private void StartingBreak()
+    {
+        SetText(46, true);
+    }
+
+    private void WonBreak()
+    {
+        SetText(47, false);
     }
 
     private bool blocked;
