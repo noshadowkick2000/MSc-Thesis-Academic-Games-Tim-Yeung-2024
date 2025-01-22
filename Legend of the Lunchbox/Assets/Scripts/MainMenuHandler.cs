@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Assets;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -14,6 +16,8 @@ public class MainMenuHandler : MonoBehaviour
     [SerializeField] private RectTransform CreditsMenu;
     [SerializeField] private Toggle soundToggle;
     [SerializeField] private Toggle feedbackToggle;
+    [SerializeField] private Toggle promptToggle;
+    [SerializeField] private TextMeshProUGUI language;
     
     public void StartGame()
     {
@@ -85,12 +89,19 @@ public class MainMenuHandler : MonoBehaviour
 
     public void SetPromptSettings()
     {
-        bool promptEnabled = feedbackToggle.isOn;
+        bool promptEnabled = promptToggle.isOn;
         PlayerPrefs.SetInt(PromptKey, promptEnabled ? 1 : 0);
         print(promptEnabled);
     }
 
-    private void Awake()
+    public void AdvanceLanguage(bool forward)
+    {
+        LocalizationTextLoader.SwitchLocale(forward);
+        language.text = LocalizationTextLoader.GetCurrentLocale();
+        FindObjectOfType<UILanguageSetter>().SetAll();
+    }
+
+    private void Start()
     {
         if (!PlayerPrefs.HasKey(SoundKey) || !PlayerPrefs.HasKey(FeedbackKey) || !PlayerPrefs.HasKey(PromptKey))
         {
@@ -101,13 +112,16 @@ public class MainMenuHandler : MonoBehaviour
         
         soundToggle.isOn = PlayerPrefs.GetInt(SoundKey, 1) == 1;
         feedbackToggle.isOn = PlayerPrefs.GetInt(FeedbackKey, 1) == 1;
-        
+        promptToggle.isOn = PlayerPrefs.GetInt(PromptKey, 1) == 1;
 
         xStart = MainMenu.anchoredPosition.x;
         xEnd = SettingsMenu.anchoredPosition.x;
+
+        language.text = LocalizationTextLoader.GetCurrentLocale();
     }
     
     public static readonly string SoundKey = "SoundEnabled";
     public static readonly string FeedbackKey = "FeedbackEnabled";
     public static readonly string PromptKey = "PromptEnabled";
+    public static readonly string LanguageKey = "Language";
 }

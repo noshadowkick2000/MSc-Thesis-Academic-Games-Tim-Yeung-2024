@@ -18,11 +18,6 @@ public class SelectUI : MonoBehaviour
         SubscribeToEvents();
     }
 
-    private void Update()
-    {
-        print(circleRenderer == null);
-    }
-
     private void OnDestroy()
     {
         UnsubscribeFromEvents();

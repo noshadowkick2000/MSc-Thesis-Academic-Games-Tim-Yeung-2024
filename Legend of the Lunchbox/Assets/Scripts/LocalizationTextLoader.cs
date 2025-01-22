@@ -29,6 +29,7 @@ namespace Assets
                 localeEntries = csv.GetRecords<LocaleEntry>().ToArray();
             }
 
+            localeNames = localeNames.Skip(1).ToArray();
             var test = GetLocales();
 
             foreach (var VARIABLE in test)
@@ -36,19 +37,29 @@ namespace Assets
                 print(VARIABLE);
             }
             
-            SetLocale(1);
+            if (PlayerPrefs.HasKey(MainMenuHandler.LanguageKey))
+                currentLocale = PlayerPrefs.GetInt(MainMenuHandler.LanguageKey);
+            else
+                currentLocale = 0;
         }
 
+        private static int currentLocale = 0;
 
-        public static int currentLocale = 0;
-        public static void SetLocale(int locale)
+        public static void SwitchLocale(bool forward)
         {
-            currentLocale = locale;
+            currentLocale = Mathf.Clamp(currentLocale + (forward ? 1 : -1), 0, localeEntries.Length-1);
+            PlayerPrefs.SetInt(MainMenuHandler.LanguageKey, currentLocale);
+            PlayerPrefs.Save();
         }
 
         public static string[] GetLocales()
         {
             return localeNames;
+        }
+
+        public static string GetCurrentLocale()
+        {
+            return localeNames[currentLocale];
         }
             
         public static string GetLocaleEntry(int index)
