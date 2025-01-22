@@ -5,10 +5,12 @@ using Assets;
 using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class ObjectAnimator : ObjectMover
 {
+   [FormerlySerializedAs("discoverablePrefab")] [SerializeField] private GameObject discoverableEndPrefab;
    private SpriteRenderer objectRenderer;
    private TextMeshPro textMesh;
    private Material objectMat;
@@ -56,7 +58,7 @@ public class ObjectAnimator : ObjectMover
 
    private bool isWord = false;
    
-   protected virtual void ObjectSpawned(Transform objectTransform)
+   private void ObjectSpawned(Transform objectTransform)
    {
       // objectRb = objectTransform.GetComponentInChildren<Rigidbody>();
       // face = objectTransform.GetComponentInChildren<Animation>().gameObject;
@@ -81,20 +83,20 @@ public class ObjectAnimator : ObjectMover
       // StartCoroutine(GrowObject());
    }
    
-   protected virtual void SettingUpMind()
+   private void SettingUpMind()
    {
       if (isWord) return;
       
       objectMat.SetFloat("_t", 1);
    }
    
-   protected virtual void ShowingObjectInMind()
+   private void ShowingObjectInMind()
    {
       mainObject.gameObject.SetActive(true);
-      StartCoroutine(Fade(true, GameEngine.EnemyMindShowTime / 10));
+      StartCoroutine(Fade(true, GameEngine.StaticTimeVariables.EnemyMindShowTime / 10));
    }
 
-   protected virtual void MovingToProperty(EncounterData.PropertyType propertyType)
+   private void MovingToProperty(EncounterData.PropertyType propertyType)
    {
       StartCoroutine(Fade(false, GameEngine.StaticTimeVariables.ExplanationPromptDuration / 6));
    }
@@ -129,32 +131,32 @@ public class ObjectAnimator : ObjectMover
          objectRenderer.color = fadingIn ? Color.white : Color.clear;
    }
 
-   protected virtual void MovingToObject()
+   private void MovingToObject()
    {
       // StartCoroutine(Fade(true, GameEngine.StaticTimeVariables.ExplanationPromptDuration / 2));
    }
 
-   protected virtual void CorrectAnswer()
+   private void CorrectAnswer()
    {
       // StartCoroutine(Nod(GameEngine.StaticTimeVariables.TrialFeedbackDuration, .1f, 2, true));
    }
 
-   protected virtual void WrongAnswer()
+   private void WrongAnswer()
    {
       // StartCoroutine(Nod(GameEngine.StaticTimeVariables.TrialFeedbackDuration, .1f, 2, false));
    }
 
-   protected virtual void EvaluatingEncounter()
+   private void EvaluatingEncounter()
    {
       ShowingObjectInMind();
    }
 
-   protected virtual void WonEncounter()
+   private void WonEncounter()
    {
       StartCoroutine(WinAnimation());
    }
    
-   protected virtual void LostEncounter()
+   private void LostEncounter()
    {
       StartCoroutine(LostAnimation());
    }
@@ -163,9 +165,35 @@ public class ObjectAnimator : ObjectMover
    {
       // Vector3 randomVector = new Vector3(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
       
-      yield return new WaitForSeconds(1f);
+      yield return new WaitForSeconds(GameEngine.StaticTimeVariables.EncounterEvaluationDuration / 4);
 
-      SmoothToObject(mainObject.position + Vector3.down, mainObject.rotation, .5f, true);
+      Vector3 pos = mainObject.position;
+      mainObject.gameObject.SetActive(false);
+      mainObject = Instantiate(discoverableEndPrefab, pos, Quaternion.identity).transform;
+
+      SpriteRenderer[] spriteRenderers = mainObject.GetComponentsInChildren<SpriteRenderer>();
+      float startTime = Time.time;
+      float duration = (GameEngine.StaticTimeVariables.EncounterEvaluationDuration / 4) * 3;
+      float x = 0f;
+      
+      Color tempColor = Color.white;
+
+      while (x < 1)
+      {
+         x = (Time.time - startTime) / duration;
+
+         tempColor.a = 1f - x;
+         
+         foreach (SpriteRenderer renderer in spriteRenderers)
+         {
+            renderer.color = tempColor;
+         }
+
+         yield return null;
+      }
+      
+      Destroy(mainObject.gameObject);
+      mainObject = null;
    }
 
    private IEnumerator WinAnimation()

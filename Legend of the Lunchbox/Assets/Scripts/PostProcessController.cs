@@ -48,22 +48,22 @@ public class PostProcessController : MonoBehaviour
         GameEngine.EndingBreakStartedEvent += EndingEncounter;
     }
 
-    // protected virtual void ObjectSpawned(Transform property)
+    // private void ObjectSpawned(Transform property)
     // {
     //     dof.focusDistance.Override(property.position.z);
     // }
 
-    protected virtual void SettingUpMind()
+    private void SettingUpMind()
     {
         dof.focalLength.Override(35f);
     }
 
-    protected virtual void EndingEncounter()
+    private void EndingEncounter()
     {
         dof.focalLength.Override(26);
     }
 
-    protected virtual void LostEncounter()
+    private void LostEncounter()
     {
         StartCoroutine(ShockWave());
     }

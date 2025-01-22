@@ -18,7 +18,7 @@ public class Runner : MonoBehaviour
         GameEngine.OnRailStartedEvent -= OnRail;
     }
 
-    protected virtual void OnRail()
+    private void OnRail()
     {
         StartCoroutine(MoveLine());
     }

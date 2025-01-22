@@ -251,12 +251,12 @@ public class UIController : MonoBehaviour
         GameEngine.LevelOverStartedEvent -= LevelOver;
     }
 
-    protected virtual void StartingBreak()
+    private void StartingBreak()
     {
         SettingUpMind();
     }
 
-    protected virtual void BreakingBad()
+    private void BreakingBad()
     {
         Flash();
         
@@ -267,7 +267,7 @@ public class UIController : MonoBehaviour
         StartCoroutine(AnimateShakePrompt());
     }
 
-    protected virtual void WonBreak()
+    private void WonBreak()
     {
         breakInstructions.SetActive(false);
         // mindBG.SetActive(false);
@@ -275,10 +275,11 @@ public class UIController : MonoBehaviour
 
         thoughtUI.SetActive(false);
         
-        LostEncounter();
+        LeanTween.moveY(imaginationBarUI, 20f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration/4).setEaseInBack();
+        lostAnimation = true;
     }
 
-    protected virtual void EndingBreak()
+    private void EndingBreak()
     {
         EndingEncounter();
     }
@@ -295,34 +296,34 @@ public class UIController : MonoBehaviour
         flashBang.SetActive(false);
     }
     
-    protected virtual void SettingUpMind()
+    private void SettingUpMind()
     {
-        LeanTween.moveY(progressBarUI,  + 50f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseInBounce();
-        LeanTween.moveY(imaginationBarUI, -100f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseInBounce();
+        LeanTween.moveY(progressBarUI,  + 50f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration/4).setEaseInBack();
+        LeanTween.moveY(imaginationBarUI, -100f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration/4).setEaseInBack();
     }
     
-    protected virtual void MovingToProperty(EncounterData.PropertyType propertyType)
+    private void MovingToProperty(EncounterData.PropertyType propertyType)
     { 
         StartThought(propertyType);
     }
 
-    protected virtual void ShowingProperty(Action<InputHandler.InputState> callback)
+    private void ShowingProperty(Action<InputHandler.InputState> callback)
     {
         EndThought(GameEngine.StaticTimeVariables.TrialDuration);
     }
 
-    protected virtual void EvaluatingInput(InputHandler.InputState input)
+    private void EvaluatingInput(InputHandler.InputState input)
     {
         CancelTimer();
     }
 
-    protected virtual void AnswerWrong()
+    private void AnswerWrong()
     {
         // scramble.SetActive(true);
         // StartCoroutine(AnimateScramble());
     }
 
-    protected virtual void MovingToObject()
+    private void MovingToObject()
     {
         controlIndicatorUI.SetActive(false);
 
@@ -338,7 +339,7 @@ public class UIController : MonoBehaviour
         LeanTween.scale(controlButtonUI[ind], 1.1f * Vector3.one, .1f);
     }
 
-    protected virtual void ObjectDelay()
+    private void ObjectDelay()
     {
         // mindBG.SetActive(true);
         if (mindBG.color.a != 0) return;
@@ -347,35 +348,46 @@ public class UIController : MonoBehaviour
 
     }
 
-    protected virtual void ShowingObjectInMind()
+    private void ShowingObjectInMind()
     {
         Flash();
     }
 
-    protected virtual void EvaluatingEncounter()
+    private void EvaluatingEncounter()
     {
         Idle();
         // StartPinhole(true, GameEngine.StaticTimeVariables.EncounterEndDuration);
     }
 
     private bool lostAnimation = false;
-    protected virtual void LostEncounter()
+    private void LostEncounter()
     {
-        LeanTween.moveY(imaginationBarUI, 20f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseInBounce();
+        LeanTween.moveY(imaginationBarUI, 20f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration/4).setEaseInBack();
         lostAnimation = true;
+
+        StartCoroutine(LostAnimation());
+    }
+    
+    private IEnumerator LostAnimation()
+    {
+        // Vector3 randomVector = new Vector3(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
+      
+        yield return new WaitForSeconds(GameEngine.StaticTimeVariables.EncounterEvaluationDuration / 4);
+
+        Flash();
     }
 
-    protected virtual void EndingEncounter()
+    private void EndingEncounter()
     {
-        LeanTween.moveY(progressBarUI,  -15f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseInBounce();
+        LeanTween.moveY(progressBarUI,  -15f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration/4).setEaseInBack();
 
         if (lostAnimation)
             lostAnimation = false;
         else
-            LeanTween.moveY(imaginationBarUI, 20f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration).setEaseInBounce();
+            LeanTween.moveY(imaginationBarUI, 20f, GameEngine.StaticTimeVariables.EncounterTrialStartDuration/4).setEaseInBack();
     }
 
-    protected virtual void LevelOver()
+    private void LevelOver()
     {
         StartPinhole(false, GameEngine.StaticTimeVariables.LevelTransitionDuration);
     }
@@ -385,10 +397,11 @@ public class UIController : MonoBehaviour
         stencil.localScale = opening ? Vector3.zero : Vector3.one;
         
         float startTime = Time.time;
-
-        while (Time.time < startTime + duration)
+        float x = 0;
+        
+        while (x < 1)
         {
-            float x = ((Time.time - startTime) / duration);
+            x = ((Time.time - startTime) / duration);
             if (!opening)
                 x = 1 - x;
             stencil.localScale = new Vector3(x, x, 0);

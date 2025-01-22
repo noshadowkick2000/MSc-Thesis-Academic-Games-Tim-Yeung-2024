@@ -47,12 +47,12 @@ public class Healthbar : MonoBehaviour
         return ((float) gameEngine.TotalHealth / (float) gameEngine.MaxHealth);
     }
 
-    protected virtual void WonBreak()
+    private void WonBreak()
     {
         StartCoroutine(AnimateBar(0, GameEngine.StaticTimeVariables.BreakFeedbackDuration));
     }
 
-    protected virtual void LostEncounter()
+    private void LostEncounter()
     {
         StartCoroutine(AnimateBar(GameEngine.StaticTimeVariables.EncounterEvaluationDuration / 4, GameEngine.StaticTimeVariables.EncounterEvaluationDuration * .75f));
     }

@@ -39,7 +39,7 @@ public class Progressbar : MonoBehaviour
         GameEngine.OnRailStartedEvent -= OnRail;
     }
 
-    protected virtual void OnRail()
+    private void OnRail()
     {
         StartCoroutine(MoveSlider());
     }
@@ -58,7 +58,7 @@ public class Progressbar : MonoBehaviour
 
             progress = startProgress + y;
             progressSlider.value = progress;
-            bGoal.localScale = Vector3.Lerp(baseSize, goalSize, y);
+            bGoal.localScale = Vector3.Lerp(baseSize, goalSize, progress);
             
             yield return null;
         }

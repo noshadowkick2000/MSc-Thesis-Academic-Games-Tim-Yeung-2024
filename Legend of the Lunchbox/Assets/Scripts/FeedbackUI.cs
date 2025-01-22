@@ -11,10 +11,12 @@ public class FeedbackUI : ObjectMover
     [SerializeField] private Animation feedbackAnimation;
     [SerializeField] private RectTransform burstLines;
 
+    private float scale;
     private void Awake()
     {
         feedbackUI.SetActive(false);
         mainObject = feedbackUI.transform;
+        scale = burstLines.localScale.x;
         
         if (PlayerPrefs.GetInt(MainMenuHandler.FeedbackKey) == 1)
             SubscribeToEvents();
@@ -41,7 +43,7 @@ public class FeedbackUI : ObjectMover
 
         while (x < 1)
         {
-            y = UtilsT.EasedT(x) * 4f;
+            y = UtilsT.EasedT(x) * scale;
             burstLines.localScale = new Vector3(y, y, y);
             x = (Time.time - startTime) / GameEngine.StaticTimeVariables.TrialFeedbackDuration;
 

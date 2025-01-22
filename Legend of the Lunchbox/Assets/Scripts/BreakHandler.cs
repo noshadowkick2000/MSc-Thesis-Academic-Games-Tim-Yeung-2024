@@ -43,7 +43,7 @@ public class BreakHandler : ObjectMover
 
     private Potion p;
     
-    protected virtual void StartingBreak()
+    private void StartingBreak()
     {
         mainObject.gameObject.SetActive(true);
         mainObject.position = LocationHolder.PropertyLocation.position;
@@ -53,14 +53,14 @@ public class BreakHandler : ObjectMover
     }
 
     bool breaking = false;
-    protected virtual void BreakingBad()
+    private void BreakingBad()
     {
         StartingBreak();
         breaking = true;
     }
 
 
-    protected virtual void WonBreak()
+    private void WonBreak()
     {
         breaking = false;
         print("WON");
@@ -68,12 +68,12 @@ public class BreakHandler : ObjectMover
         SmoothToObject(LocationHolder.PropertyLocation.position, Quaternion.Euler(60, 0, 0), GameEngine.StaticTimeVariables.BreakFeedbackDuration/2, true);
     }
 
-    protected virtual void EndingBreak()
+    private void EndingBreak()
     {
         SmoothToObject(mainObject.position + Vector3.down, mainObject.rotation, GameEngine.StaticTimeVariables.EncounterEndDuration, true);
     }
 
-    protected virtual void OnRail()
+    private void OnRail()
     {
         mainObject.gameObject.SetActive(false);
     }

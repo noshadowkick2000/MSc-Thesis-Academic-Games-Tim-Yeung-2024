@@ -99,7 +99,7 @@ public class SoundEngine : MonoBehaviour
         // oneShotPlayer.pitch = 1;
     }
 
-    protected virtual void OnRail()
+    private void OnRail()
     {
         foreach (var runPlayer in runPlayers)
         {
@@ -107,7 +107,7 @@ public class SoundEngine : MonoBehaviour
         }
     }
 
-    protected virtual void StartingEncounter()
+    private void StartingEncounter()
     {
         foreach (var runPlayer in runPlayers)
         {
@@ -117,18 +117,18 @@ public class SoundEngine : MonoBehaviour
         oneShotPlayer.PlayOneShot(foundDiscoverable);
     }
 
-    protected virtual void StartingBreak()
+    private void StartingBreak()
     {
         StartingEncounter();
     }
 
     private bool breaking = false;
-    protected virtual void BreakingBad()
+    private void BreakingBad()
     {
         breaking = true;
     }
 
-    protected virtual void WonBreak()
+    private void WonBreak()
     {
         breaking = false;
         oneShotPlayer.pitch = 1f;
@@ -137,7 +137,7 @@ public class SoundEngine : MonoBehaviour
         oneShotPlayer.PlayOneShot(drinking, 2f);
     }
 
-    protected virtual void SettingUpMind()
+    private void SettingUpMind()
     {
         foreach (var ambientPlayer in ambientPlayers)
         {
@@ -152,33 +152,33 @@ public class SoundEngine : MonoBehaviour
         oneShotPlayer.PlayOneShot(enterMind);
     }
 
-    protected virtual void ShowingObjectInMind()
+    private void ShowingObjectInMind()
     {
         oneShotPlayer.PlayOneShot(enemyAppear, .6f);
     }
 
-    protected virtual void ThinkingOfProperty(bool encounterOver)
+    private void ThinkingOfProperty(bool encounterOver)
     {
         // if (!encounterOver) 
         //     oneShotPlayer.PlayOneShot(spotLight);
     }
     
-    protected virtual void ShowingProperty(Action<InputHandler.InputState> callback)
+    private void ShowingProperty(Action<InputHandler.InputState> callback)
     {
         // oneShotPlayer.PlayOneShot(enemyAppear);
     }
 
-    protected virtual void AnswerCorrect()
+    private void AnswerCorrect()
     {
         oneShotPlayer.PlayOneShot(goodFeedback);
     }
 
-    protected virtual void AnswerWrong()
+    private void AnswerWrong()
     {
         oneShotPlayer.PlayOneShot(badFeedback);
     }
 
-    protected virtual void EvaluatingEncounter()
+    private void EvaluatingEncounter()
     {
         foreach (var ambientPlayer in ambientPlayers)
         {
@@ -191,12 +191,12 @@ public class SoundEngine : MonoBehaviour
         }
     }
 
-    protected virtual void WonEncounter()
+    private void WonEncounter()
     {
         oneShotPlayer.PlayOneShot(enterMind);
     }
 
-    protected virtual void LostEncounter()
+    private void LostEncounter()
     {
         oneShotPlayer.PlayOneShot(worldDeform);
     }

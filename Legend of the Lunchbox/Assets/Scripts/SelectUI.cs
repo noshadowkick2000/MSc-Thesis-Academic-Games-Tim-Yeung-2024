@@ -18,6 +18,11 @@ public class SelectUI : MonoBehaviour
         SubscribeToEvents();
     }
 
+    private void Update()
+    {
+        print(circleRenderer == null);
+    }
+
     private void OnDestroy()
     {
         UnsubscribeFromEvents();
@@ -31,12 +36,13 @@ public class SelectUI : MonoBehaviour
 
     private void UnsubscribeFromEvents()
     {
-        GameEngine.EvaluatingInputStartedEvent += EvaluatingInput;
+        GameEngine.EvaluatingInputStartedEvent -= EvaluatingInput;
         // GameEngine.MovingToEnemyStartedEvent += ShowingEnemy;
     }
 
-    protected virtual void EvaluatingInput(InputHandler.InputState input)
+    private void EvaluatingInput(InputHandler.InputState input)
     {
+        print(circleRenderer == null);
         circleRenderer.color = Color.white;
         circleRenderer.transform.position = PropertyCameraController.PropertyCamTransform.position + (LocationHolder.PropertyLocation.position - LocationHolder.MindCameraLocation.position);
         circleRenderer.gameObject.SetActive(true);

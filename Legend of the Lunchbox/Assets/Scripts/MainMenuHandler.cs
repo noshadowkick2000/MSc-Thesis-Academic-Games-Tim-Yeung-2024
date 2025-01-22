@@ -8,14 +8,16 @@ using UnityEngine.UI;
 public class MainMenuHandler : MonoBehaviour
 {
     [SerializeField] private RectTransform MainMenu;
+    private float xStart;
     [SerializeField] private RectTransform SettingsMenu;
+    private float xEnd;
     [SerializeField] private RectTransform CreditsMenu;
     [SerializeField] private Toggle soundToggle;
     [SerializeField] private Toggle feedbackToggle;
     
     public void StartGame()
     {
-        LeanTween.moveX(MainMenu, -500f, .5f).setEaseInBack();
+        LeanTween.moveX(MainMenu, xEnd, .5f).setEaseInBack();
         
         Invoke(nameof(Load), .5f);
     }
@@ -35,31 +37,31 @@ public class MainMenuHandler : MonoBehaviour
             yield return null;
         }
     }
-
+    
     public void OpenSettings()
     {
-        LeanTween.moveX(MainMenu, -500f, .5f).setEaseInBack();
-        LeanTween.moveX(SettingsMenu, 50f, .5f).setEaseOutBack();
+        LeanTween.moveX(MainMenu, xEnd, .5f).setEaseInBack();
+        LeanTween.moveX(SettingsMenu, xStart, .5f).setEaseOutBack();
     }
 
     public void CloseSettings()
     {
-        LeanTween.moveX(MainMenu, 50f, .5f).setEaseOutBack();
-        LeanTween.moveX(SettingsMenu, -500f, .5f).setEaseInBack();
+        LeanTween.moveX(MainMenu, xStart, .5f).setEaseOutBack();
+        LeanTween.moveX(SettingsMenu, xEnd, .5f).setEaseInBack();
         
         PlayerPrefs.Save();
     }
 
     public void ShowCredits()
     {
-        LeanTween.moveX(MainMenu, -500f, .5f).setEaseInBack();
-        LeanTween.moveX(CreditsMenu, 50f, .5f).setEaseOutBack();
+        LeanTween.moveX(MainMenu, xEnd, .5f).setEaseInBack();
+        LeanTween.moveX(CreditsMenu, xStart, .5f).setEaseOutBack();
     }
 
     public void CloseCredits()
     {
-        LeanTween.moveX(MainMenu, 50f, .5f).setEaseOutBack();
-        LeanTween.moveX(CreditsMenu, -500f, .5f).setEaseInBack();
+        LeanTween.moveX(MainMenu, xStart, .5f).setEaseOutBack();
+        LeanTween.moveX(CreditsMenu, xEnd, .5f).setEaseInBack();
     }
 
     public void OpenManualWebsite()
@@ -91,6 +93,9 @@ public class MainMenuHandler : MonoBehaviour
         
         soundToggle.isOn = PlayerPrefs.GetInt(SoundKey, 1) == 1;
         feedbackToggle.isOn = PlayerPrefs.GetInt(FeedbackKey, 1) == 1;
+
+        xStart = MainMenu.anchoredPosition.x;
+        xEnd = SettingsMenu.anchoredPosition.x;
     }
     
     public static readonly string SoundKey = "SoundEnabled";
