@@ -112,11 +112,18 @@ public class UIController : MonoBehaviour
 
             yield return null;
         }
+    }
 
-        startTime = Time.time;
-        x = 0;
+    private IEnumerator AnimateFixation()
+    {
+        float startTime = Time.time;
+        float x = 0;
+        float y;
+        float power = 10f;
+        Color a = Color.white; 
+
         thoughtWords.text = ".";
-
+        
         while (x < 1)
         {
             y = x < .5f ? 1 - Mathf.Pow(x-1, power) : 1 - Mathf.Pow(x, power);
@@ -217,6 +224,7 @@ public class UIController : MonoBehaviour
         GameEngine.ObjectDelayStartedEvent += ObjectDelay;
         GameEngine.ShowingObjectInMindStartedEvent += ShowingObjectInMind;
         GameEngine.MovingToPropertyStartedEvent += MovingToProperty;
+        GameEngine.ThinkingOfPropertyStartedEvent += ThinkingOfProperty;
         GameEngine.ShowingPropertyStartedEvent += ShowingProperty;
         GameEngine.EvaluatingInputStartedEvent += EvaluatingInput;
         GameEngine.AnswerWrongStartedEvent += AnswerWrong;
@@ -238,6 +246,7 @@ public class UIController : MonoBehaviour
         GameEngine.ObjectDelayStartedEvent -= ObjectDelay;
         GameEngine.ShowingObjectInMindStartedEvent -= ShowingObjectInMind;
         GameEngine.MovingToPropertyStartedEvent -= MovingToProperty;
+        GameEngine.ThinkingOfPropertyStartedEvent -= ThinkingOfProperty;
         GameEngine.ShowingPropertyStartedEvent -= ShowingProperty;
         GameEngine.EvaluatingInputStartedEvent -= EvaluatingInput;
         GameEngine.AnswerWrongStartedEvent -= AnswerWrong;
@@ -305,6 +314,11 @@ public class UIController : MonoBehaviour
     private void MovingToProperty(EncounterData.PropertyType propertyType)
     { 
         StartThought(propertyType);
+    }
+
+    private void ThinkingOfProperty()
+    {
+        StartCoroutine(AnimateFixation());
     }
 
     private void ShowingProperty(Action<InputHandler.InputState> callback)

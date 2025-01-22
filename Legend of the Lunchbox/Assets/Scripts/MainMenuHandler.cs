@@ -83,16 +83,25 @@ public class MainMenuHandler : MonoBehaviour
         print(feedbackEnabled);
     }
 
+    public void SetPromptSettings()
+    {
+        bool promptEnabled = feedbackToggle.isOn;
+        PlayerPrefs.SetInt(PromptKey, promptEnabled ? 1 : 0);
+        print(promptEnabled);
+    }
+
     private void Awake()
     {
-        if (!PlayerPrefs.HasKey(SoundKey) || !PlayerPrefs.HasKey(FeedbackKey))
+        if (!PlayerPrefs.HasKey(SoundKey) || !PlayerPrefs.HasKey(FeedbackKey) || !PlayerPrefs.HasKey(PromptKey))
         {
             PlayerPrefs.SetInt(SoundKey, 1);
             PlayerPrefs.SetInt(FeedbackKey, 1);
+            PlayerPrefs.SetInt(PromptKey, 1);
         }
         
         soundToggle.isOn = PlayerPrefs.GetInt(SoundKey, 1) == 1;
         feedbackToggle.isOn = PlayerPrefs.GetInt(FeedbackKey, 1) == 1;
+        
 
         xStart = MainMenu.anchoredPosition.x;
         xEnd = SettingsMenu.anchoredPosition.x;
@@ -100,4 +109,5 @@ public class MainMenuHandler : MonoBehaviour
     
     public static readonly string SoundKey = "SoundEnabled";
     public static readonly string FeedbackKey = "FeedbackEnabled";
+    public static readonly string PromptKey = "PromptEnabled";
 }
