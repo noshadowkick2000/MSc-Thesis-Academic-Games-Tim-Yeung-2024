@@ -134,6 +134,8 @@ public class TrialHandler : MonoBehaviour
                         propertyTrial.ValidProperty = encounterEntry.ValidProperty;
                         lastEncounter.PropertyTrials.Add(propertyTrial);
 
+                        propertyCounter++;
+                        
                         if (!csv.Read())
                         {
                             exit = true;
@@ -141,12 +143,13 @@ public class TrialHandler : MonoBehaviour
                         }
 
                         lastStimulusObject = encounterEntry.StimulusObject;
-                        propertyCounter++;
                         encounterEntry = csv.GetRecord<EncounterEntry>();
                     }
 
                     lastEncounter.Health = propertyCounter; // Health by default is number of properties -1? TEMP
                     encounters.Add(lastEncounter);
+                    print(encounterEntry.StimulusObject);
+                    print(propertyCounter);
                 }
             }
 

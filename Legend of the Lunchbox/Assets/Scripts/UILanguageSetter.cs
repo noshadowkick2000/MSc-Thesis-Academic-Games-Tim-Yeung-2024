@@ -12,6 +12,11 @@ public class UILanguageSetter : MonoBehaviour
     
     private void Start()
     {
+        SetAll();
+    }
+
+    public void SetAll()
+    {
         if (textMeshProUGUI.Length != localeEntryId.Length)
             throw new Exception();
         

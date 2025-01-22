@@ -5,6 +5,3 @@
 0,0,WORD,HammerWord,WORD,Swung,TRUE,0
 0,1000,BREAK,None,None,None,FALSE,0
 1,2000,IMAGE,hammer_objekt,ACTION,hammer,TRUE,0
-1,0,IMAGE,hammer_objekt,SOUND,HammerSound,TRUE,2000
-1,2000,WORD,HammerWord,WORD,Metal,TRUE,1500
-1,0,WORD,HammerWord,WORD,Swung,TRUE,100

@@ -404,6 +404,8 @@ public class UIController : MonoBehaviour
     private void LevelOver()
     {
         StartPinhole(false, GameEngine.StaticTimeVariables.LevelTransitionDuration);
+        print(GameEngine.StaticTimeVariables.LevelTransitionDuration);
+        
     }
 
     private IEnumerator AnimatePinhole(bool opening, float duration)
@@ -416,9 +418,8 @@ public class UIController : MonoBehaviour
         while (x < 1)
         {
             x = ((Time.time - startTime) / duration);
-            if (!opening)
-                x = 1 - x;
-            stencil.localScale = new Vector3(x, x, 0);
+            float y = opening ? x : 1 - x;
+            stencil.localScale = new Vector3(y, y, 0);
             yield return null;
         }
         
