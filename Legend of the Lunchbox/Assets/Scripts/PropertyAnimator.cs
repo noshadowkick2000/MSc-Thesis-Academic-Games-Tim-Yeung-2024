@@ -84,9 +84,9 @@ public class PropertyAnimator : MonoBehaviour
    {
       Vector3 currentPropertyScale = currentProperty.localScale;
       bool use = input == InputHandler.InputState.USING;
-      LeanTween.scale(currentProperty.gameObject, use ? 1.1f * currentPropertyScale : .9f * currentPropertyScale, .1f);
+      LeanTween.scale(currentProperty.gameObject, use ? 1.2f * currentPropertyScale : .8f * currentPropertyScale, .1f);
       if (!use)
-         LeanTween.alpha(currentProperty.gameObject, .2f, .1f);
+         LeanTween.alpha(currentProperty.GetComponentInChildren<SpriteRenderer>().gameObject, .4f, .1f);
    }
 
    private void EvaluatingInput(InputHandler.InputState input)

@@ -55,13 +55,15 @@ namespace Assets
     // Connected components
     private TrialHandler trialHandler = null;
     
-    private int playerHealth = 4;
+    private int playerHealth = 15;
     public int TotalHealth => playerHealth;
-    public int MaxHealth = 6;
+    public int MaxHealth = 20;
 
     private void DamagePlayer()
     {
       playerHealth--;
+      if (playerHealth == 0)
+        playerHealth++;
     }
 
     private void HealPlayer()
@@ -82,6 +84,7 @@ namespace Assets
       LogFolderInDocs = logFolderInDocs;
 
       feedbackEnabled = PlayerPrefs.GetInt(MainMenuHandler.FeedbackKey) == 1;
+      promptEnabled = PlayerPrefs.GetInt(MainMenuHandler.PromptKey) == 1;
       
       Random.InitState(12345);
       
@@ -221,7 +224,10 @@ namespace Assets
     {
       MovingToPropertyStartedEvent?.Invoke(trialHandler.GetCurrentEncounterPropertyType());
 
-      StartCoroutine(Timer(StaticTimeVariables.ExplanationPromptDuration, ThinkingOfProperty));
+      if (promptEnabled)
+        StartCoroutine(Timer(StaticTimeVariables.ExplanationPromptDuration, ThinkingOfProperty));
+      else
+        ThinkingOfProperty();
     }
     
     private void ThinkingOfProperty()
@@ -267,6 +273,7 @@ namespace Assets
     }
 
     private bool feedbackEnabled;
+    private bool promptEnabled;
     private void MovingToObject(bool answerCorrect)
     {
       MovingToObjectStartedEvent?.Invoke();
@@ -328,7 +335,7 @@ namespace Assets
 
       if (PlayerIsDead())
       { 
-        Logger.Log("Played died");
+        // Logger.Log("Played died");
         StartCoroutine(Timer(StaticTimeVariables.EncounterEndDuration, CutScene)); // TODO animations etc
       }
       else if (trialHandler.LevelOver)
