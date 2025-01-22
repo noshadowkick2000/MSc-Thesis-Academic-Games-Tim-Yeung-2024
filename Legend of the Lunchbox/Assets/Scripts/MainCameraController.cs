@@ -111,32 +111,32 @@ public class MainCameraController : ObjectMover
     GameEngine.LevelOverStartedEvent -= LevelOver;
   }
 
-  protected virtual void OnRail()
+  private void OnRail()
   {
     ImmediateToObject(LocationHolder.BaseCameraLocation);
     StartBobbingCamera();
   }
 
-  protected virtual void StartingBreak()
+  private void StartingBreak()
   {
     StopBobbingCamera();
     // ImmediateToObject(LocationHolder.DiscoverableCameraLocation);
     SmoothToObject(LocationHolder.EnemyCameraLocation, GameEngine.StaticTimeVariables.EncounterStartDuration, true);
   }
 
-  protected virtual void EndingBreak()
+  private void EndingBreak()
   {
     SmoothToObject(LocationHolder.BaseCameraLocation, GameEngine.StaticTimeVariables.EncounterEndDuration, true);
   }
 
-  protected virtual void StartingEncounter()
+  private void StartingEncounter()
   {
     StopBobbingCamera();
     // ImmediateToObject(LocationHolder.DiscoverableCameraLocation);
     SmoothToObject(LocationHolder.EnemyCameraLocation, GameEngine.StaticTimeVariables.EncounterStartDuration, true);
   }
 
-  protected virtual void SettingUpMind()
+  private void SettingUpMind()
   {
     // ImmediateToObject(LocationHolder.MindCameraLocation);
     // OrthoCamera();
@@ -144,22 +144,22 @@ public class MainCameraController : ObjectMover
     SmoothToObject(LocationHolder.DiscoverableLocation, GameEngine.StaticTimeVariables.EncounterTrialStartDuration, true);
   }
 
-  protected virtual void EvaluatingEncounter()
+  private void EvaluatingEncounter()
   {
     SmoothToObject(LocationHolder.EnemyCameraLocation, GameEngine.StaticTimeVariables.EncounterEndDuration, true);
   }
 
-  protected virtual void LostEncounter()
+  private void LostEncounter()
   {
     // StartCoroutine(ShakeRoutine());
   }
 
-  protected virtual void EndingEncounter()
+  private void EndingEncounter()
   {
     SmoothToObject(LocationHolder.BaseCameraLocation, GameEngine.StaticTimeVariables.EncounterEndDuration, true);
   }
 
-  protected virtual void LevelOver()
+  private void LevelOver()
   {
     OnRail();
   }

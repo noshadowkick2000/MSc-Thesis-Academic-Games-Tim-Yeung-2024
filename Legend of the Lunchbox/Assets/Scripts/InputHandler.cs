@@ -57,6 +57,11 @@ public class InputHandler : MonoBehaviour
         
         InputAverage -= inputAdd / inputDecay;
         InputAverage = Mathf.Clamp(InputAverage, 0, inputThreshold);
+
+        if (Input.GetKeyDown(KeyCode.Backslash))
+            Time.timeScale = 4f;
+        else if (Input.GetKeyUp(KeyCode.Backslash))
+            Time.timeScale = 1f;
     }
     
     //-----------------------------------------------------
@@ -77,23 +82,23 @@ public class InputHandler : MonoBehaviour
         GameEngine.EndingBreakStartedEvent -= EndingBreak;
     }
 
-    protected virtual void BreakingBad()
+    private void BreakingBad()
     {
         acceptingInput = InputType.RAPID;
     }
 
-    protected virtual void EndingBreak()
+    private void EndingBreak()
     {
         acceptingInput = InputType.NONE;
     }
 
-    protected virtual void ShowingProperty(Action<InputState> callback)
+    private void ShowingProperty(Action<InputState> callback)
     {
         acceptingInput = InputType.SINGLE;
         inputCallback = callback;
     }
 
-    protected virtual void TimedOut(InputState input)
+    private void TimedOut(InputState input)
     {
         acceptingInput = InputType.NONE;
     }

@@ -38,18 +38,18 @@ public class PropertyCameraController : ObjectMover
         GameEngine.MovingToObjectStartedEvent -= MovingToObject;
     }
 
-    protected virtual void StartingEncounter()
+    private void StartingEncounter()
     {
         ImmediateToObject(LocationHolder.MindCameraLocation);
     }
 
     private Coroutine cameraRoutine;
-    protected virtual void MovingToProperty(EncounterData.PropertyType propertyType)
+    private void MovingToProperty(EncounterData.PropertyType propertyType)
     {
         cameraRoutine = SmoothToObject(mainObject.position + Vector3.forward, mainObject.rotation, GameEngine.StaticTimeVariables.ExplanationPromptDuration / 4, true);
     }
 
-    protected virtual void MovingToObject()
+    private void MovingToObject()
     {
         SmoothToObject(LocationHolder.MindCameraLocation, GameEngine.StaticTimeVariables.TrialEndDuration, true);
     }

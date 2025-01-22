@@ -324,34 +324,34 @@ public class TrialHandler : MonoBehaviour
         GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
     }
 
-    protected virtual void StartingBreak()
+    private void StartingBreak()
     {
         encounterCounter++;
     }
 
-    protected virtual void StartingEncounter()
+    private void StartingEncounter()
     {
         PrepareModels();
         StartEncounter();
     }
 
-    protected virtual void ShowingProperty(Action<InputHandler.InputState> callback)
+    private void ShowingProperty(Action<InputHandler.InputState> callback)
     {
         SpawnProperty();
     }
 
-    protected virtual void TimedOut(InputHandler.InputState input)
+    private void TimedOut(InputHandler.InputState input)
     {
         if (input == InputHandler.InputState.NONE)
             SkipProperty();
     }
 
-    protected virtual void AnswerCorrect()
+    private void AnswerCorrect()
     {
         DamageEncounter();
     }
 
-    protected virtual void EndingEncounter()
+    private void EndingEncounter()
     {
         KillEncounter();
     }

@@ -85,5 +85,8 @@ public class Tutorial : MonoBehaviour
             // trialObjects[i].transform.position = circlePosition;
             discoverables[i].transform.position = circlePosition;
         }
+
+        if (Input.GetKeyDown(KeyCode.Backspace))
+            SceneManager.LoadScene(2);
     }
 }

@@ -39,13 +39,13 @@
 //     }
 //
 //     private bool followingCam = false;
-//     protected virtual void MovingToProperty(EncounterData.PropertyType propertyType)
+//     private void MovingToProperty(EncounterData.PropertyType propertyType)
 //     {
 //         followingCam = true;
 //         // StartCoroutine(AnimateLine(PropertyCameraController.PropertyCamTransform.));
 //     }
 //
-//     protected virtual void ShowingEnemeyInMind()
+//     private void ShowingEnemeyInMind()
 //     {
 //         followingCam = false;
 //         // StartCoroutine(AnimateLine(LocationHolder.PropertyLocation.position));

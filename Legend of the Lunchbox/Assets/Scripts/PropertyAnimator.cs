@@ -59,7 +59,7 @@ public class PropertyAnimator : MonoBehaviour
 
    private void UnsubscribeFromEvents()
    {
-      TrialHandler.OnObjectSpawnedEvent -= PropertySpawned;
+      TrialHandler.OnPropertySpawnedEvent -= PropertySpawned;
       GameEngine.TrialInputRegisteredStartedEvent -= TrialInputRegistered;
       GameEngine.EvaluatingInputStartedEvent -= EvaluatingInput;
       GameEngine.TimedOutStartedEvent -= TimedOut;
@@ -68,7 +68,7 @@ public class PropertyAnimator : MonoBehaviour
    }
 
    Transform currentProperty = null;
-   protected virtual void PropertySpawned(Transform property)
+   private void PropertySpawned(Transform property)
    {
       property.gameObject.SetActive(true);
       float offset = Vector3.Distance(LocationHolder.PropertyLocation.position, LocationHolder.MindCameraLocation.position);
@@ -80,7 +80,7 @@ public class PropertyAnimator : MonoBehaviour
       currentProperty = property;
    }
 
-   protected virtual void TrialInputRegistered(InputHandler.InputState input)
+   private void TrialInputRegistered(InputHandler.InputState input)
    {
       Vector3 currentPropertyScale = currentProperty.localScale;
       bool use = input == InputHandler.InputState.USING;
@@ -89,19 +89,19 @@ public class PropertyAnimator : MonoBehaviour
          LeanTween.alpha(currentProperty.gameObject, .2f, .1f);
    }
 
-   protected virtual void EvaluatingInput(InputHandler.InputState input)
+   private void EvaluatingInput(InputHandler.InputState input)
    {
       // StartCoroutine(DeSpawnProperty(currentProperty));
       LeanTween.scale(currentProperty.gameObject, Vector3.zero, GameEngine.StaticTimeVariables.TrialEndDuration);
    }
 
-   protected virtual void TimedOut(InputHandler.InputState input)
+   private void TimedOut(InputHandler.InputState input)
    {
       // StartCoroutine(DeSpawnProperty(currentProperty));
       LeanTween.scale(currentProperty.gameObject, Vector3.zero, GameEngine.StaticTimeVariables.TrialEndDuration);
    }
 
-   protected virtual void ClearProperty()
+   private void ClearProperty()
    {
       currentProperty.gameObject.SetActive(false);
       currentProperty = null;

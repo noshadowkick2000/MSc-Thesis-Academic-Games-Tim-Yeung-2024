@@ -26,7 +26,7 @@ public class ExclamationMark : MonoBehaviour
         GameEngine.SettingUpMindStartedEvent -= SettingUpMind;
     }
 
-    protected virtual void StartingEncounter()
+    private void StartingEncounter()
     {
         exclamationMark.gameObject.SetActive(true);
         StartCoroutine(AnimateExclamationMark());
@@ -60,7 +60,7 @@ public class ExclamationMark : MonoBehaviour
         exclamationMark.anchoredPosition = p;
     }
 
-    protected virtual void SettingUpMind()
+    private void SettingUpMind()
     {
         exclamationMark.gameObject.SetActive(false);
     }

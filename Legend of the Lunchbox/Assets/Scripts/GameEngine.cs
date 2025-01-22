@@ -31,16 +31,16 @@ namespace Assets
       public float BreakFeedbackDuration { get; set; }
 
       public float LevelTransitionDuration { get; set; }
+      
+      public float EnemyMindShowTime { get; set; }
     }
     
     public static TimingData StaticTimeVariables;
 
-    public static float EnemyMindShowTime { get; } = 4f;
-
     public static float CurrentRailDuration { get; private set; }
 
 
-    [Header("Assets")]
+    // [Header("Assets")]
     // [SerializeField] private GameObject[] propertiesAndObjects;
     // public static GameObject[] PropertiesAndObjects;
 
@@ -49,8 +49,8 @@ namespace Assets
     public static string LogFolderInDocs;
 
     // Other
-    private int levelId = 0;
-    public static int LevelId;
+    // [SerializeField] private int levelId = 0;
+    // public static int LevelId;
 
     // Connected components
     private TrialHandler trialHandler = null;
@@ -77,8 +77,9 @@ namespace Assets
 
     private void Awake()
     {
+      Time.timeScale = 1f;
+      
       LogFolderInDocs = logFolderInDocs;
-      LevelId = levelId;
 
       feedbackEnabled = PlayerPrefs.GetInt(MainMenuHandler.FeedbackKey) == 1;
       
@@ -102,7 +103,7 @@ namespace Assets
     public delegate void StateChangeEventInput(InputHandler.InputState input);
     public delegate void StateChangeEventCallback(Action<InputHandler.InputState> callback);
 
-    public static event StateChangeEvent CutSceneStartedEvent;
+    public static event StateChangeEvent RespawnEvent;
     public static event StateChangeEvent OnRailStartedEvent;
     public static event StateChangeEvent StartingEncounterStartedEvent;
     public static event StateChangeEvent StartingBreakStartedEvent;
@@ -138,7 +139,7 @@ namespace Assets
 
     private void CutScene()
     {
-      CutSceneStartedEvent?.Invoke();
+      RespawnEvent?.Invoke();
       
       // TODO remove
     }
@@ -213,7 +214,7 @@ namespace Assets
     private void ShowingObjectInMind()
     {
       ShowingObjectInMindStartedEvent?.Invoke();
-      StartCoroutine(Timer(EnemyMindShowTime, MovingToProperty));
+      StartCoroutine(Timer(StaticTimeVariables.EnemyMindShowTime, MovingToProperty));
     }
 
     private void MovingToProperty()
@@ -349,11 +350,23 @@ namespace Assets
     private void LevelOver()
     {
       LevelOverStartedEvent?.Invoke();
+
+      Timer(StaticTimeVariables.LevelTransitionDuration, LoadNext);
     }
 
     private void LoadNext()
     {
-      SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
+      StartCoroutine(LoadScene());
+    }
+
+    private IEnumerator LoadScene()
+    {
+      AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex + 1);
+      
+      while (!asyncLoad.isDone)
+      {
+        yield return null;
+      }
     }
   }
 }

@@ -53,17 +53,17 @@ public class PlayerController : MonoBehaviour
     GameEngine.EvaluatingEncounterStartedEvent -= EvaluatingEncounter;
   }
 
-  protected virtual void ShowingDiscoverable()
+  private void ShowingDiscoverable()
   {
     Idle();
   }
 
-  protected virtual void SettingUpMind()
+  private void SettingUpMind()
   {
     StartMind();
   }
 
-  protected virtual void EvaluatingEncounter()
+  private void EvaluatingEncounter()
   { 
     Idle();
   }

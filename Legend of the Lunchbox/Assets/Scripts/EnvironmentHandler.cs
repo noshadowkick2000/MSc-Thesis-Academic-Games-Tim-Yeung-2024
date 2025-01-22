@@ -57,36 +57,36 @@ public class EnvironmentHandler : ObjectMover
         GameEngine.LevelOverStartedEvent -= LevelOver;
     }
     
-    protected virtual void OnRail()
+    private void OnRail()
     {
         Moving = true;
         spawnedDiscoverable = Instantiate(discoverable, new Vector3(0, .2f, (GameEngine.CurrentRailDuration) * speedMultiplier + (LocationHolder.DiscoverableLocation.position.z)), Quaternion.identity, loadedTerrains.Last().transform);
     }
 
-    protected virtual void StartingBreak()
+    private void StartingBreak()
     {
         StartingEncounter();
     }
 
-    protected virtual void BreakingBad()
+    private void BreakingBad()
     {
         SettingUpMind();
     }
     
-    protected virtual void StartingEncounter()
+    private void StartingEncounter()
     {
         Moving = false;
         mainObject = spawnedDiscoverable.transform;
         SmoothToObject(LocationHolder.DiscoverableLocation, GameEngine.StaticTimeVariables.EncounterStartDuration, true);
     }
 
-    protected virtual void SettingUpMind()
+    private void SettingUpMind()
     {
         mainObject.parent = Camera.main.transform;
         StartCoroutine(GrowObject(GameEngine.StaticTimeVariables.EncounterTrialStartDuration, 1, 2, true));
     }
 
-    protected virtual void LevelOver()
+    private void LevelOver()
     {
         Moving = true;
     }

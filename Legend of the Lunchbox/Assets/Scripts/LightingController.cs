@@ -28,12 +28,12 @@ public class LightingController : MonoBehaviour
         
     }
 
-    protected virtual void ObjectDelay()
+    private void ObjectDelay()
     { 
         RenderSettings.ambientIntensity = 0f;
     }
 
-    protected virtual void EvaluatingEncounter()
+    private void EvaluatingEncounter()
     {
         RenderSettings.ambientIntensity = 1.0f;
     }
