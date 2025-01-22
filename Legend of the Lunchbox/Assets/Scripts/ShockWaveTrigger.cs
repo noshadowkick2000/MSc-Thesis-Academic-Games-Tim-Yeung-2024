@@ -10,13 +10,13 @@ public class ShockWaveTrigger : MonoBehaviour
     {
         gameObject.SetActive(false);
         GameEngine.LostEncounterStartedEvent += LostEncounter;
-        GameEngine.OnRailStartedEvent += OnRail;
+        GameEngine.EndingEncounterStartedEvent += EndingEncounter;
     }
 
     private void OnDestroy()
     {
         GameEngine.LostEncounterStartedEvent -= LostEncounter;
-        GameEngine.OnRailStartedEvent -= OnRail;
+        GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
     }
 
     private void LostEncounter()
@@ -24,7 +24,7 @@ public class ShockWaveTrigger : MonoBehaviour
         gameObject.SetActive(true);
     }
 
-    private void OnRail()
+    private void EndingEncounter()
     {
         gameObject.SetActive(false);
     }

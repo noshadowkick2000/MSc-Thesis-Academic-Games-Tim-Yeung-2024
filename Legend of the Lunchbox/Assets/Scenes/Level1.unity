@@ -3013,7 +3013,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   logFolderInDocs: LotL
-  MaxHealth: 6
+  MaxHealth: 20
 --- !u!4 &959961331
 Transform:
   m_ObjectHideFlags: 0
