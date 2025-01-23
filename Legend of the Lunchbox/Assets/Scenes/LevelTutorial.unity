@@ -3200,6 +3200,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   logFolderInDocs: LotL
+  nextLevel: 3
   MaxHealth: 20
 --- !u!4 &959961331
 Transform:

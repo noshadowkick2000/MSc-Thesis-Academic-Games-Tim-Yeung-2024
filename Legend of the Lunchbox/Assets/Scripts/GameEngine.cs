@@ -48,6 +48,8 @@ namespace Assets
     [SerializeField] private string logFolderInDocs = "LotL";
     public static string LogFolderInDocs;
 
+    [SerializeField] private int nextLevel;
+
     // Other
     // [SerializeField] private int levelId = 0;
     // public static int LevelId;
@@ -356,19 +358,21 @@ namespace Assets
 
     private void LevelOver()
     {
+      print("LevelOver");
       LevelOverStartedEvent?.Invoke();
 
-      Timer(StaticTimeVariables.LevelTransitionDuration, LoadNext);
+      StartCoroutine(Timer(StaticTimeVariables.LevelTransitionDuration, LoadNext));
     }
 
     private void LoadNext()
     {
+      print("Loading next level");
       StartCoroutine(LoadScene());
     }
 
     private IEnumerator LoadScene()
     {
-      AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex + 1);
+      AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(nextLevel);
       
       while (!asyncLoad.isDone)
       {

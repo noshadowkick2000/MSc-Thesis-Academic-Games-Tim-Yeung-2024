@@ -404,7 +404,6 @@ public class UIController : MonoBehaviour
     private void LevelOver()
     {
         StartPinhole(false, GameEngine.StaticTimeVariables.LevelTransitionDuration);
-        print(GameEngine.StaticTimeVariables.LevelTransitionDuration);
         
     }
 
