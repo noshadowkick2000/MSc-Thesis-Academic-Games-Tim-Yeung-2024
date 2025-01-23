@@ -2993,6 +2993,7 @@ GameObject:
   - component: {fileID: 959961357}
   - component: {fileID: 959961358}
   - component: {fileID: 959961359}
+  - component: {fileID: 959961360}
   m_Layer: 0
   m_Name: Gamecontroller
   m_TagString: Untagged
@@ -3013,6 +3014,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   logFolderInDocs: LotL
+  nextLevel: 4
   MaxHealth: 20
 --- !u!4 &959961331
 Transform:
@@ -3192,6 +3194,7 @@ MonoBehaviour:
   mainObject: {fileID: 0}
   environmentTerrains:
   - {fileID: 7064647509236346092, guid: bbcb1063879f4bc42bde4d4316504483, type: 3}
+  - {fileID: 3765969172817364382, guid: 96060367bf9cc5f42a706ab401eb356c, type: 3}
   discoverable: {fileID: 6244440265376870119, guid: 80c0d3ca878c9eb4996d4477dc2752f4, type: 3}
   speedMultiplier: 5
   maxTiles: 3
@@ -3493,6 +3496,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timingFileName: LOTL_timing.csv
+--- !u!114 &959961360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 959961329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 002adc9a9cdb93b40a834b87f08da018, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &962313184
 GameObject:
   m_ObjectHideFlags: 0
