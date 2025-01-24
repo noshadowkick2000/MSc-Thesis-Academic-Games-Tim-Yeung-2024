@@ -106,8 +106,12 @@ public class LevelOverScreen : MonoBehaviour
     private IEnumerator LoadNextLevel()
     {
         yield return new WaitForSeconds(.5f);
+
+        int nextLevel = 4 + GameStatsTracker.LastLevel;
+        if (nextLevel == SceneManager.GetActiveScene().buildIndex)
+            nextLevel = 0;
         
-        AsyncOperation async = SceneManager.LoadSceneAsync(4 + GameStatsTracker.LastLevel);
+        AsyncOperation async = SceneManager.LoadSceneAsync(0);
 
         while (!async.isDone)
         {
