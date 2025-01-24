@@ -4,5 +4,6 @@
 0,2000,WORD,HammerWord,WORD,Metal,TRUE,0
 0,0,WORD,HammerWord,WORD,Swung,TRUE,0
 0,1000,BREAK,None,None,None,FALSE,0
-1,2000,IMAGE,hammer_objekt,ACTION,hammer,TRUE,0
-2,500000,IMAGE,hammer_objekt,ACTION,hammer,TRUE,0
+1,1000,IMAGE,hammer_objekt,ACTION,hammer,TRUE,0
+2,1000,IMAGE,hammer_objekt,ACTION,hammer,TRUE,0
+3,1000,IMAGE,hammer_objekt,ACTION,hammer,TRUE,0
