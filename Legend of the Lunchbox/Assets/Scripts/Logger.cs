@@ -1,21 +1,36 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using Assets;
 using UnityEngine;
 using CsvHelper;
 using CsvHelper.Configuration;
+using UnityEngine.SceneManagement;
 
 public class Logger : MonoBehaviour
 {
-  private class LogEntry
+  public class LogEntry
   {
     public string DateTime { get; set; }
     public string Object { get; set; }
-    public int InternalTime { get; set; }
+    public string Property { get; set; }
+    public double InternalTime { get; set; }
     public string EventType { get; set; }
     public string Code { get; set; }
+  }
+
+  public class LogEntryMap : ClassMap<LogEntry>
+  {
+    public LogEntryMap()
+    {
+      Map(m => m.DateTime).Index(0).Name("DateTime");
+      Map(m => m.Object).Index(1).Name("Object");
+      Map(m => m.InternalTime).Index(2).Name("InternalTime");
+      Map(m => m.EventType).Index(3).Name("EventType");
+      Map(m => m.Code).Index(4).Name("Code");
+    }
   }
 
   public enum Event
@@ -41,9 +56,15 @@ public class Logger : MonoBehaviour
     INPUT_TIMEOUT,
     FEEDBACK_POSITIVE,
     FEEDBACK_NEGATIVE,
+    BREAK_START,
+    BREAK_END,
+    START_BLOCK,
+    STOP_BLOCK,
+    NONE
   }
   
   private static StreamWriter _output;
+  private static CsvWriter _writer;
   private static string _folderName;
 
   // private static LoggerComponent _loggerComponent;
@@ -52,40 +73,189 @@ public class Logger : MonoBehaviour
 
   public void Awake()
   {
+    SubscribeToEvents();
+    
     string path = Application.streamingAssetsPath + "/" + DateTime.Today.ToString("ddMMyyyy");
     Directory.CreateDirectory(path);
     string filename = DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss");
     _output = new StreamWriter($"{path}\\{filename}.log");
+    _writer = new CsvWriter(_output, CultureInfo.InvariantCulture);
+    _writer.Context.RegisterClassMap<LogEntryMap>();
+    _writer.WriteHeader<LogEntry>();
+    _writer.NextRecord();
   }
 
-  private static string ConvertSecondsToReadableTime(double seconds)
+  public static void Log(Event eventType, CodeTypes codeType)
   {
-    // Extract the whole number part (for hours, minutes, seconds)
-    TimeSpan time = TimeSpan.FromSeconds(seconds);
-
-    // Extract the microseconds from the fractional part of the seconds
-    int milliseconds = (int)((seconds - Math.Floor(seconds)) * 1000000);
-
-    // Return the formatted string (hours:minutes:seconds.microseconds)
-    return $"{(int)time.TotalHours:D2}:{time.Minutes:D2}:{time.Seconds:D2}.{milliseconds:D3}";
-  }
-
-  public static void Log(string data)
-  {
-    string time = ConvertSecondsToReadableTime(Time.realtimeSinceStartupAsDouble).PadRight(24);
-    string[] lines = data.Split(Environment.NewLine);
-    string line = $"{time}: {lines[0]}";
-    string padding = new string(' ', 26);
-    for (int i = 1; i < lines.Length; i++)
+    LogEntry entry = new LogEntry();
+    
+    entry.DateTime = DateTime.Now.ToString("HH:mm:ss:FFF");
+    entry.InternalTime = Time.realtimeSinceStartupAsDouble;
+    entry.EventType = Enum.GetName(typeof(Event), eventType);
+    entry.Code = Enum.GetName(typeof(CodeTypes), codeType);
+    
+    if (TrialHandler.currentEncounterData != null)
     {
-      line += $"{Environment.NewLine}{padding}{lines[i]}";
+      entry.Object = TrialHandler.currentEncounterData.StimulusObjectName;
+      entry.Property = TrialHandler.currentEncounterData.GetCurrentPropertyName();
     }
-    _output.WriteLine(line);
-    Console.WriteLine(line);
+    else
+    {
+      entry.Object = "None";
+      entry.Property = "None";
+    }
+
+    _writer.WriteRecord(entry);
+    _writer.NextRecord();
+  }
+
+  private static void Flush()
+  {
+    _writer.Flush();
   }
 
   public void OnDestroy()
   {
+    _writer.Dispose();
     _output.Close();
+
+    UnSubscribeToEvents();
+  }
+
+  private void SubscribeToEvents()
+  {
+    GameEngine.EndingBreakStartedEvent += Flush;
+    GameEngine.EndingEncounterStartedEvent += Flush;
+
+    GameEngine.StartingEncounterStartedEvent += StartBlock;
+    GameEngine.StartingBreakStartedEvent += StartBreak;
+
+    GameEngine.ShowingObjectInMindStartedEvent += ShowingObject;
+    GameEngine.MovingToPropertyStartedEvent += DisappearObject;
+    GameEngine.MovingToPropertyStartedEvent += ShowPrompt;
+    GameEngine.ThinkingOfPropertyStartedEvent += ShowFixate;
+    GameEngine.ShowingPropertyStartedEvent += ShowProperty;
+    GameEngine.TimedOutStartedEvent += TimeOut;
+    GameEngine.MovingToObjectStartedEvent += DisappearProperty;
+
+    GameEngine.AnswerCorrectStartedEvent += FeedbackPositive;
+    GameEngine.AnswerWrongStartedEvent += FeedbackNegative;
+    
+    GameEngine.EndingEncounterStartedEvent += StopBlock;
+    GameEngine.EndingBreakStartedEvent += StopBreak;
+  }
+
+  private void UnSubscribeToEvents()
+  {
+    GameEngine.EndingBreakStartedEvent -= Flush;
+    GameEngine.EndingEncounterStartedEvent -= Flush;
+    
+    GameEngine.StartingEncounterStartedEvent -= StartBlock;
+    GameEngine.StartingBreakStartedEvent -= StartBreak;
+
+    GameEngine.ShowingObjectInMindStartedEvent -= ShowingObject;
+    GameEngine.MovingToPropertyStartedEvent -= DisappearObject;
+    GameEngine.MovingToPropertyStartedEvent -= ShowPrompt;
+    GameEngine.ThinkingOfPropertyStartedEvent -= ShowFixate;
+    GameEngine.ShowingPropertyStartedEvent -= ShowProperty;
+    GameEngine.TimedOutStartedEvent -= TimeOut;
+    GameEngine.MovingToObjectStartedEvent -= DisappearProperty;
+
+    GameEngine.AnswerCorrectStartedEvent -= FeedbackPositive;
+    GameEngine.AnswerWrongStartedEvent -= FeedbackNegative;
+
+    GameEngine.EndingEncounterStartedEvent -= StopBlock;
+    GameEngine.EndingBreakStartedEvent -= StopBreak;
+
+  }
+
+  private void StartBlock()
+  {
+    Log(Event.OTHER, CodeTypes.START_BLOCK);
+  }
+
+  private void StopBlock()
+  {
+    Log(Event.OTHER, CodeTypes.STOP_BLOCK);
+  }
+
+  private void StartBreak()
+  {
+    Log(Event.OTHER, CodeTypes.BREAK_START);
+  }
+
+  private void StopBreak()
+  {
+    Log(Event.OTHER, CodeTypes.BREAK_END);
+  }
+
+  private void ShowingObject()
+  {
+    switch (TrialHandler.currentEncounterData.EncounterObjectType)
+    {
+      case EncounterData.ObjectType.BREAK:
+        break;
+      case EncounterData.ObjectType.IMAGE:
+        Log(Event.STIMULUS, CodeTypes.OBJECT_IMAGE);
+        break;
+      case EncounterData.ObjectType.WORD:
+        Log(Event.STIMULUS, CodeTypes.OBJECT_WORD);
+        break;
+      default:
+        throw new ArgumentOutOfRangeException();
+    }
+  }
+
+  private void DisappearObject(EncounterData.PropertyType propertyType)
+  {
+    Log(Event.STIMULUS, CodeTypes.OBJECT_STOP);
+  }
+
+  private void ShowPrompt(EncounterData.PropertyType propertyType)
+  {
+    Log(Event.PROMPT, CodeTypes.NONE);
+  }
+
+  private void ShowFixate()
+  {
+    Log(Event.FIXATE, CodeTypes.NONE);
+  }
+
+  private void ShowProperty(Action<InputHandler.InputState> callback)
+  {
+    switch (TrialHandler.currentEncounterData.GetCurrentPropertyType())
+    {
+      case EncounterData.PropertyType.ACTION:
+        Log(Event.STIMULUS, CodeTypes.PROPERTY_ACTION);
+        break;
+      case EncounterData.PropertyType.SOUND:
+        Log(Event.STIMULUS, CodeTypes.PROPERTY_SOUND);
+        break;
+      case EncounterData.PropertyType.WORD:
+        Log(Event.STIMULUS, CodeTypes.PROPERTY_WORD);
+        break;
+      default:
+        throw new ArgumentOutOfRangeException();
+    }
+  }
+
+  private void DisappearProperty()
+  {
+    Log(Event.STIMULUS, CodeTypes.PROPERTY_STOP);
+  }
+
+  private void FeedbackPositive()
+  {
+    Log(Event.OTHER, CodeTypes.FEEDBACK_POSITIVE);
+  }
+
+  private void FeedbackNegative()
+  {
+    Log(Event.OTHER, CodeTypes.FEEDBACK_NEGATIVE);
+  }
+
+  private void TimeOut(InputHandler.InputState input)
+  {
+    Log(Event.INPUT, CodeTypes.INPUT_TIMEOUT);
   }
 }

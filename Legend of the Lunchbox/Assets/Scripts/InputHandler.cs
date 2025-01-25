@@ -43,7 +43,7 @@ public class InputHandler : MonoBehaviour
         _input = InputState.NONE;
         if (Input.GetButtonDown("Use")) { _input = InputState.USING; }
         if (Input.GetButtonDown("Discard")) { _input = InputState.DISCARDING; }
-        if (_input != InputState.NONE) { Logger.Log($"Input: {_input.ToString()}"); }
+        if (_input != InputState.NONE) { Logger.Log(Logger.Event.INPUT, _input == InputState.USING ? Logger.CodeTypes.INPUT_POSITIVE : Logger.CodeTypes.INPUT_NEGATIVE); }
         
         if (acceptingInput == InputType.SINGLE && _input != InputState.NONE)
         {

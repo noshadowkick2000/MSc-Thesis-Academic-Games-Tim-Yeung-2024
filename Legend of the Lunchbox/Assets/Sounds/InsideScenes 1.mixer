@@ -42,6 +42,48 @@ AudioMixerEffectController:
   m_SendTarget: {fileID: 0}
   m_EnableWetMix: 0
   m_Bypass: 0
+--- !u!244 &-9028205932697207746
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_EffectID: 82ee9f3e4ac932c4e82a8b54367ef8ae
+  m_EffectName: SFX Reverb
+  m_MixLevel: 9dad57f55f74f5c49938ccfd90860f9c
+  m_Parameters:
+  - m_ParameterName: Dry Level
+    m_GUID: 612ec14ef7d122d47896688ef97329ea
+  - m_ParameterName: Room
+    m_GUID: 9e2dfad6adbe66e4b820a2400b189ac5
+  - m_ParameterName: Room HF
+    m_GUID: 7fbe8b42844c7f149b81e753be9a7d66
+  - m_ParameterName: Decay Time
+    m_GUID: ff830189746a49540b4385b10141d0a8
+  - m_ParameterName: Decay HF Ratio
+    m_GUID: 98e71bc749ae8ba4ca6b7eced88e9c8e
+  - m_ParameterName: Reflections
+    m_GUID: e8117191b68d7d945856bb52c6dcbc01
+  - m_ParameterName: Reflect Delay
+    m_GUID: 444d6a8a877a197418cd317caa6327d6
+  - m_ParameterName: Reverb
+    m_GUID: 60b1cdb7a45fc2f4c8c61347786a4c49
+  - m_ParameterName: Reverb Delay
+    m_GUID: a8219cce8e2054f4788b0a16c7bbb88a
+  - m_ParameterName: Diffusion
+    m_GUID: 6be73e5fd0c4e4a4eaa9cf98432aa21e
+  - m_ParameterName: Density
+    m_GUID: 316e049fa087e7c46abfd3bfcec21c18
+  - m_ParameterName: HF Reference
+    m_GUID: dbe3bd2de6ee4b24f88231c6b0e0a8f7
+  - m_ParameterName: Room LF
+    m_GUID: b134927211f698e4391af61fec9fc787
+  - m_ParameterName: LF Reference
+    m_GUID: 346c4ecb09cbe7a43a4fc28e0b916f22
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 0
 --- !u!244 &-6926455808306411424
 AudioMixerEffectController:
   m_ObjectHideFlags: 3
@@ -139,6 +181,28 @@ AudioMixerEffectController:
   m_SendTarget: {fileID: 0}
   m_EnableWetMix: 0
   m_Bypass: 0
+--- !u!244 &-1434557759103436864
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_EffectID: 03faeda9481a46748a008f2094dfa290
+  m_EffectName: Compressor
+  m_MixLevel: ca448ab7c4e20fa4db823d40a31aa79b
+  m_Parameters:
+  - m_ParameterName: Threshold
+    m_GUID: 9a22063109409d74d906a9ae8a762e7f
+  - m_ParameterName: Attack
+    m_GUID: 17253b11d57865a40aa882555921a327
+  - m_ParameterName: Release
+    m_GUID: 87c5983c99b232546b0cfc72a1126271
+  - m_ParameterName: Make up gain
+    m_GUID: 838204a50d7ef874e83995ca968d628d
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 0
 --- !u!244 &-597480068212263950
 AudioMixerEffectController:
   m_ObjectHideFlags: 3
@@ -196,6 +260,8 @@ AudioMixerGroupController:
   m_Send: 00000000000000000000000000000000
   m_Effects:
   - {fileID: 24400004}
+  - {fileID: -1434557759103436864}
+  - {fileID: -9028205932697207746}
   m_UserColorIndex: 0
   m_Mute: 0
   m_Solo: 0
@@ -224,15 +290,29 @@ AudioMixerSnapshotController:
   m_AudioMixer: {fileID: 24100000}
   m_SnapshotID: c2af12640ac4961408e085c4e87d3955
   m_FloatValues:
+    50bafed0836c0334bbab8e7a48dbf9c6: -10000
+    9a22063109409d74d906a9ae8a762e7f: -20
     5db02931bc17d4c4f92c7252a3ac1308: -0.27209988
+    4aa69f61fe4f53a4cb30672f96482685: 2000
+    7fbe8b42844c7f149b81e753be9a7d66: 0
+    b134927211f698e4391af61fec9fc787: 0
     7f88b1d32484f9844a0019ec7ebf04f7: -14.087802
     72c93b75fdb2c934f88106763eff4239: -0.19958031
+    845f2c265b656de4ab1ae4c7650bbd29: 1000
+    9e2dfad6adbe66e4b820a2400b189ac5: -956
     0605f51882de59f46bfb741db467c6c0: 3
     e4163549b4ef210419f68e7ed1bf622a: -62
+    36a48a6977ff3624b86cd8263e7ab693: 0.3
     4d57e6ebec028f24dafa2c8dee7d23c0: 0
+    d0977b7c17393804b8b1289424f5170b: 0
     cf3ccbaca58a60b48b169b175d4c9048: 0
+    597fe7ec75dee0a4487b8f0aa811a261: 0.1
     22d4743eaad554b429c578d0acbbeb41: -30
+    612ec14ef7d122d47896688ef97329ea: 0
     3052854eaf65f1b489dc223b4b1d5a3e: 0
+    6be73e5fd0c4e4a4eaa9cf98432aa21e: 100
+    316e049fa087e7c46abfd3bfcec21c18: 100
+    5af659cf113d42546903573f1312e688: 0
   m_TransitionOverrides: {}
 --- !u!244 &1087672127389861725
 AudioMixerEffectController:
