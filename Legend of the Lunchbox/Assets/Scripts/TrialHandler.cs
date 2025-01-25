@@ -21,6 +21,8 @@ public class TrialHandler : MonoBehaviour
     private readonly List<EncounterData> encounters = new List<EncounterData>();
     private int encounterCounter = 0;
 
+    public static EncounterData currentEncounterData;
+
     public delegate void SpawnEvent(Transform property);
 
     private void Awake()
@@ -107,6 +109,10 @@ public class TrialHandler : MonoBehaviour
                 if (lastEncounter.EncounterObjectType ==
                     EncounterData.ObjectType.BREAK) // break: load and go back to next entry as new encounter
                 {
+                    lastEncounter.StimulusObjectName = "Break";
+                    EncounterData.PropertyTrial propertyTrial = new EncounterData.PropertyTrial();
+                    propertyTrial.PropertyName = "None";
+                    lastEncounter.PropertyTrials.Add(propertyTrial);
                     encounters.Add(lastEncounter);
                     if (!csv.Read())
                         break;
@@ -285,6 +291,8 @@ public class TrialHandler : MonoBehaviour
         encounters[encounterCounter].DealDamage();
     }
 
+    public void IncreaseCounter() { encounters[encounterCounter].IncreaseCounter(); }
+
     public bool EncounterOver => encounters[encounterCounter].EncounterOver;
 
     /// <summary>
@@ -303,37 +311,53 @@ public class TrialHandler : MonoBehaviour
         encounterCounter++;
     }
 
-    public bool LevelOver => encounterCounter >= encounters.Count;
+    public bool LevelOver => encounterCounter == encounters.Count;
 
     //-------------------------------------------------------
 
     private void SubscribeToEvents()
     {
+        GameEngine.OnRailStartedEvent += OnRail;
         GameEngine.StartingBreakStartedEvent += StartingBreak;
         GameEngine.StartingEncounterStartedEvent += StartingEncounter;
         GameEngine.ShowingPropertyStartedEvent += ShowingProperty;
         GameEngine.TimedOutStartedEvent += TimedOut;
         GameEngine.AnswerCorrectStartedEvent += AnswerCorrect;
         GameEngine.EndingEncounterStartedEvent += EndingEncounter;
+        GameEngine.EndingBreakStartedEvent += EndingBreak;
     }
 
     private void UnSubscribeToEvents()
     {
+        GameEngine.OnRailStartedEvent -= OnRail;
         GameEngine.StartingBreakStartedEvent -= StartingBreak;
         GameEngine.StartingEncounterStartedEvent -= StartingEncounter;
         GameEngine.ShowingPropertyStartedEvent -= ShowingProperty;
         GameEngine.TimedOutStartedEvent -= TimedOut;
         GameEngine.AnswerCorrectStartedEvent -= AnswerCorrect;
         GameEngine.EndingEncounterStartedEvent -= EndingEncounter;
+        GameEngine.EndingBreakStartedEvent -= EndingBreak;
+    }
+
+    private void OnRail()
+    {
+        currentEncounterData = null;
     }
 
     private void StartingBreak()
+    {
+        currentEncounterData = encounters[encounterCounter];
+    }
+
+    private void EndingBreak()
     {
         encounterCounter++;
     }
 
     private void StartingEncounter()
     {
+        currentEncounterData = encounters[encounterCounter];
+        
         PrepareModels();
         StartEncounter();
     }

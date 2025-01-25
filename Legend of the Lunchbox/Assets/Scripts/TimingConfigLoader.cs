@@ -29,6 +29,6 @@ public class TimingConfigLoader : MonoBehaviour
             GameEngine.StaticTimeVariables = csv.GetRecord<GameEngine.TimingData>();
         }
         
-        print(GameEngine.StaticTimeVariables.EncounterStartDuration);
+        // print(GameEngine.StaticTimeVariables.EncounterStartDuration);
     }
 }

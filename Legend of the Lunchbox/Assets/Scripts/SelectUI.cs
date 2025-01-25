@@ -37,7 +37,7 @@ public class SelectUI : MonoBehaviour
 
     private void EvaluatingInput(InputHandler.InputState input)
     {
-        print(circleRenderer == null);
+        // print(circleRenderer == null);
         circleRenderer.color = Color.white;
         circleRenderer.transform.position = PropertyCameraController.PropertyCamTransform.position + (LocationHolder.PropertyLocation.position - LocationHolder.MindCameraLocation.position);
         circleRenderer.gameObject.SetActive(true);

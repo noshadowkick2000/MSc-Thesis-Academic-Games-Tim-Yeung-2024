@@ -42,12 +42,21 @@ public class EncounterData
 
   public int GetCurrentPropertyId() { return PropertyTrials[currentProperty].PropertyId; }
   
+  public string GetCurrentPropertyName() { return PropertyTrials[currentProperty].PropertyName; }
+  
   public PropertyType GetCurrentPropertyType() { return PropertyTrials[currentProperty].PropertyType; }
 
   public float GetCurrentTrialDelay() { return PropertyTrials[currentProperty].ITI; }
 
-  public bool EncounterOver => currentProperty >= PropertyTrials.Count;
+  public bool EncounterOver = false;
 
+  public void IncreaseCounter()
+  {
+    if (currentProperty != PropertyTrials.Count - 1)
+      currentProperty++;
+    else
+      EncounterOver = true;
+  }
 
   /// <summary>
   /// Evaluates input from player for current item
@@ -56,14 +65,14 @@ public class EncounterData
   public bool EvaluateInput(bool used)
   {
     bool correct = used == PropertyTrials[currentProperty].ValidProperty;
-    currentProperty++;
+    // currentProperty++;
 
     return correct;
   }
 
   public void SkipProperty()
   {
-    currentProperty++;
+    // currentProperty++;
   }
 
   public void DealDamage()

@@ -281,6 +281,8 @@ namespace Assets
     private void AnswerWrong()
     {
       AnswerWrongStartedEvent?.Invoke();
+      
+      trialHandler.IncreaseCounter();
      
       if (feedbackEnabled)
         StartCoroutine(Timer(StaticTimeVariables.TrialFeedbackDuration, ObjectDelay));
@@ -291,6 +293,8 @@ namespace Assets
     private void AnswerCorrect()
     {
       AnswerCorrectStartedEvent?.Invoke();
+      
+      trialHandler.IncreaseCounter();
       
       if (feedbackEnabled)
         StartCoroutine(Timer(StaticTimeVariables.TrialFeedbackDuration, ObjectDelay));
