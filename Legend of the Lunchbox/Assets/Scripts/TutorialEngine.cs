@@ -12,11 +12,27 @@ public class TutorialEngine : MonoBehaviour
     [SerializeField] private GameObject textPanel;
     [SerializeField] private TextMeshProUGUI name;
     [SerializeField] private TextMeshProUGUI instruction;
-
+    
+    private AudioSource[] audioSources;
+    private bool[] wasPlaying;
+    
     private readonly float bottomY = 10f;
     private readonly float middleY = 165f;
     public void SetText(int id, bool bottom)
     {
+        int counter = 0;
+        foreach (var source in audioSources)
+        {
+            if (source.isPlaying)
+                wasPlaying[counter] = true;
+            else
+                wasPlaying[counter] = false;
+            
+            source.Pause();
+
+            counter++;
+        }
+        
         text.SetText(LocalizationTextLoader.GetLocaleEntry(id));
         textPanel.SetActive(true);
         ((RectTransform)textPanel.transform).anchoredPosition = new Vector3(0, bottom ? bottomY : middleY);
@@ -27,11 +43,24 @@ public class TutorialEngine : MonoBehaviour
 
     public void ClearText()
     {
+        int counter = 0;
+        foreach (var source in audioSources)
+        {
+
+            if (wasPlaying[counter])
+                source.UnPause();
+
+            counter++;
+        }
+        
         text.SetText("");
         textPanel.SetActive(false);
     }
     private void Awake()
     {
+        audioSources = FindObjectsByType<AudioSource>(FindObjectsSortMode.None);
+        wasPlaying = new bool[audioSources.Length];
+        
         SubscribeToEvents();
     }
 

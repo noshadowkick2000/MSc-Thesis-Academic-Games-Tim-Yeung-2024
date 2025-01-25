@@ -4307,6 +4307,20 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
+  - time: 61
+    functionName: PlayOneShotAudio
+    data: 
+    objectReferenceParameter: {fileID: 8300000, guid: 095e108ef02fbf840896fdc93a8302ee, type: 3}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 63.333332
+    functionName: PlayOneShotAudio
+    data: 
+    objectReferenceParameter: {fileID: 8300000, guid: 0f35a96d67abeab459e1b511af810f6c, type: 3}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
   - time: 64.166664
     functionName: PlayOneShotAudio
     data: 

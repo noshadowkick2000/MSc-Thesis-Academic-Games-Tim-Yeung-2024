@@ -28,15 +28,25 @@ public class ExternalAssetLoader : MonoBehaviour
     [SerializeField] private GameObject[] assetTemplate;
     private static GameObject[] AssetTemplate;
     [SerializeField] private string assetSubFolder;
-    
+
+
+    private static bool Loaded = false;
+
     private void Start()
     {
-        LoadAssets();
-        DontDestroyOnLoad(gameObject);
+        if (Loaded)
+            Destroy(gameObject);
+        else
+        {
+            LoadAssets();
+            DontDestroyOnLoad(gameObject);
 
-        AssetTemplate = assetTemplate;
-        
-        print(stimulusDictionary.Count);
+            AssetTemplate = assetTemplate;
+
+            print(stimulusDictionary.Count);
+
+            Loaded = true;
+        }
     }
 
     private void LoadAssets()

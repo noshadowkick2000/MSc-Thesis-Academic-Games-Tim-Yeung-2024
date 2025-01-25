@@ -28,6 +28,8 @@ public class MainCameraController : ObjectMover
     StopCoroutine(bobbingCoroutine);
   }
 
+  public static event Action BobBottomEvent;
+
   private readonly float bobbingTime = 0.2f;
   private readonly float bobbingOffset = 0.1f;
   private IEnumerator BobbingCameraCoroutine()
@@ -44,6 +46,9 @@ public class MainCameraController : ObjectMover
         startTime = Time.time;
         x = 0;
         negativeMovement = !negativeMovement;
+        
+        if (negativeMovement)
+          BobBottomEvent?.Invoke();
       }
 
       float y = negativeMovement ? 1 - UtilsT.EasedT(x) : Mathf.Sin(x * .5f * MathF.PI);
