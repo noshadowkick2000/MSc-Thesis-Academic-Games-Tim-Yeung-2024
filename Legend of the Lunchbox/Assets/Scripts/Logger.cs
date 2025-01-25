@@ -7,7 +7,7 @@ using UnityEngine;
 using CsvHelper;
 using CsvHelper.Configuration;
 
-public static class Logger
+public class Logger : MonoBehaviour
 {
   private class LogEntry
   {
@@ -46,17 +46,16 @@ public static class Logger
   private static StreamWriter _output;
   private static string _folderName;
 
-  private static LoggerComponent _loggerComponent;
+  // private static LoggerComponent _loggerComponent;
 
   // TODO IMPLEMENT FEATURE IN GAME SETUP TO SELECT FOLDER FOR THE RESULTS
 
-  public static void Awake(LoggerComponent ui)
+  public void Awake()
   {
-    _folderName = GameEngine.LogFolderInDocs;
-    string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\" + _folderName;
+    string path = Application.streamingAssetsPath + "/" + DateTime.Today.ToString("ddMMyyyy");
+    Directory.CreateDirectory(path);
     string filename = DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss");
     _output = new StreamWriter($"{path}\\{filename}.log");
-    _loggerComponent = ui;
   }
 
   private static string ConvertSecondsToReadableTime(double seconds)
@@ -83,10 +82,9 @@ public static class Logger
     }
     _output.WriteLine(line);
     Console.WriteLine(line);
-    _loggerComponent.PrintToUI(line);
   }
 
-  public static void OnDestroy()
+  public void OnDestroy()
   {
     _output.Close();
   }

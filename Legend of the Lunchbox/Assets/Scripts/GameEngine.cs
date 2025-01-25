@@ -45,8 +45,8 @@ namespace Assets
     // public static GameObject[] PropertiesAndObjects;
 
     [Header("Paths")]
-    [SerializeField] private string logFolderInDocs = "LotL";
-    public static string LogFolderInDocs;
+    // [SerializeField] private string logFolderInDocs = "LotL";
+    // public static string LogFolderInDocs;
 
     [SerializeField] private int nextLevel;
 
@@ -83,7 +83,7 @@ namespace Assets
     {
       Time.timeScale = 1f;
       
-      LogFolderInDocs = logFolderInDocs;
+      // LogFolderInDocs = logFolderInDocs;
 
       feedbackEnabled = PlayerPrefs.GetInt(MainMenuHandler.FeedbackKey) == 1;
       promptEnabled = PlayerPrefs.GetInt(MainMenuHandler.PromptKey) == 1;
@@ -96,11 +96,6 @@ namespace Assets
     private void Start()
     {
       Invoke(nameof(OnRail), StaticTimeVariables.LevelTransitionDuration);
-    }
-
-    private void OnDestroy()
-    {
-      Logger.OnDestroy();
     }
 
     public delegate void StateChangeEvent();

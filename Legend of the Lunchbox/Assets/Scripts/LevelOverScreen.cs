@@ -111,7 +111,7 @@ public class LevelOverScreen : MonoBehaviour
         if (nextLevel == SceneManager.GetActiveScene().buildIndex)
             nextLevel = 0;
         
-        AsyncOperation async = SceneManager.LoadSceneAsync(0);
+        AsyncOperation async = SceneManager.LoadSceneAsync(nextLevel);
 
         while (!async.isDone)
         {
