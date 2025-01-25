@@ -159,7 +159,7 @@ AudioMixerController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Scene1
+  m_Name: OutsideScenes
   m_OutputGroup: {fileID: 0}
   m_MasterGroup: {fileID: 24300002}
   m_Snapshots:
@@ -231,6 +231,7 @@ AudioMixerSnapshotController:
     e4163549b4ef210419f68e7ed1bf622a: -62
     4d57e6ebec028f24dafa2c8dee7d23c0: 0
     cf3ccbaca58a60b48b169b175d4c9048: 0
+    ac09d98ded79cf04b837d98876ce49f3: 0.1
     22d4743eaad554b429c578d0acbbeb41: -30
     3052854eaf65f1b489dc223b4b1d5a3e: 0
   m_TransitionOverrides: {}
