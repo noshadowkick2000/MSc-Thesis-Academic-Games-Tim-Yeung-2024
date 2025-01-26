@@ -100,7 +100,7 @@ public class ExternalAssetLoader : MonoBehaviour
     private Sprite LoadSprite(string filePath)
     {
         byte[] fileData = File.ReadAllBytes(filePath);
-        Texture2D texture = new Texture2D(2, 2); // Create a new texture
+        Texture2D texture = new Texture2D(1024, 1024); // Create a new texture
         if (!texture.LoadImage(fileData)) return null; // Load image data into texture
         Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
         return sprite;
