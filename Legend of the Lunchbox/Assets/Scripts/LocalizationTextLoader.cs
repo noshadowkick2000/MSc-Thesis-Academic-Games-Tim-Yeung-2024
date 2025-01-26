@@ -1,12 +1,9 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.IO;
 using System.Linq;
 using UnityEngine;
 using CsvHelper;
 using CsvHelper.Configuration;
-using CsvHelper.Configuration.Attributes;
-using Unity.VisualScripting;
 
 namespace Assets
 {

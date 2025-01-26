@@ -1,6 +1,4 @@
-﻿using System;
-using Assets;
-using Unity.VisualScripting;
+﻿using Assets;
 using UnityEngine;
 using UnityEngine.UI;
 

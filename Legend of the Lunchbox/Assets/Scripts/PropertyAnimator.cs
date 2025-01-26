@@ -1,9 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Assets;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class PropertyAnimator : MonoBehaviour
 {

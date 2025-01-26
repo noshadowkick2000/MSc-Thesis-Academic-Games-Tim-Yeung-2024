@@ -1,12 +1,8 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using Assets;
 using TMPro;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
-using Random = UnityEngine.Random;
 
 public class ObjectAnimator : ObjectMover
 {
