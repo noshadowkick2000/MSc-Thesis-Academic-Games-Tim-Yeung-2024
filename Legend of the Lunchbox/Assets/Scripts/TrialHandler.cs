@@ -189,19 +189,14 @@ public class TrialHandler : MonoBehaviour
         }
 
         // Add object gameobject
-        SpawnAddToDictionary(
-            encounters[encounterCounter].EncounterObjectType == EncounterData.ObjectType.WORD
-                ? ExternalAssetLoader.GetTextAsset(encounters[encounterCounter].StimulusObjectName)
-                : ExternalAssetLoader.GetAsset(encounters[encounterCounter].StimulusObjectId),
-            GetCurrentEncounterObjectId());
+        if (encounters[encounterCounter].EncounterObjectType != EncounterData.ObjectType.WORD)
+            SpawnAddToDictionary(ExternalAssetLoader.GetAsset(GetCurrentEncounterObjectId()), GetCurrentEncounterObjectId());
 
         // Add property gameobjects
         foreach (var propertyTrial in encounters[encounterCounter].PropertyTrials)
         {
-            SpawnAddToDictionary(propertyTrial.PropertyType == EncounterData.PropertyType.WORD
-                ? ExternalAssetLoader.GetTextAsset(propertyTrial.PropertyName)
-                : ExternalAssetLoader.GetAsset(propertyTrial.PropertyId),
-                propertyTrial.PropertyId);
+            if (propertyTrial.PropertyType != EncounterData.PropertyType.WORD)
+                SpawnAddToDictionary(ExternalAssetLoader.GetAsset(propertyTrial.PropertyId), propertyTrial.PropertyId);
         }
     }
 
@@ -209,7 +204,11 @@ public class TrialHandler : MonoBehaviour
 
     private void StartEncounter()
     {
-        Transform obj = objectDictionary[GetCurrentEncounterObjectId()];
+        Transform obj;
+        if (GetCurrentEncounterObjectType() != EncounterData.ObjectType.WORD)
+            obj = objectDictionary[GetCurrentEncounterObjectId()];
+        else
+            obj = ExternalAssetLoader.GetTextAsset(GetCurrentEncounterObjectName()).transform;
         obj.gameObject.SetActive(true);
         obj.position = LocationHolder.PropertyLocation.position;
         OnObjectSpawnedEvent?.Invoke(obj);
@@ -251,12 +250,25 @@ public class TrialHandler : MonoBehaviour
         return encounters[encounterCounter].StimulusObjectId;
     }
 
+    private EncounterData.ObjectType GetCurrentEncounterObjectType()
+    {
+        return encounters[encounterCounter].EncounterObjectType;
+    }
+
+    private string GetCurrentEncounterObjectName()
+    {
+        return encounters[encounterCounter].StimulusObjectName;
+    }
+
     public static event SpawnEvent OnPropertySpawnedEvent;
 
     private void SpawnProperty()
     {
-        int propid = encounters[encounterCounter].GetCurrentPropertyId();
-        Transform property = objectDictionary[propid];
+        Transform property;
+        if (GetCurrentEncounterPropertyType() != EncounterData.PropertyType.WORD)
+            property = objectDictionary[encounters[encounterCounter].GetCurrentPropertyId()];
+        else
+            property = ExternalAssetLoader.GetTextAsset(encounters[encounterCounter].GetCurrentPropertyName()).transform;
 
         OnPropertySpawnedEvent?.Invoke(property);
     }
@@ -299,8 +311,6 @@ public class TrialHandler : MonoBehaviour
 
     private void KillEncounter()
     {
-        Transform obj = objectDictionary[GetCurrentEncounterObjectId()];
-        obj.gameObject.SetActive(false);
         encounterCounter++;
     }
 

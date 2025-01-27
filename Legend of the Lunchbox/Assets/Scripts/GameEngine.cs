@@ -374,5 +374,11 @@ namespace Assets
         yield return null;
       }
     }
+    
+    private void Update() 
+    {
+      if (Input.GetKeyDown(KeyCode.Backspace))
+        LoadNext();
+    }
   }
 }

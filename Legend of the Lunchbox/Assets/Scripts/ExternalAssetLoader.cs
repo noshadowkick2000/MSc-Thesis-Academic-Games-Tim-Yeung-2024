@@ -31,6 +31,8 @@ public class ExternalAssetLoader : MonoBehaviour
 
     private void Start()
     {
+        Application.targetFrameRate = 60;
+        
         if (Loaded)
             Destroy(gameObject);
         else
@@ -74,6 +76,7 @@ public class ExternalAssetLoader : MonoBehaviour
             
             if (lastFileName != currentFile[0]) // Start new StimulusAsset load
             {
+                print(lastFileName);
                 stimulusDictionary.Add(UtilsT.GetId(lastFileName), stimulusAsset);
                 lastFileName = currentFile[0];
                 stimulusAsset = new StimulusAsset();
@@ -93,6 +96,7 @@ public class ExternalAssetLoader : MonoBehaviour
                 lastClip = audioClip;
             }
         }
+        print(currentFile[0]);
         stimulusDictionary.Add(UtilsT.GetId(currentFile[0]), stimulusAsset);
     }
 
