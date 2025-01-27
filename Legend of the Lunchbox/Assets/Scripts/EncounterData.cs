@@ -43,6 +43,8 @@ public class EncounterData
 
   public float GetCurrentTrialDelay() { return PropertyTrials[currentProperty].ITI; }
 
+  public int GetCurrentProperty => currentProperty;
+
   public bool EncounterOver = false;
 
   public void IncreaseCounter()
