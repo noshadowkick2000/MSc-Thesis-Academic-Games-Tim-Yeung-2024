@@ -229,9 +229,10 @@ public class ObjectAnimator : ObjectMover
       
       while (t < 1)
       {
+         // TODO fix animation
          float x = Mathf.Sin(t * repetitions * Mathf.PI) * speed;
          float y = Mathf.Cos(t * repetitions * Mathf.PI) * speed;
-         h = Mathf.Pow(1.65f * t - .5f, 2) - .25f;
+         h = (Mathf.Pow(1.65f * t - .5f, 2) - .25f) * 1.5f;
 
          mainObject.position = startPosition + new Vector3(x, h, y);
          // mainObject.Rotate(Vector3.up, speed * 20f);
@@ -241,5 +242,7 @@ public class ObjectAnimator : ObjectMover
          t = (Time.time - startTime) / duration;
          yield return null;
       }
+      
+      mainObject.gameObject.SetActive(false);
    }
 }

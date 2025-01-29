@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Assets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -39,16 +40,6 @@ public class LevelOverScreen : MonoBehaviour
         statTexts[1].text = GameStatsTracker.EncountersWon.ToString();
         statTexts[3].text = GameStatsTracker.ComboCounter.ToString();
         statTexts[5].text = TimeSpan.FromSeconds(GameStatsTracker.CompletionTime).ToString(@"mm\:ss");
-
-        string grade = "A";
-        if (GameStatsTracker.ComboCounter == GameStatsTracker.EncountersWon)
-            grade = "S";
-        else if (GameStatsTracker.ComboCounter > 4)
-            grade = "A++";
-        else if (GameStatsTracker.ComboCounter > 2)
-            grade = "A+";
-
-        statTexts[6].text = grade;
     }
 
     private IEnumerator Fader(float duration, bool fadeIn)
@@ -105,12 +96,20 @@ public class LevelOverScreen : MonoBehaviour
     private IEnumerator LoadNextLevel()
     {
         yield return new WaitForSeconds(.5f);
-
-        int nextLevel = 4 + GameStatsTracker.LastLevel;
-        if (nextLevel == SceneManager.GetActiveScene().buildIndex)
-            nextLevel = 0;
         
-        AsyncOperation async = SceneManager.LoadSceneAsync(nextLevel);
+        print(LevelHandler.LastLevel);
+
+        int nextScene = 2;
+
+        if (LevelHandler.CurrentLevel == LevelHandler.LastLevel)
+        {
+            nextScene = 0;
+            Logger.CloseLog();
+        }
+        else
+            LevelHandler.CurrentLevel++;
+        
+        AsyncOperation async = SceneManager.LoadSceneAsync(nextScene);
 
         while (!async.isDone)
         {

@@ -68,7 +68,7 @@ public class Logger : MonoBehaviour
 
   // TODO IMPLEMENT FEATURE IN GAME SETUP TO SELECT FOLDER FOR THE RESULTS
 
-  public void Awake()
+  public static void StartLogger()
   {
     SubscribeToEvents();
     
@@ -111,15 +111,23 @@ public class Logger : MonoBehaviour
     _writer.Flush();
   }
 
-  public void OnDestroy()
+  public static void CloseLog()
   {
-    _writer.Dispose();
-    _output.Close();
+    _writer?.Dispose();
+    _output?.Close();
 
+    _writer = null;
+    _output = null;
+    
     UnSubscribeToEvents();
   }
 
-  private void SubscribeToEvents()
+  public void OnDestroy() // is also triggered when the duplicate is destroyed
+  {
+    CloseLog();
+  }
+
+  private static void SubscribeToEvents()
   {
     GameEngine.EndingBreakStartedEvent += Flush;
     GameEngine.EndingEncounterStartedEvent += Flush;
@@ -142,7 +150,7 @@ public class Logger : MonoBehaviour
     GameEngine.EndingBreakStartedEvent += StopBreak;
   }
 
-  private void UnSubscribeToEvents()
+  private static void UnSubscribeToEvents()
   {
     GameEngine.EndingBreakStartedEvent -= Flush;
     GameEngine.EndingEncounterStartedEvent -= Flush;
@@ -166,27 +174,27 @@ public class Logger : MonoBehaviour
 
   }
 
-  private void StartBlock()
+  private static void StartBlock()
   {
     Log(Event.OTHER, CodeTypes.START_BLOCK);
   }
 
-  private void StopBlock()
+  private static void StopBlock()
   {
     Log(Event.OTHER, CodeTypes.STOP_BLOCK);
   }
 
-  private void StartBreak()
+  private static void StartBreak()
   {
     Log(Event.OTHER, CodeTypes.BREAK_START);
   }
 
-  private void StopBreak()
+  private static void StopBreak()
   {
     Log(Event.OTHER, CodeTypes.BREAK_END);
   }
 
-  private void ShowingObject()
+  private static void ShowingObject()
   {
     switch (TrialHandler.currentEncounterData.EncounterObjectType)
     {
@@ -203,22 +211,22 @@ public class Logger : MonoBehaviour
     }
   }
 
-  private void DisappearObject(EncounterData.PropertyType propertyType)
+  private static void DisappearObject(EncounterData.PropertyType propertyType)
   {
     Log(Event.STIMULUS, CodeTypes.OBJECT_STOP);
   }
 
-  private void ShowPrompt(EncounterData.PropertyType propertyType)
+  private static void ShowPrompt(EncounterData.PropertyType propertyType)
   {
     Log(Event.PROMPT, CodeTypes.NONE);
   }
 
-  private void ShowFixate()
+  private static void ShowFixate()
   {
     Log(Event.FIXATE, CodeTypes.NONE);
   }
 
-  private void ShowProperty(Action<InputHandler.InputState> callback)
+  private static void ShowProperty(Action<InputHandler.InputState> callback)
   {
     switch (TrialHandler.currentEncounterData.GetCurrentPropertyType())
     {
@@ -236,22 +244,22 @@ public class Logger : MonoBehaviour
     }
   }
 
-  private void DisappearProperty()
+  private static void DisappearProperty()
   {
     Log(Event.STIMULUS, CodeTypes.PROPERTY_STOP);
   }
 
-  private void FeedbackPositive()
+  private static void FeedbackPositive()
   {
     Log(Event.OTHER, CodeTypes.FEEDBACK_POSITIVE);
   }
 
-  private void FeedbackNegative()
+  private static void FeedbackNegative()
   {
     Log(Event.OTHER, CodeTypes.FEEDBACK_NEGATIVE);
   }
 
-  private void TimeOut(InputHandler.InputState input)
+  private static void TimeOut(InputHandler.InputState input)
   {
     Log(Event.INPUT, CodeTypes.INPUT_TIMEOUT);
   }

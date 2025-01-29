@@ -6,7 +6,13 @@ using Random = UnityEngine.Random;
 
 public class EnvironmentHandler : ObjectMover
 {
-    [SerializeField] private GameObject[] environmentTerrains;
+    [System.Serializable]
+    private struct EnvironmentPrefabs
+    {
+        public GameObject[] environmentPrefabs;
+    }
+    
+    [SerializeField] private EnvironmentPrefabs[] environmentTerrainSets;
     [SerializeField] private GameObject discoverable;
     [SerializeField] private float speedMultiplier;
     [SerializeField] private int maxTiles = 3;
@@ -21,10 +27,21 @@ public class EnvironmentHandler : ObjectMover
     private List<GameObject> despawnTerrains = new List<GameObject>();
 
     private GameObject spawnedDiscoverable;
+
+    private GameObject[] environmentTerrains;
+
+    public enum EnvironmentType
+    {
+        MEADOWS,
+        LAKEBANK,
+        TOWER
+    }
     
     private void Awake()
     {
         SubscribeToEvents();
+
+        environmentTerrains = environmentTerrainSets[(int)TrialHandler.currentEnvironment].environmentPrefabs;
 
         SpawnTerrain(true);
     }

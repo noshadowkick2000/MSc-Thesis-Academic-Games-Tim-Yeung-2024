@@ -10,7 +10,6 @@ public class GameStatsTracker : MonoBehaviour
     {
         EncountersWon = 0;
         ComboCounter = 0;
-        LastLevel = (SceneManager.GetActiveScene().buildIndex)-3;
 
         startTime = Time.realtimeSinceStartup;
 
@@ -49,5 +48,4 @@ public class GameStatsTracker : MonoBehaviour
     public static int EncountersWon;
     public static int ComboCounter;
     public static float CompletionTime;
-    public static int LastLevel;
 }
