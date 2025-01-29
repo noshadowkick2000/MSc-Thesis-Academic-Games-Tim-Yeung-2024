@@ -40,11 +40,9 @@ namespace Assets
     // [SerializeField] private GameObject[] propertiesAndObjects;
     // public static GameObject[] PropertiesAndObjects;
 
-    [Header("Paths")]
+    [Header("Paths")] [SerializeField] private GameObject TutorialPrefab;
     // [SerializeField] private string logFolderInDocs = "LotL";
     // public static string LogFolderInDocs;
-
-    [SerializeField] private int nextLevel;
 
     // Other
     // [SerializeField] private int levelId = 0;
@@ -87,6 +85,9 @@ namespace Assets
       Random.InitState(12345);
       
       trialHandler = GetComponent<TrialHandler>();
+
+      if (LevelHandler.CurrentLevel == 0)
+        Instantiate(TutorialPrefab);
     }
 
     private void Start()
@@ -367,7 +368,7 @@ namespace Assets
 
     private IEnumerator LoadScene()
     {
-      AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(nextLevel);
+      AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(3);
       
       while (!asyncLoad.isDone)
       {

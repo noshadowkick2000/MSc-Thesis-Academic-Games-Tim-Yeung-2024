@@ -210,18 +210,5 @@ public class TutorialEngine : MonoBehaviour
             Time.timeScale = 1f;
             ClearText();
         }
-
-        if (Input.GetKeyDown(KeyCode.Backspace))
-            StartCoroutine(LoadNextScene());
-    }
-
-    private IEnumerator LoadNextScene()
-    { 
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(3, LoadSceneMode.Single);
-
-        while (!asyncLoad.isDone)
-        {
-            yield return null;
-        }
     }
 }

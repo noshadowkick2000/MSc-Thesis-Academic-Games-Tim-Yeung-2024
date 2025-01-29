@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Assets;
 using UnityEngine;
 
@@ -197,5 +198,14 @@ public class SoundEngine : MonoBehaviour
     private void LostEncounter()
     {
         oneShotPlayer.PlayOneShot(worldDeform);
+
+        StartCoroutine(FlashSoundDelayed());
+    }
+
+    private IEnumerator FlashSoundDelayed()
+    {
+        yield return new WaitForSeconds(GameEngine.StaticTimeVariables.EncounterEvaluationDuration / 4);
+        
+        oneShotPlayer.PlayOneShot(enemyAppear);
     }
 }

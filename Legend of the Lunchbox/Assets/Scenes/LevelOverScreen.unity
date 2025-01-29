@@ -1134,7 +1134,6 @@ MonoBehaviour:
   - {fileID: 97558759}
   - {fileID: 1227830057}
   - {fileID: 936283056}
-  - {fileID: 1804246466}
   - {fileID: 372187092}
   faderPanel: {fileID: 591002240}
 --- !u!1 &906292128

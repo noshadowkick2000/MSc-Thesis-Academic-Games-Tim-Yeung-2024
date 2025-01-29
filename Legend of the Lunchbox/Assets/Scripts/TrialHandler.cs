@@ -9,12 +9,12 @@ using UnityEngine;
 public class TrialHandler : MonoBehaviour
 {
     [SerializeField] private string trialsFileName;
-    [SerializeField] private int currentLevel;
 
     private readonly List<EncounterData> encounters = new List<EncounterData>();
     private int encounterCounter = 0;
 
     public static EncounterData currentEncounterData;
+    public static EnvironmentHandler.EnvironmentType currentEnvironment;
 
     public delegate void SpawnEvent(Transform property);
 
@@ -33,6 +33,7 @@ public class TrialHandler : MonoBehaviour
     private class EncounterEntry
     {
         public int Level { get; set; }
+        public string Environment { get; set; }
         public float BlockDelay { get; set; }
         public string ObjectType { get; set; }
         public string StimulusObject { get; set; }
@@ -74,6 +75,23 @@ public class TrialHandler : MonoBehaviour
             }
         }
 
+        EnvironmentHandler.EnvironmentType ConvertStringEnvironmentType(string environmentType)
+        {
+            switch (environmentType)
+            {
+                case "MEADOWS":
+                    return EnvironmentHandler.EnvironmentType.MEADOWS;
+                case "LAKEBANK":
+                    return EnvironmentHandler.EnvironmentType.LAKEBANK;
+                case "TOWER":
+                    return EnvironmentHandler.EnvironmentType.TOWER;
+                default:
+                    return EnvironmentHandler.EnvironmentType.MEADOWS;
+            }
+        }
+
+        bool readEnvironment = false;
+
         using (StreamReader reader = new StreamReader(Application.streamingAssetsPath + "/" + trialsFileName))
         using (CsvReader csv = new CsvReader(reader, CultureInfo.InvariantCulture))
         {
@@ -89,11 +107,20 @@ public class TrialHandler : MonoBehaviour
                 EncounterData lastEncounter = new EncounterData();
                 EncounterEntry encounterEntry = csv.GetRecord<EncounterEntry>();
 
-                if (encounterEntry.Level != currentLevel)
+                if (encounterEntry.Level != LevelHandler.CurrentLevel)
                 {
                     if (!csv.Read())
+                    {
+                        LevelHandler.LastLevel = encounterEntry.Level;
                         break;
+                    }
                     continue;
+                }
+
+                if (!readEnvironment)
+                {
+                    readEnvironment = true;
+                    currentEnvironment = ConvertStringEnvironmentType(encounterEntry.Environment);
                 }
 
                 lastEncounter.EncounterBlockDelay = encounterEntry.BlockDelay;
@@ -108,10 +135,10 @@ public class TrialHandler : MonoBehaviour
                     lastEncounter.PropertyTrials.Add(propertyTrial);
                     encounters.Add(lastEncounter);
                     if (!csv.Read())
+                    {
+                        LevelHandler.LastLevel = encounterEntry.Level;
                         break;
-                    encounterEntry = csv.GetRecord<EncounterEntry>();
-                    if (encounterEntry.Level != currentLevel)
-                        break;
+                    }
                 }
                 else // Not a break: load encounter general data and then iterate through properties
                 {
@@ -120,11 +147,8 @@ public class TrialHandler : MonoBehaviour
                     string lastStimulusObject = encounterEntry.StimulusObject;
 
                     int propertyCounter = 0;
-                    bool skippedWhile = true;
-                    while (lastStimulusObject == encounterEntry.StimulusObject && currentLevel == encounterEntry.Level)
+                    while (lastStimulusObject == encounterEntry.StimulusObject && LevelHandler.CurrentLevel == encounterEntry.Level)
                     {
-                        skippedWhile = false;
-
                         EncounterData.PropertyTrial propertyTrial = new EncounterData.PropertyTrial();
                         propertyTrial.PropertyId = UtilsT.GetId(encounterEntry.StimulusProperty);
                         propertyTrial.PropertyName = encounterEntry.StimulusProperty;
@@ -137,6 +161,7 @@ public class TrialHandler : MonoBehaviour
                         
                         if (!csv.Read())
                         {
+                            LevelHandler.LastLevel = encounterEntry.Level;
                             exit = true;
                             break;
                         }

@@ -20,6 +20,6 @@ public class Discoverable : MonoBehaviour
     {
         center.localScale = Vector3.Lerp(startScale, Vector3.zero, Mathf.Pow(Mathf.PingPong(Time.time, duration)/2, 2));
         outer.localRotation = Quaternion.Euler(eulerAngles + speed * Time.time * Vector3.forward);
-        center.LookAt(Camera.main.transform);
+        // center.LookAt(Camera.main.transform);
     }
 }

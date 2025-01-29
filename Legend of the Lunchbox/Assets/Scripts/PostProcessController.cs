@@ -72,7 +72,7 @@ public class PostProcessController : MonoBehaviour
         float startTime = Time.time;
         float x = 0;
         float saturationStart = ca.saturation.value;
-        float saturationGoal = saturationStart - 20f;
+        float saturationGoal = saturationStart - 5f;
 
         while (x < 1)
         {

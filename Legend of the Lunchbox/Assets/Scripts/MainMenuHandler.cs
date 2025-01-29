@@ -21,6 +21,8 @@ public class MainMenuHandler : MonoBehaviour
     {
         LeanTween.moveX(MainMenu, xEnd, .5f).setEaseInBack();
         
+        Logger.StartLogger();
+        
         Invoke(nameof(Load), .5f);
     }
 
@@ -116,6 +118,8 @@ public class MainMenuHandler : MonoBehaviour
         xEnd = SettingsMenu.anchoredPosition.x;
 
         language.text = LocalizationTextLoader.GetCurrentLocale();
+
+        LevelHandler.CurrentLevel = 0;
     }
     
     public static readonly string SoundKey = "SoundEnabled";
