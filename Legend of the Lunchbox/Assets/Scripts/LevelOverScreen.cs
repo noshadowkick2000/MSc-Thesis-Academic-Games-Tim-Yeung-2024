@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using Assets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,6 +18,8 @@ public class LevelOverScreen : MonoBehaviour
     
     private void Start()
     {
+        Time.timeScale = 1f;
+        
         SetValues();
         
         StartCoroutine(Fader(.5f, true));

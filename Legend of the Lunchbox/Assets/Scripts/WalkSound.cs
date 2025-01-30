@@ -1,15 +1,27 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class WalkSound : MonoBehaviour
 {
-    [SerializeField] private AudioClip[] walkImpacts;
+    [System.Serializable]
+    private struct EnvironmentAudio
+    {
+        public AudioClip[] walkImpacts;
+    }
+    
+    [SerializeField] private EnvironmentAudio[] environmentAudios;
     [SerializeField] private AudioSource audioSource;
+
+    private AudioClip[] walkImpacts;
 
     private void Awake()
     {
         if (PlayerPrefs.GetInt(MainMenuHandler.SoundKey) == 1)
+        {
             SubscribeToEvents();
+            walkImpacts = environmentAudios[LevelHandler.CurrentLevel].walkImpacts;
+        }
     }
 
     private void OnDestroy()
