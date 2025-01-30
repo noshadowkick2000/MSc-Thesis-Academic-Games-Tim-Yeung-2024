@@ -1,24 +1,12 @@
 ﻿Level,Environment,BlockDelay,ObjectType,StimulusObject,PropertyType,StimulusProperty,ValidProperty,ITI,Useless test
-0,MEADOWS,2000,IMAGE,hammer_objekt,ACTION,hammer,TRUE,0,Pretty nice
-0,MEADOWS,0,IMAGE,hammer_objekt,SOUND,HammerSound,TRUE,0,Not great
-0,MEADOWS,2000,WORD,HammerWord,WORD,Metal,TRUE,0,Not great
-0,MEADOWS,0,WORD,HammerWord,WORD,Swung,TRUE,0,Pretty nice
-0,MEADOWS,1000,BREAK,None,None,None,FALSE,0,Not great
-1,MEADOWS,2000,IMAGE,hammer_objekt,ACTION,hammer,TRUE,0,Pretty nice
-1,MEADOWS,0,IMAGE,hammer_objekt,ACTION,flasche,FALSE,0,
-1,MEADOWS,0,IMAGE,hammer_objekt,ACTION,floete_20_50,FALSE,0,
-1,MEADOWS,2000,IMAGE,aktentasche,ACTION,schraubenzieher,FALSE,0,
-1,MEADOWS,0,IMAGE,aktentasche,ACTION,koffer,TRUE,0,
-1,MEADOWS,0,IMAGE,aktentasche,ACTION,violine_1_50,FALSE,0,
-2,LAKEBANK,2000,IMAGE,hammer_objekt,ACTION,hammer,TRUE,0,
-2,LAKEBANK,0,IMAGE,hammer_objekt,ACTION,flasche,FALSE,0,
-2,LAKEBANK,0,IMAGE,hammer_objekt,ACTION,floete_20_50,FALSE,0,
-2,LAKEBANK,2000,IMAGE,aktentasche,ACTION,schraubenzieher,FALSE,0,
-2,LAKEBANK,0,IMAGE,aktentasche,ACTION,koffer,TRUE,0,
-2,LAKEBANK,0,IMAGE,aktentasche,ACTION,violine_1_50,FALSE,0,
-3,TOWER,2000,IMAGE,hammer_objekt,ACTION,hammer,TRUE,0,
-3,TOWER,0,IMAGE,hammer_objekt,ACTION,flasche,FALSE,0,
-3,TOWER,0,IMAGE,hammer_objekt,ACTION,floete_20_50,FALSE,0,
-3,TOWER,2000,IMAGE,aktentasche,ACTION,schraubenzieher,FALSE,0,
-3,TOWER,0,IMAGE,aktentasche,ACTION,koffer,TRUE,0,
-3,TOWER,0,IMAGE,aktentasche,ACTION,violine_1_50,FALSE,0,
+0,TOWER,2000,IMAGE,hammer_objekt,ACTION,hammer,TRUE,0,Pretty nice
+0,TOWER,0,IMAGE,hammer_objekt,SOUND,HammerSound,TRUE,0,Not great
+0,TOWER,2000,WORD,HammerWord,WORD,Metal,TRUE,0,Not great
+0,TOWER,0,WORD,HammerWord,WORD,Swung,TRUE,0,Pretty nice
+0,TOWER,1000,BREAK,None,None,None,FALSE,0,Not great
+1,LAKEBANK,2000,IMAGE,hammer_objekt,ACTION,hammer,TRUE,0,Pretty nice
+1,LAKEBANK,0,IMAGE,hammer_objekt,ACTION,flasche,FALSE,0,
+1,LAKEBANK,0,IMAGE,hammer_objekt,ACTION,floete_20_50,FALSE,0,
+1,LAKEBANK,2000,IMAGE,aktentasche,ACTION,schraubenzieher,FALSE,0,
+1,LAKEBANK,0,IMAGE,aktentasche,ACTION,koffer,TRUE,0,
+1,LAKEBANK,0,IMAGE,aktentasche,ACTION,violine_1_50,FALSE,0,

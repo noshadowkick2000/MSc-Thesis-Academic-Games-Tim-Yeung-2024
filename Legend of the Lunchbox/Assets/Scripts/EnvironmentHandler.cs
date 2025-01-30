@@ -10,6 +10,9 @@ public class EnvironmentHandler : ObjectMover
     private struct EnvironmentPrefabs
     {
         public GameObject[] environmentPrefabs;
+        public Material skyBoxMaterial;
+        public float directionalLightIntensity;
+        public Color fogColor;
     }
     
     [SerializeField] private EnvironmentPrefabs[] environmentTerrainSets;
@@ -36,12 +39,23 @@ public class EnvironmentHandler : ObjectMover
         LAKEBANK,
         TOWER
     }
+
+    private void SetLevelEnvironment()
+    {
+        EnvironmentPrefabs ep = environmentTerrainSets[(int)TrialHandler.currentEnvironment];
+        environmentTerrains = ep.environmentPrefabs;
+        RenderSettings.skybox = ep.skyBoxMaterial;
+        Light mainLight = FindObjectOfType<Light>();
+        RenderSettings.sun = mainLight;
+        RenderSettings.fogColor = ep.fogColor;
+        mainLight.intensity = ep.directionalLightIntensity;
+    }
     
     private void Awake()
     {
         SubscribeToEvents();
 
-        environmentTerrains = environmentTerrainSets[(int)TrialHandler.currentEnvironment].environmentPrefabs;
+        SetLevelEnvironment();
 
         SpawnTerrain(true);
     }

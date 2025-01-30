@@ -97,7 +97,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 112000000, guid: f1151185ee624cf48813ae6d52a2d24d, type: 2}
-  m_LightingSettings: {fileID: 0}
+  m_LightingSettings: {fileID: 4890085278179872738, guid: 25b4c3fb8678e504d9f312142ca7e869, type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -2980,7 +2980,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4699e469c746f943a034079f95e34c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextLevel: 6
+  TutorialPrefab: {fileID: 0}
   MaxHealth: 20
 --- !u!4 &959961331
 Transform:
@@ -3015,7 +3015,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trialsFileName: LOTL_trials.csv
-  currentLevel: 3
 --- !u!114 &959961334
 MonoBehaviour:
   m_ObjectHideFlags: 0
