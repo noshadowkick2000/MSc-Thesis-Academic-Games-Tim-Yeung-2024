@@ -8,13 +8,13 @@ using UnityEngine;
 
 public class TrialHandler : MonoBehaviour
 {
-    [SerializeField] private string trialsFileName;
+    public static readonly string TrialsFileName = "LOTL_trials.csv";
 
     private readonly List<EncounterData> encounters = new List<EncounterData>();
     private int encounterCounter = 0;
 
-    public static EncounterData currentEncounterData;
-    public static EnvironmentHandler.EnvironmentType currentEnvironment;
+    public static EncounterData CurrentEncounterData;
+    public static EnvironmentHandler.EnvironmentType CurrentEnvironment;
 
     public delegate void SpawnEvent(Transform property);
 
@@ -30,7 +30,7 @@ public class TrialHandler : MonoBehaviour
         UnSubscribeToEvents();
     }
 
-    private class EncounterEntry
+    public class EncounterEntry
     {
         public int Level { get; set; }
         public string Environment { get; set; }
@@ -42,57 +42,57 @@ public class TrialHandler : MonoBehaviour
         public bool ValidProperty { get; set; }
         public float ITI { get; set; }
     }
+    
+    public static EncounterData.ObjectType ConvertStringObjectType(string objectType)
+    {
+        switch (objectType)
+        {
+            case "BREAK":
+                return EncounterData.ObjectType.BREAK;
+            case "IMAGE":
+                return EncounterData.ObjectType.IMAGE;
+            case "WORD":
+                return EncounterData.ObjectType.WORD;
+            default:
+                throw new Exception($"{objectType} not a valid object type");
+        }
+    }
+
+    public static EncounterData.PropertyType ConvertStringPropertyType(string propertyType)
+    {
+        switch (propertyType)
+        {
+            case "ACTION":
+                return EncounterData.PropertyType.ACTION;
+            case "SOUND":
+                return EncounterData.PropertyType.SOUND;
+            case "WORD":
+                return EncounterData.PropertyType.WORD;
+            default:
+                throw new Exception($"{propertyType} is not a valid property type");
+        }
+    }
+
+    public static EnvironmentHandler.EnvironmentType ConvertStringEnvironmentType(string environmentType)
+    {
+        switch (environmentType)
+        {
+            case "MEADOWS":
+                return EnvironmentHandler.EnvironmentType.MEADOWS;
+            case "LAKEBANK":
+                return EnvironmentHandler.EnvironmentType.LAKEBANK;
+            case "TOWER":
+                return EnvironmentHandler.EnvironmentType.TOWER;
+            default:
+                throw new Exception($"{environmentType} not a valid environment type");
+        }
+    }
 
     private void LoadEncounters()
     {
-        EncounterData.ObjectType ConvertStringObjectType(string objectType)
-        {
-            switch (objectType)
-            {
-                case "BREAK":
-                    return EncounterData.ObjectType.BREAK;
-                case "IMAGE":
-                    return EncounterData.ObjectType.IMAGE;
-                case "WORD":
-                    return EncounterData.ObjectType.WORD;
-                default:
-                    return EncounterData.ObjectType.BREAK;
-            }
-        }
-
-        EncounterData.PropertyType ConvertStringPropertyType(string propertyType)
-        {
-            switch (propertyType)
-            {
-                case "ACTION":
-                    return EncounterData.PropertyType.ACTION;
-                case "SOUND":
-                    return EncounterData.PropertyType.SOUND;
-                case "WORD":
-                    return EncounterData.PropertyType.WORD;
-                default:
-                    return EncounterData.PropertyType.WORD;
-            }
-        }
-
-        EnvironmentHandler.EnvironmentType ConvertStringEnvironmentType(string environmentType)
-        {
-            switch (environmentType)
-            {
-                case "MEADOWS":
-                    return EnvironmentHandler.EnvironmentType.MEADOWS;
-                case "LAKEBANK":
-                    return EnvironmentHandler.EnvironmentType.LAKEBANK;
-                case "TOWER":
-                    return EnvironmentHandler.EnvironmentType.TOWER;
-                default:
-                    return EnvironmentHandler.EnvironmentType.MEADOWS;
-            }
-        }
-
         bool readEnvironment = false;
 
-        using (StreamReader reader = new StreamReader(Application.streamingAssetsPath + "/" + trialsFileName))
+        using (StreamReader reader = new StreamReader(Application.streamingAssetsPath + "/" + TrialsFileName))
         using (CsvReader csv = new CsvReader(reader, CultureInfo.InvariantCulture))
         {
             csv.Context.TypeConverterCache.AddConverter<float>(new UtilsT.MillisToSeconds());
@@ -120,7 +120,7 @@ public class TrialHandler : MonoBehaviour
                 if (!readEnvironment)
                 {
                     readEnvironment = true;
-                    currentEnvironment = ConvertStringEnvironmentType(encounterEntry.Environment);
+                    CurrentEnvironment = ConvertStringEnvironmentType(encounterEntry.Environment);
                 }
 
                 lastEncounter.EncounterBlockDelay = encounterEntry.BlockDelay;
@@ -153,7 +153,7 @@ public class TrialHandler : MonoBehaviour
                         propertyTrial.PropertyId = UtilsT.GetId(encounterEntry.StimulusProperty);
                         propertyTrial.PropertyName = encounterEntry.StimulusProperty;
                         propertyTrial.PropertyType = ConvertStringPropertyType(encounterEntry.PropertyType);
-                        propertyTrial.ITI = encounterEntry.ITI;
+                        propertyTrial.Iti = encounterEntry.ITI;
                         propertyTrial.ValidProperty = encounterEntry.ValidProperty;
                         lastEncounter.PropertyTrials.Add(propertyTrial);
 
@@ -369,12 +369,12 @@ public class TrialHandler : MonoBehaviour
 
     private void OnRail()
     {
-        currentEncounterData = null;
+        CurrentEncounterData = null;
     }
 
     private void StartingBreak()
     {
-        currentEncounterData = encounters[encounterCounter];
+        CurrentEncounterData = encounters[encounterCounter];
     }
 
     private void EndingBreak()
@@ -384,7 +384,7 @@ public class TrialHandler : MonoBehaviour
 
     private void StartingEncounter()
     {
-        currentEncounterData = encounters[encounterCounter];
+        CurrentEncounterData = encounters[encounterCounter];
         
         PrepareModels();
         StartEncounter();

@@ -8,14 +8,14 @@ using Random = System.Random;
 
 public class UtilsT : MonoBehaviour
 {
-    private static Dictionary<int, float> fibValues = new Dictionary<int, float>{{0, 0}, {1, 1}};
+    private static Dictionary<int, float> _fibValues = new Dictionary<int, float>{{0, 0}, {1, 1}};
 
     public static float Fibonacci(int n)
     {
-        if (!fibValues.ContainsKey(n))
-            fibValues[n] = Fibonacci(n - 1) + Fibonacci(n - 2);
+        if (!_fibValues.ContainsKey(n))
+            _fibValues[n] = Fibonacci(n - 1) + Fibonacci(n - 2);
 
-        return fibValues[n];
+        return _fibValues[n];
     }
     
     public static float EasedT(float t)

@@ -28,4 +28,13 @@ public class ErrorLogger : MonoBehaviour
             File.AppendAllText(logFilePath, logEntry);
         }
     }
+
+    private void Update()
+    {
+        if (Time.deltaTime > 0.16f)
+        {
+            File.AppendText(
+                $"{Time.realtimeSinceStartupAsDouble} | Frames per second irregularity, frame difference {Time.deltaTime - .16f} seconds more than 60fps");
+        }
+    }
 }

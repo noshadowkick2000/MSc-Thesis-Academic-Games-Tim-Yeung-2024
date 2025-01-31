@@ -2981,8 +2981,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4699e469c746f943a034079f95e34c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TutorialPrefab: {fileID: 7218093081373682060, guid: 69f971aea3e3f4840aeec9f96922f7ab, type: 3}
-  MaxHealth: 20
+  tutorialPrefab: {fileID: 7218093081373682060, guid: 69f971aea3e3f4840aeec9f96922f7ab, type: 3}
+  maxHealth: 20
 --- !u!4 &959961331
 Transform:
   m_ObjectHideFlags: 0
@@ -3015,7 +3015,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e5f316fa98ca6a4c879d8cd08f72b08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trialsFileName: LOTL_trials.csv
 --- !u!114 &959961334
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3058,7 +3057,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95367cdb75b141a4d9933721cf92146a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mindBG: {fileID: 850619230}
+  mindBg: {fileID: 850619230}
   spotColor: {r: 1, g: 0.9882353, b: 0.8745098, a: 1}
   spotLight: {fileID: 0}
   spotLightMaterial: {fileID: 2100000, guid: e1e654a68af2b8f459f5148248da08cc, type: 2}
@@ -3418,7 +3417,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b83080a4a0e747d1b500a16b8a7143b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  localizationFileName: LOTL_locale.csv
 --- !u!114 &959961357
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3462,7 +3460,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18a646b447ae57843b0d5e0984a4e547, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timingFileName: LOTL_timing.csv
 --- !u!114 &959961360
 MonoBehaviour:
   m_ObjectHideFlags: 0
