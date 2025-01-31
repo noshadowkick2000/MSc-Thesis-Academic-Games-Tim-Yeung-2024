@@ -9,74 +9,74 @@ namespace Assets
 {
     public class LocalizationTextLoader : MonoBehaviour
     {
-        [SerializeField] private string localizationFileName;
-        private static LocaleEntry[] localeEntries;
-        private static string[] localeNames;
+        public static readonly string LocalizationFileName = "LOTL_locale.csv";
+        private static LocaleEntry[] _localeEntries;
+        private static string[] _localeNames;
 
         private void Awake()
         {
-            using (StreamReader reader = new StreamReader(Application.streamingAssetsPath+"/"+localizationFileName))
+            using (StreamReader reader = new StreamReader(Application.streamingAssetsPath+"/"+LocalizationFileName))
             using (CsvReader csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
                 csv.Context.RegisterClassMap<LocaleEntryMap>();
                 csv.Read(); // Reads the header row
                 csv.ReadHeader(); // Sets the HeaderRecord property
-                localeNames = csv.Context.Reader.HeaderRecord;
+                _localeNames = csv.Context.Reader.HeaderRecord;
                 
-                localeEntries = csv.GetRecords<LocaleEntry>().ToArray();
+                _localeEntries = csv.GetRecords<LocaleEntry>().ToArray();
             }
 
-            localeNames = localeNames.Skip(1).ToArray();
+            _localeNames = _localeNames.Skip(1).ToArray();
             var test = GetLocales();
 
-            foreach (var VARIABLE in test)
+            foreach (var variable in test)
             {
-                print(VARIABLE);
+                print(variable);
             }
             
             if (PlayerPrefs.HasKey(MainMenuHandler.LanguageKey))
-                currentLocale = PlayerPrefs.GetInt(MainMenuHandler.LanguageKey);
+                _currentLocale = PlayerPrefs.GetInt(MainMenuHandler.LanguageKey);
             else
-                currentLocale = 0;
+                _currentLocale = 0;
         }
 
-        private static int currentLocale = 0;
+        private static int _currentLocale = 0;
 
         public static void SwitchLocale(bool forward)
         {
-            currentLocale = Mathf.Clamp(currentLocale + (forward ? 1 : -1), 0, localeEntries.Length-1);
-            PlayerPrefs.SetInt(MainMenuHandler.LanguageKey, currentLocale);
+            _currentLocale = Mathf.Clamp(_currentLocale + (forward ? 1 : -1), 0, _localeNames.Length-1);
+            PlayerPrefs.SetInt(MainMenuHandler.LanguageKey, _currentLocale);
             PlayerPrefs.Save();
         }
 
         public static string[] GetLocales()
         {
-            return localeNames;
+            return _localeNames;
         }
 
         public static string GetCurrentLocale()
         {
-            return localeNames[currentLocale];
+            return _localeNames[_currentLocale];
         }
             
         public static string GetLocaleEntry(int index)
         {
-            return localeEntries[index].text[currentLocale];
+            return _localeEntries[index].Text[_currentLocale];
         }
     }
 
     public class LocaleEntry
     {
-        public int id { get; set; }
-        public string[] text { get; set; } 
+        public int ID { get; set; }
+        public string[] Text { get; set; } 
     }
 
     public class LocaleEntryMap : ClassMap<LocaleEntry>
     {
         public LocaleEntryMap()
         {
-            Map(m => m.id).Index(0);
-            Map(m => m.text).Convert(row =>
+            Map(m => m.ID).Index(0);
+            Map(m => m.Text).Convert(row =>
             {
                 var fields = row.Row.Parser.Record;
                 return fields.Skip(1).ToArray();

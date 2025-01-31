@@ -42,7 +42,7 @@ public class Healthbar : MonoBehaviour
     
     private float CalculateFill()
     {
-        return ((float) gameEngine.TotalHealth / (float) gameEngine.MaxHealth);
+        return ((float) gameEngine.TotalHealth / (float) gameEngine.maxHealth);
     }
 
     private void WonBreak()

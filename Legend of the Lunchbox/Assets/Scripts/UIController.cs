@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
-    [FormerlySerializedAs("mindUI")] [SerializeField] private Image mindBG;
+    [FormerlySerializedAs("mindBG")] [FormerlySerializedAs("mindUI")] [SerializeField] private Image mindBg;
     // [SerializeField] private Image mindPanel;
     [SerializeField] private Color spotColor;
     [SerializeField] private GameObject spotLight;
@@ -33,8 +33,8 @@ public class UIController : MonoBehaviour
     void Start()
     {
         thoughtUI.SetActive(false);
-        maxColorBg = mindBG.color;
-        mindBG.color = Color.clear;
+        maxColorBg = mindBg.color;
+        mindBg.color = Color.clear;
         controlIndicatorUI.SetActive(false);
         flashBang.SetActive(false);
         scramble.SetActive(false);
@@ -167,7 +167,7 @@ public class UIController : MonoBehaviour
         Color startColor = fadingIn ? Color.clear : maxColorBg;
         Color endColor = fadingIn ? maxColorBg : Color.clear;
         
-        mindBG.color = startColor;
+        mindBg.color = startColor;
 
         float startTime = Time.time;
         float x = 0;
@@ -177,13 +177,13 @@ public class UIController : MonoBehaviour
         {
             tempColor.a = Mathf.Lerp(startColor.a, endColor.a, UtilsT.EasedT(x));
          
-            mindBG.color = tempColor;
+            mindBg.color = tempColor;
          
             x = (Time.time - startTime) / duration;
             yield return null;
         }
       
-        mindBG.color = endColor;
+        mindBg.color = endColor;
     }
 
     Coroutine timerRoutine;
@@ -355,7 +355,7 @@ public class UIController : MonoBehaviour
     private void ObjectDelay()
     {
         // mindBG.SetActive(true);
-        if (mindBG.color.a != 0) return;
+        if (mindBg.color.a != 0) return;
         
         StartCoroutine(FadeScreen(true, .1f));
 

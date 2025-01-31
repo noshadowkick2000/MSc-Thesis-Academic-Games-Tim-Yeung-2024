@@ -21,7 +21,7 @@ public class EncounterData
     public int PropertyId;
     public string PropertyName;
     public PropertyType PropertyType;
-    public float ITI;
+    public float Iti;
     public bool ValidProperty;
   }
   
@@ -41,7 +41,7 @@ public class EncounterData
   
   public PropertyType GetCurrentPropertyType() { return PropertyTrials[currentProperty].PropertyType; }
 
-  public float GetCurrentTrialDelay() { return PropertyTrials[currentProperty].ITI; }
+  public float GetCurrentTrialDelay() { return PropertyTrials[currentProperty].Iti; }
 
   public int GetCurrentProperty => currentProperty;
 

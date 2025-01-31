@@ -42,7 +42,7 @@ public class EnvironmentHandler : ObjectMover
 
     private void SetLevelEnvironment()
     {
-        EnvironmentPrefabs ep = environmentTerrainSets[(int)TrialHandler.currentEnvironment];
+        EnvironmentPrefabs ep = environmentTerrainSets[(int)TrialHandler.CurrentEnvironment];
         environmentTerrains = ep.environmentPrefabs;
         RenderSettings.skybox = ep.skyBoxMaterial;
         Light mainLight = FindObjectOfType<Light>();

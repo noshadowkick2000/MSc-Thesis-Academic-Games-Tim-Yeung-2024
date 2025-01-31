@@ -6,11 +6,11 @@ using UnityEngine;
 
 public class TimingConfigLoader : MonoBehaviour
 {
-    [SerializeField] private string timingFileName;
+    public static readonly string TimingFileName = "LOTL_timing.csv";
     
     private void Awake()
     {
-        using (StreamReader reader = new StreamReader(Application.streamingAssetsPath+"/"+timingFileName))
+        using (StreamReader reader = new StreamReader(Application.streamingAssetsPath+"/"+TimingFileName))
         using (CsvReader csv = new CsvReader(reader, CultureInfo.InvariantCulture))
         {
             csv.Context.TypeConverterCache.AddConverter<float>(new UtilsT.MillisToSeconds());

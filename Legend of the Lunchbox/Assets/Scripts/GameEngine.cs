@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace Assets
@@ -40,7 +41,7 @@ namespace Assets
     // [SerializeField] private GameObject[] propertiesAndObjects;
     // public static GameObject[] PropertiesAndObjects;
 
-    [Header("Paths")] [SerializeField] private GameObject TutorialPrefab;
+    [FormerlySerializedAs("TutorialPrefab")] [Header("Paths")] [SerializeField] private GameObject tutorialPrefab;
     // [SerializeField] private string logFolderInDocs = "LotL";
     // public static string LogFolderInDocs;
 
@@ -53,7 +54,7 @@ namespace Assets
     
     private int playerHealth = 15;
     public int TotalHealth => playerHealth;
-    public int MaxHealth = 20;
+    [FormerlySerializedAs("MaxHealth")] public int maxHealth = 20;
 
     private void DamagePlayer()
     {
@@ -64,7 +65,7 @@ namespace Assets
 
     private void HealPlayer()
     {
-      if (playerHealth < MaxHealth)
+      if (playerHealth < maxHealth)
         playerHealth++;
     }
 
@@ -87,7 +88,7 @@ namespace Assets
       trialHandler = GetComponent<TrialHandler>();
 
       if (LevelHandler.CurrentLevel == 0)
-        Instantiate(TutorialPrefab);
+        Instantiate(tutorialPrefab);
     }
 
     private void Start()

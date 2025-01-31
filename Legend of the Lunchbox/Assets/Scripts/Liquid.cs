@@ -1,23 +1,24 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [ExecuteInEditMode]
 public class Liquid : MonoBehaviour
 {
-    public enum UpdateMode { Normal, UnscaledTime }
+    public enum UpdateMode { NORMAL, UNSCALED_TIME }
     public UpdateMode updateMode;
 
-    [SerializeField]
-    float MaxWobble = 0.03f;
-    [SerializeField]
-    float WobbleSpeedMove = 1f;
+    [FormerlySerializedAs("MaxWobble")] [SerializeField]
+    float maxWobble = 0.03f;
+    [FormerlySerializedAs("WobbleSpeedMove")] [SerializeField]
+    float wobbleSpeedMove = 1f;
     [SerializeField]
     public float fillAmount = 0.5f;
-    [SerializeField]
-    float Recovery = 1f;
-    [SerializeField]
-    float Thickness = 1f;
-    [Range(0, 1)]
-    public float CompensateShapeAmount;
+    [FormerlySerializedAs("Recovery")] [SerializeField]
+    float recovery = 1f;
+    [FormerlySerializedAs("Thickness")] [SerializeField]
+    float thickness = 1f;
+    [FormerlySerializedAs("CompensateShapeAmount")] [Range(0, 1)]
+    public float compensateShapeAmount;
     [SerializeField]
     Mesh mesh;
     [SerializeField]
@@ -63,11 +64,11 @@ public class Liquid : MonoBehaviour
         float deltaTime = 0;
         switch (updateMode)
         {
-            case UpdateMode.Normal:
+            case UpdateMode.NORMAL:
                 deltaTime = Time.deltaTime;
                 break;
 
-            case UpdateMode.UnscaledTime:
+            case UpdateMode.UNSCALED_TIME:
                 deltaTime = Time.unscaledDeltaTime;
                 break;
         }
@@ -79,14 +80,14 @@ public class Liquid : MonoBehaviour
 
 
             // decrease wobble over time
-            wobbleAmountToAddX = Mathf.Lerp(wobbleAmountToAddX, 0, (deltaTime * Recovery));
-            wobbleAmountToAddZ = Mathf.Lerp(wobbleAmountToAddZ, 0, (deltaTime * Recovery));
+            wobbleAmountToAddX = Mathf.Lerp(wobbleAmountToAddX, 0, (deltaTime * recovery));
+            wobbleAmountToAddZ = Mathf.Lerp(wobbleAmountToAddZ, 0, (deltaTime * recovery));
 
 
 
             // make a sine wave of the decreasing wobble
-            pulse = 2 * Mathf.PI * WobbleSpeedMove;
-            sinewave = Mathf.Lerp(sinewave, Mathf.Sin(pulse * time), deltaTime * Mathf.Clamp(velocity.magnitude + angularVelocity.magnitude, Thickness, 10));
+            pulse = 2 * Mathf.PI * wobbleSpeedMove;
+            sinewave = Mathf.Lerp(sinewave, Mathf.Sin(pulse * time), deltaTime * Mathf.Clamp(velocity.magnitude + angularVelocity.magnitude, thickness, 10));
 
             wobbleAmountX = wobbleAmountToAddX * sinewave;
             wobbleAmountZ = wobbleAmountToAddZ * sinewave;
@@ -99,8 +100,8 @@ public class Liquid : MonoBehaviour
             angularVelocity = GetAngularVelocity(lastRot, transform.rotation);
 
             // add clamped velocity to wobble
-            wobbleAmountToAddX += Mathf.Clamp((velocity.x + (velocity.y * 0.2f) + angularVelocity.z + angularVelocity.y) * MaxWobble, -MaxWobble, MaxWobble);
-            wobbleAmountToAddZ += Mathf.Clamp((velocity.z + (velocity.y * 0.2f) + angularVelocity.x + angularVelocity.y) * MaxWobble, -MaxWobble, MaxWobble);
+            wobbleAmountToAddX += Mathf.Clamp((velocity.x + (velocity.y * 0.2f) + angularVelocity.z + angularVelocity.y) * maxWobble, -maxWobble, maxWobble);
+            wobbleAmountToAddZ += Mathf.Clamp((velocity.z + (velocity.y * 0.2f) + angularVelocity.x + angularVelocity.y) * maxWobble, -maxWobble, maxWobble);
         }
 
         // send it to the shader
@@ -119,7 +120,7 @@ public class Liquid : MonoBehaviour
     {
 
         Vector3 worldPos = transform.TransformPoint(new Vector3(mesh.bounds.center.x, mesh.bounds.center.y, mesh.bounds.center.z));
-        if (CompensateShapeAmount > 0)
+        if (compensateShapeAmount > 0)
         {
             // only lerp if not paused/normal update
             if (deltaTime != 0)
@@ -131,7 +132,7 @@ public class Liquid : MonoBehaviour
                 comp = (worldPos - new Vector3(0, GetLowestPoint(), 0));
             }
 
-            pos = worldPos - transform.position - new Vector3(0, fillAmount - (comp.y * CompensateShapeAmount), 0);
+            pos = worldPos - transform.position - new Vector3(0, fillAmount - (comp.y * compensateShapeAmount), 0);
         }
         else
         {

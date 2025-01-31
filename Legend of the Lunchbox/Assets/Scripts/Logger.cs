@@ -91,10 +91,10 @@ public class Logger : MonoBehaviour
     entry.EventType = Enum.GetName(typeof(Event), eventType);
     entry.Code = Enum.GetName(typeof(CodeTypes), codeType);
     
-    if (TrialHandler.currentEncounterData != null)
+    if (TrialHandler.CurrentEncounterData != null)
     {
-      entry.Object = TrialHandler.currentEncounterData.StimulusObjectName;
-      entry.Property = TrialHandler.currentEncounterData.GetCurrentPropertyName();
+      entry.Object = TrialHandler.CurrentEncounterData.StimulusObjectName;
+      entry.Property = TrialHandler.CurrentEncounterData.GetCurrentPropertyName();
     }
     else
     {
@@ -196,7 +196,7 @@ public class Logger : MonoBehaviour
 
   private static void ShowingObject()
   {
-    switch (TrialHandler.currentEncounterData.EncounterObjectType)
+    switch (TrialHandler.CurrentEncounterData.EncounterObjectType)
     {
       case EncounterData.ObjectType.BREAK:
         break;
@@ -228,7 +228,7 @@ public class Logger : MonoBehaviour
 
   private static void ShowProperty(Action<InputHandler.InputState> callback)
   {
-    switch (TrialHandler.currentEncounterData.GetCurrentPropertyType())
+    switch (TrialHandler.CurrentEncounterData.GetCurrentPropertyType())
     {
       case EncounterData.PropertyType.ACTION:
         Log(Event.STIMULUS, CodeTypes.PROPERTY_ACTION);

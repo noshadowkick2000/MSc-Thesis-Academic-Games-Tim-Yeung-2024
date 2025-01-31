@@ -12,7 +12,7 @@ public class ExternalAssetLoader : MonoBehaviour
         public AudioClip AudioClip;
     }
     
-    private static Dictionary<int, StimulusAsset> stimulusDictionary = new Dictionary<int, StimulusAsset>();
+    private static Dictionary<int, StimulusAsset> _stimulusDictionary = new Dictionary<int, StimulusAsset>();
     
     public enum AssetType
     {
@@ -23,28 +23,28 @@ public class ExternalAssetLoader : MonoBehaviour
     }
     
     [SerializeField] private GameObject[] assetTemplate;
-    private static GameObject[] AssetTemplate;
+    private static GameObject[] _assetTemplate;
     [SerializeField] private string assetSubFolder;
 
 
-    private static bool Loaded = false;
+    private static bool _loaded = false;
 
-    private void Start()
+    private void Awake()
     {
         Application.targetFrameRate = 60;
         
-        if (Loaded)
+        if (_loaded)
             Destroy(gameObject);
         else
         {
             LoadAssets();
             DontDestroyOnLoad(gameObject);
 
-            AssetTemplate = assetTemplate;
+            _assetTemplate = assetTemplate;
 
-            print(stimulusDictionary.Count);
+            print(_stimulusDictionary.Count);
 
-            Loaded = true;
+            _loaded = true;
         }
     }
 
@@ -77,7 +77,7 @@ public class ExternalAssetLoader : MonoBehaviour
             if (lastFileName != currentFile[0]) // Start new StimulusAsset load
             {
                 print(lastFileName);
-                stimulusDictionary.Add(UtilsT.GetId(lastFileName), stimulusAsset);
+                _stimulusDictionary.Add(UtilsT.GetId(lastFileName), stimulusAsset);
                 lastFileName = currentFile[0];
                 stimulusAsset = new StimulusAsset();
             }
@@ -97,7 +97,7 @@ public class ExternalAssetLoader : MonoBehaviour
             }
         }
         print(currentFile[0]);
-        stimulusDictionary.Add(UtilsT.GetId(currentFile[0]), stimulusAsset);
+        _stimulusDictionary.Add(UtilsT.GetId(currentFile[0]), stimulusAsset);
     }
 
     private const int GoalTextureSize = 1024;
@@ -137,10 +137,10 @@ public class ExternalAssetLoader : MonoBehaviour
     
     public static GameObject GetAsset(int id)
     {
-        StimulusAsset stimulusAsset = stimulusDictionary[id];
+        StimulusAsset stimulusAsset = _stimulusDictionary[id];
         AssetType assetType = GetAssetType(stimulusAsset);
         
-        GameObject newAsset = Instantiate(AssetTemplate[(int)assetType]);
+        GameObject newAsset = Instantiate(_assetTemplate[(int)assetType]);
         
         switch (assetType)
         {
@@ -160,12 +160,30 @@ public class ExternalAssetLoader : MonoBehaviour
                 throw new ArgumentOutOfRangeException(nameof(assetType), assetType, null);
         }
 
+        newAsset.transform.localScale = (0.5f + PlayerPrefs.GetFloat(MainMenuHandler.SpriteSizeKey)) * Vector3.one;
+
         return newAsset;
+    }
+
+    public static Sprite GetFirstSprite()
+    {
+        foreach (var stimulusAsset in _stimulusDictionary.Values)
+        {
+            if (stimulusAsset.Sprites.Count != 0)
+                return stimulusAsset.Sprites[0];
+        }
+
+        return null;
+    }
+
+    public static bool AssetExists(int id)
+    {
+        return _stimulusDictionary.ContainsKey(id);
     }
 
     public static GameObject GetTextAsset(string text)
     {
-        GameObject textAsset = Instantiate(AssetTemplate[(int)AssetType.WORD]);
+        GameObject textAsset = Instantiate(_assetTemplate[(int)AssetType.WORD]);
         
         textAsset.GetComponentInChildren<TextMeshPro>().text = text;
 
