@@ -3493,9 +3493,9 @@ MonoBehaviour:
     - {fileID: 9112765666886455990, guid: 3e2ee838a0236f443a7fea737b1d7719, type: 2}
     - {fileID: 9112765666886455990, guid: 158e6dd926f38f04ca9bdb969a54570f, type: 2}
   - clip:
-    - {fileID: 8300000, guid: 6c34ed14754da334690faad1a6466f71, type: 3}
-    - {fileID: 8300000, guid: 019135add7336c34f916b1c7f3cb087d, type: 3}
-    - {fileID: 8300000, guid: 7b66c026ef7e67546b03d358a0e14f08, type: 3}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
     mixerGroup:
     - {fileID: 9112765666886455990, guid: 3e2ee838a0236f443a7fea737b1d7719, type: 2}
     - {fileID: 9112765666886455990, guid: 3e2ee838a0236f443a7fea737b1d7719, type: 2}
@@ -3530,6 +3530,7 @@ MonoBehaviour:
   - {fileID: 2111265789}
   - {fileID: 1551618790}
   - {fileID: 366216253}
+  ambientSource: {fileID: 2139944146}
 --- !u!1 &962313184
 GameObject:
   m_ObjectHideFlags: 0

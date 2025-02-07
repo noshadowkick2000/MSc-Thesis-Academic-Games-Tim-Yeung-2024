@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Serialization;
 
 public class EnvironmentSoundSwapper : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class EnvironmentSoundSwapper : MonoBehaviour
     [SerializeField] private EnvironmentSound[] environmentSounds;
     [SerializeField] private AudioSource[] sources;
 
+    [FormerlySerializedAs("environmentSource")] [SerializeField] private AudioSource ambientSource;
+
     private void Awake()
     {
         for (int i = 0; i < sources.Length; i++)
@@ -22,5 +25,9 @@ public class EnvironmentSoundSwapper : MonoBehaviour
             if (sources[i].playOnAwake)
                 sources[i].Play();
         }
+
+        string envAmbientPath = Application.streamingAssetsPath + "/Ambient/" + TrialHandler.CurrentEnvironment.ToString() + ".wav";
+        
+        ambientSource.clip = WavUtility.ToAudioClip(envAmbientPath);
     }
 }
