@@ -27,6 +27,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject flashBang;
     [SerializeField] private Image timerUI;
     [SerializeField] private GameObject breakInstructions;
+    [SerializeField] private TextMeshProUGUI locationText;
 
     private Color maxColorBg;
     
@@ -40,7 +41,46 @@ public class UIController : MonoBehaviour
         scramble.SetActive(false);
         breakInstructions.SetActive(false);
 
+        int environmentTextId;
+        switch (TrialHandler.CurrentEnvironment)
+        {
+            case EnvironmentHandler.EnvironmentType.MEADOWS:
+                environmentTextId = 59;
+                break;
+            case EnvironmentHandler.EnvironmentType.LAKEBANK:
+                environmentTextId = 60;
+                break;
+            case EnvironmentHandler.EnvironmentType.TOWER:
+                environmentTextId = 61;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+        locationText.text = LocalizationTextLoader.GetLocaleEntry(environmentTextId);
+        StartCoroutine(StartLocationText(GameEngine.StaticTimeVariables.LevelTransitionDuration));
+        
         StartPinhole(true, GameEngine.StaticTimeVariables.LevelTransitionDuration);
+    }
+
+    private IEnumerator StartLocationText(float time)
+    {
+        float startTime = Time.time;
+        float x = 0;
+        float y;
+        float power = 10f;
+        Color a = Color.white; 
+
+        while (x < 1)
+        {
+            y = x < .5f ? 1 - Mathf.Pow(x-1, power) : 1 - Mathf.Pow(x, power);
+            a.a = y;
+            locationText.color = a;
+            x = (Time.time - startTime) / time;
+
+            yield return null;
+        }
+        
+        locationText.color = Color.clear;
     }
 
     private void Awake()

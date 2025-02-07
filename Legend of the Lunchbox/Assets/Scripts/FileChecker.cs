@@ -88,7 +88,7 @@ public class FileChecker : MonoBehaviour
         }
     }
 
-    private const int LocalizationFileIdCount = 53;
+    private const int LocalizationFileIdCount = 61;
     private void CheckLocalizationFile()
     {
         using (StreamReader reader = new StreamReader(Application.streamingAssetsPath+"/"+LocalizationTextLoader.LocalizationFileName))
