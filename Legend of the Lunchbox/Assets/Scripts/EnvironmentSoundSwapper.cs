@@ -29,5 +29,6 @@ public class EnvironmentSoundSwapper : MonoBehaviour
         string envAmbientPath = Application.streamingAssetsPath + "/Ambient/" + TrialHandler.CurrentEnvironment.ToString() + ".wav";
         
         ambientSource.clip = WavUtility.ToAudioClip(envAmbientPath);
+        ambientSource.Play();
     }
 }
