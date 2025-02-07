@@ -251,35 +251,27 @@ namespace Assets
     {
       ShowingPropertyStartedEvent?.Invoke(EvaluatingInput);
       
-      StartCoroutine(Timer(StaticTimeVariables.TrialDuration, TimedOut));
+      showRoutine = StartCoroutine(Timer(StaticTimeVariables.TrialDuration, TimedOut));
     }
-    
-    // private void InputAvailable(InputHandler.InputState input)
-    // {
-    //   EvaluatingInput(input);
-    // }
 
-    private InputHandler.InputState currentInput;
+    private Coroutine showRoutine;
+    
     private void EvaluatingInput(InputHandler.InputState input)
     {
-      currentInput = input;
+      StopCoroutine(showRoutine);
+      showRoutine = null;
       
       TrialInputRegisteredStartedEvent?.Invoke(input);
+      EvaluatingInputStartedEvent?.Invoke(input);
+      
+      MovingToObject(trialHandler.EvaluateProperty(input));
     }
 
     private void TimedOut()
-    {
-      bool correct = false;
-      if (currentInput == InputHandler.InputState.NONE)
-        TimedOutStartedEvent?.Invoke(currentInput);
-      else
-      {
-        EvaluatingInputStartedEvent?.Invoke(currentInput);
-        correct = trialHandler.EvaluateProperty(currentInput);
-      }
+    { 
+      TimedOutStartedEvent?.Invoke(InputHandler.InputState.NONE);
 
-      MovingToObject(correct);
-      currentInput = InputHandler.InputState.NONE;
+      MovingToObject(false);
     }
 
     private bool feedbackEnabled;
