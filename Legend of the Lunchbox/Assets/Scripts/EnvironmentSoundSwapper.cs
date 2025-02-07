@@ -17,8 +17,10 @@ public class EnvironmentSoundSwapper : MonoBehaviour
     {
         for (int i = 0; i < sources.Length; i++)
         {
-            sources[i].clip = environmentSounds[i].clip[LevelHandler.CurrentLevel];
-            sources[i].outputAudioMixerGroup = environmentSounds[i].mixerGroup[LevelHandler.CurrentLevel];
+            sources[i].clip = environmentSounds[i].clip[(int) TrialHandler.CurrentEnvironment];
+            sources[i].outputAudioMixerGroup = environmentSounds[i].mixerGroup[(int) TrialHandler.CurrentEnvironment];
+            if (sources[i].playOnAwake)
+                sources[i].Play();
         }
     }
 }

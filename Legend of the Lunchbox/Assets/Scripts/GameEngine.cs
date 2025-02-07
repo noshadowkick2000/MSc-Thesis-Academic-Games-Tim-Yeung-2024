@@ -30,6 +30,7 @@ namespace Assets
       public float LevelTransitionDuration { get; set; }
       
       public float EnemyMindShowTime { get; set; }
+      public float FrameRateMargin { get; set; }
     }
     
     public static TimingData StaticTimeVariables;
@@ -82,6 +83,7 @@ namespace Assets
 
       feedbackEnabled = PlayerPrefs.GetInt(MainMenuHandler.FeedbackKey) == 1;
       promptEnabled = PlayerPrefs.GetInt(MainMenuHandler.PromptKey) == 1;
+      fmriWaitEnabled = PlayerPrefs.GetInt(MainMenuHandler.FMRIKey) == 1;
       
       Random.InitState(12345);
       
@@ -93,7 +95,20 @@ namespace Assets
 
     private void Start()
     {
-      Invoke(nameof(OnRail), StaticTimeVariables.LevelTransitionDuration);
+      if (fmriWaitEnabled && LevelHandler.CurrentLevel != 0)
+        StartCoroutine(FMRIWaitRoutine());
+      else
+        Invoke(nameof(OnRail), StaticTimeVariables.LevelTransitionDuration);
+    }
+
+    private IEnumerator FMRIWaitRoutine()
+    {
+      while (!TInput.GetButtonDown(TInput.ButtonNames.FMRI))
+      {
+        yield return null;
+      }
+      
+      OnRail();
     }
 
     public delegate void StateChangeEvent();
@@ -269,6 +284,7 @@ namespace Assets
 
     private bool feedbackEnabled;
     private bool promptEnabled;
+    private bool fmriWaitEnabled;
     private void MovingToObject(bool answerCorrect)
     {
       MovingToObjectStartedEvent?.Invoke();
@@ -361,7 +377,7 @@ namespace Assets
       StartCoroutine(Timer(StaticTimeVariables.LevelTransitionDuration, LoadNext));
     }
 
-    private void LoadNext()
+    public void LoadNext()
     {
       print("Loading next level");
       StartCoroutine(LoadScene());
@@ -375,12 +391,6 @@ namespace Assets
       {
         yield return null;
       }
-    }
-    
-    private void Update() 
-    {
-      if (Input.GetKeyDown(KeyCode.Backspace))
-        LoadNext();
     }
   }
 }

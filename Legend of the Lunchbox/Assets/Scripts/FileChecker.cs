@@ -55,7 +55,7 @@ public class FileChecker : MonoBehaviour
             csv.ReadHeader();
             csv.Read();
 
-            if (csv.Context.Reader?.HeaderRecord?.Length != 14)
+            if (csv.Context.Reader?.HeaderRecord?.Length != 15)
                 throw new Exception("Not all timing columns present in timing file");
 
             GameEngine.TimingData temp;
@@ -82,7 +82,8 @@ public class FileChecker : MonoBehaviour
                 || temp.BreakDuration < 0
                 || temp.BreakFeedbackDuration < 0
                 || temp.LevelTransitionDuration < 0
-                || temp.EnemyMindShowTime < 0)
+                || temp.EnemyMindShowTime < 0
+                || temp.FrameRateMargin < 0)
                 throw negativeValException;
         }
     }
