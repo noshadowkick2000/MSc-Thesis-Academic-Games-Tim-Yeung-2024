@@ -76,7 +76,7 @@ public class ExternalAssetLoader : MonoBehaviour
             
             if (lastFileName != currentFile[0]) // Start new StimulusAsset load
             {
-                print(lastFileName);
+                // print(lastFileName);
                 _stimulusDictionary.Add(UtilsT.GetId(lastFileName), stimulusAsset);
                 lastFileName = currentFile[0];
                 stimulusAsset = new StimulusAsset();
@@ -96,7 +96,7 @@ public class ExternalAssetLoader : MonoBehaviour
                 lastClip = audioClip;
             }
         }
-        print(currentFile[0]);
+        // print(currentFile[0]);
         _stimulusDictionary.Add(UtilsT.GetId(currentFile[0]), stimulusAsset);
     }
 

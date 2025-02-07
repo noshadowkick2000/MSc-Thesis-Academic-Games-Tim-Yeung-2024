@@ -57,6 +57,7 @@ public class Logger : MonoBehaviour
     BREAK_END,
     START_BLOCK,
     STOP_BLOCK,
+    FMRI_PULSE,
     NONE
   }
   
@@ -122,6 +123,12 @@ public class Logger : MonoBehaviour
     UnSubscribeToEvents();
   }
 
+  private void Update()
+  {
+    if (TInput.GetButtonDown(TInput.ButtonNames.FMRI) && _writer != null)
+      Log(Event.INPUT, CodeTypes.FMRI_PULSE);
+  }
+
   public void OnDestroy() // is also triggered when the duplicate is destroyed
   {
     CloseLog();
@@ -171,7 +178,6 @@ public class Logger : MonoBehaviour
 
     GameEngine.EndingEncounterStartedEvent -= StopBlock;
     GameEngine.EndingBreakStartedEvent -= StopBreak;
-
   }
 
   private static void StartBlock()

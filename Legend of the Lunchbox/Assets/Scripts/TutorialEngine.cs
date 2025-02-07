@@ -204,7 +204,7 @@ public class TutorialEngine : MonoBehaviour
     private bool blocked;
     private void Update()
     {
-        if ((Input.GetButtonDown("Use") || Input.GetButtonDown("Discard")) && blocked)
+        if ((TInput.GetButtonDown(TInput.ButtonNames.RIGHT) || TInput.GetButtonDown(TInput.ButtonNames.LEFT)) && blocked)
         {
             blocked = false;
             Time.timeScale = 1f;

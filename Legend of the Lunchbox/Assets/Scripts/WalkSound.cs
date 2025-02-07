@@ -46,7 +46,7 @@ public class WalkSound : MonoBehaviour
         int next = previous;
         while (next == previous)
             next = Random.Range(0, walkImpacts.Length);
-        audioSource.PlayOneShot(walkImpacts[next], .1f);
+        audioSource.PlayOneShot(walkImpacts[next], .5f);
         previous = next;
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using Assets;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class InputHandler : MonoBehaviour
 {
@@ -39,8 +40,8 @@ public class InputHandler : MonoBehaviour
     private void Update()
     {
         _input = InputState.NONE;
-        if (Input.GetButtonDown("Use")) { _input = InputState.USING; }
-        if (Input.GetButtonDown("Discard")) { _input = InputState.DISCARDING; }
+        if (TInput.GetButtonDown(TInput.ButtonNames.RIGHT)) { _input = InputState.USING; }
+        if (TInput.GetButtonDown(TInput.ButtonNames.LEFT)) { _input = InputState.DISCARDING; }
         if (_input != InputState.NONE) { Logger.Log(Logger.Event.INPUT, _input == InputState.USING ? Logger.CodeTypes.INPUT_POSITIVE : Logger.CodeTypes.INPUT_NEGATIVE); }
         
         if (acceptingInput == InputType.SINGLE && _input != InputState.NONE)
@@ -55,11 +56,22 @@ public class InputHandler : MonoBehaviour
         
         InputAverage -= inputAdd / inputDecay;
         InputAverage = Mathf.Clamp(InputAverage, 0, inputThreshold);
+        
+        // TODO CHECK WITH PLAYERPREFS HERE FOR CHEATS
 
-        if (Input.GetKeyDown(KeyCode.Backslash))
+        if (TInput.GetButtonDown(TInput.ButtonNames.UP))
             Time.timeScale = 4f;
-        else if (Input.GetKeyUp(KeyCode.Backslash))
+        else if (TInput.GetButtonUp(TInput.ButtonNames.UP))
             Time.timeScale = 1f;
+        
+        if (TInput.GetButtonDown(TInput.ButtonNames.DOWN))
+            FindObjectOfType<GameEngine>().LoadNext();
+
+        if (TInput.GetButtonDown(TInput.ButtonNames.CANCEL))
+        {
+            Logger.CloseLog();
+            SceneManager.LoadScene(0);
+        }
     }
     
     //-----------------------------------------------------

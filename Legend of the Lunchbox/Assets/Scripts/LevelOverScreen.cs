@@ -87,7 +87,7 @@ public class LevelOverScreen : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetButtonDown("Use") || Input.GetButton("Discard"))
+        if (TInput.GetButtonDown(TInput.ButtonNames.RIGHT) || Input.GetButton("Discard"))
         {
             StartCoroutine(Fader(0.5f, false));
             StartCoroutine(LoadNextLevel());

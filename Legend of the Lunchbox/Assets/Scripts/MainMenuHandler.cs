@@ -19,16 +19,19 @@ public class MainMenuHandler : MonoBehaviour
     [SerializeField] private Toggle soundToggle;
     [SerializeField] private Toggle feedbackToggle;
     [SerializeField] private Toggle promptToggle;
+    [SerializeField] private Toggle fmriToggle;
     [SerializeField] private TextMeshProUGUI language;
+    [FormerlySerializedAs("inputMapScreen")] [SerializeField] private RectTransform inputMapMenu;
+    [SerializeField] private GameObject inputMapButtonEntryPrefab;
+    
+    private ButtonMapper[] inputMapButtonEntries;
 
     private float xStart;
-    private float xEnd;
     private float yStart;
-    private float yEnd;
     
     public void StartGame()
     {
-        LeanTween.moveX(mainMenu, xEnd, .5f).setEaseInBack();
+        LeanTween.moveX(mainMenu, -1.5f * mainMenu.rect.width, .5f).setEaseInBack();
         
         Logger.StartLogger();
         
@@ -53,35 +56,35 @@ public class MainMenuHandler : MonoBehaviour
     
     public void OpenSettings()
     {
-        LeanTween.moveX(mainMenu, xEnd, .5f).setEaseInBack();
-        LeanTween.moveX(settingsMenu, xStart, .5f).setEaseOutBack();
+        LeanTween.moveX(mainMenu, -1.5f * mainMenu.rect.width, .5f).setEaseInBack();
+        LeanTween.moveY(settingsMenu, 0, .5f).setEaseOutBack();
     }
 
     public void CloseSettings()
     {
         LeanTween.moveX(mainMenu, xStart, .5f).setEaseOutBack();
-        LeanTween.moveX(settingsMenu, xEnd, .5f).setEaseInBack();
+        LeanTween.moveY(settingsMenu, -1.5f * settingsMenu.rect.height, .5f).setEaseInBack();
         
         PlayerPrefs.Save();
     }
 
     public void ShowCredits()
     {
-        LeanTween.moveX(mainMenu, xEnd, .5f).setEaseInBack();
+        LeanTween.moveX(mainMenu, -1.5f * mainMenu.rect.width, .5f).setEaseInBack();
         LeanTween.moveX(creditsMenu, xStart, .5f).setEaseOutBack();
     }
 
     public void CloseCredits()
     {
         LeanTween.moveX(mainMenu, xStart, .5f).setEaseOutBack();
-        LeanTween.moveX(creditsMenu, xEnd, .5f).setEaseInBack();
+        LeanTween.moveX(creditsMenu, -1.5f * creditsMenu.rect.width, .5f).setEaseInBack();
     }
 
     public void OpenCalibrationMenu()
     {
         objectPrefab.SetActive(true);
         
-        LeanTween.moveX(settingsMenu, xEnd, .5f).setEaseInBack();
+        LeanTween.moveY(settingsMenu, -1.5f * settingsMenu.rect.height, .5f).setEaseInBack();
         LeanTween.moveY(calibrationMenu, yStart, .5f).setEaseOutBack();
     }
     
@@ -89,8 +92,8 @@ public class MainMenuHandler : MonoBehaviour
     {
         objectPrefab.SetActive(false);
         
-        LeanTween.moveX(settingsMenu, xStart, .5f).setEaseOutBack();
-        LeanTween.moveY(calibrationMenu, yEnd, .5f).setEaseInBack();
+        LeanTween.moveY(settingsMenu, 0, .5f).setEaseOutBack();
+        LeanTween.moveY(calibrationMenu, -1.5f * calibrationMenu.rect.height, .5f).setEaseInBack();
     }
 
     public void SetCalibratedSizeFromText()
@@ -120,6 +123,29 @@ public class MainMenuHandler : MonoBehaviour
         PlayerPrefs.SetFloat(SpriteSizeKey, size);
     }
 
+    public void OpenMapMenu()
+    {
+        LeanTween.moveY(settingsMenu, -1.5f * settingsMenu.rect.height, .5f).setEaseInBack();
+        LeanTween.moveY(inputMapMenu, 0, .5f).setEaseOutBack();
+    }
+
+    public void CloseMapMenu()
+    {
+        LeanTween.moveY(settingsMenu, 0, .5f).setEaseOutBack();
+        LeanTween.moveY(inputMapMenu, -1.5f * inputMapMenu.rect.height, .5f).setEaseInBack();
+    }
+
+    public void StartMap(ButtonMapper buttonMapper)
+    {
+        FindObjectOfType<TInput>().StartInputMap((TInput.ButtonNames) buttonMapper.id, EndMap);
+        buttonMapper.buttonKeyText.text = LocalizationTextLoader.GetLocaleEntry(56);
+    }
+
+    private void EndMap(TInput.ButtonNames bName, KeyCode newCode)
+    {
+        inputMapButtonEntries[(int)bName].buttonKeyText.text = newCode.ToString();
+    }
+
     public void OpenManualWebsite()
     {
         Application.OpenURL("https://dandymaro.notion.site/MPI-Project-d09ee1e6c19e48bc8cfdc33c7b90cbf0?pvs=4");
@@ -146,6 +172,13 @@ public class MainMenuHandler : MonoBehaviour
         print(promptEnabled);
     }
 
+    public void SetFMRISettings()
+    {
+        bool fmriEnabled = fmriToggle.isOn;
+        PlayerPrefs.SetInt(FMRIKey, fmriEnabled ? 1 : 0);
+        print(fmriEnabled);
+    }
+
     public void AdvanceLanguage(bool forward)
     {
         LocalizationTextLoader.SwitchLocale(forward);
@@ -158,27 +191,38 @@ public class MainMenuHandler : MonoBehaviour
         if (!PlayerPrefs.HasKey(SoundKey) 
             || !PlayerPrefs.HasKey(FeedbackKey) 
             || !PlayerPrefs.HasKey(PromptKey)
-            || !PlayerPrefs.HasKey(SpriteSizeKey))
+            || !PlayerPrefs.HasKey(SpriteSizeKey)
+            || !PlayerPrefs.HasKey(FMRIKey))
         {
             PlayerPrefs.SetInt(SoundKey, 1);
             PlayerPrefs.SetInt(FeedbackKey, 1);
             PlayerPrefs.SetInt(PromptKey, 1);
             PlayerPrefs.SetFloat(SpriteSizeKey, .5f);
+            PlayerPrefs.SetInt(FMRIKey, 1);
         }
         
-        soundToggle.isOn = PlayerPrefs.GetInt(SoundKey, 1) == 1;
-        feedbackToggle.isOn = PlayerPrefs.GetInt(FeedbackKey, 1) == 1;
-        promptToggle.isOn = PlayerPrefs.GetInt(PromptKey, 1) == 1;
+        inputMapButtonEntries = new ButtonMapper[TInput.Buttons.Length];
+
+        for (int i = 0; i < TInput.Buttons.Length; i++)
+        {
+            inputMapButtonEntries[i] = Instantiate(inputMapButtonEntryPrefab, inputMapMenu).GetComponent<ButtonMapper>();
+            inputMapButtonEntries[i].buttonText.text = TInput.Buttons[i].buttonName.ToString();
+            inputMapButtonEntries[i].buttonKeyText.text = TInput.Buttons[i].assignedKeyCode.ToString();
+            inputMapButtonEntries[i].id = i;
+            ((RectTransform)inputMapButtonEntries[i].transform).anchoredPosition = new Vector2(0, -20 - i * 40);
+        }
+        
+        soundToggle.isOn = PlayerPrefs.GetInt(SoundKey) == 1;
+        feedbackToggle.isOn = PlayerPrefs.GetInt(FeedbackKey) == 1;
+        promptToggle.isOn = PlayerPrefs.GetInt(PromptKey) == 1;
+        fmriToggle.isOn = PlayerPrefs.GetInt(FMRIKey) == 1;
         calibrationSlider.value = PlayerPrefs.GetFloat(SpriteSizeKey);
         calibrationInputField.text = PlayerPrefs.GetFloat(SpriteSizeKey).ToString(CultureInfo.InvariantCulture);
         
         objectPrefab.SetActive(false);
 
-        xStart = mainMenu.anchoredPosition.x;
-        xEnd = settingsMenu.anchoredPosition.x;
-
+        xStart = 50;
         yStart = 25f;
-        yEnd = calibrationMenu.anchoredPosition.y;
 
         objectPrefab.GetComponentInChildren<SpriteRenderer>().sprite = ExternalAssetLoader.GetFirstSprite();
 
@@ -192,4 +236,5 @@ public class MainMenuHandler : MonoBehaviour
     public static readonly string PromptKey = "PromptEnabled";
     public static readonly string LanguageKey = "Language";
     public static readonly string SpriteSizeKey = "SpriteSize";
+    public static readonly string FMRIKey = "FMRIEnabled";
 }

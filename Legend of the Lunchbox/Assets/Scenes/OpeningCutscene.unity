@@ -1417,7 +1417,6 @@ GameObject:
   - component: {fileID: 1331179794}
   - component: {fileID: 1331179795}
   - component: {fileID: 1331179796}
-  - component: {fileID: 1331179797}
   m_Layer: 0
   m_Name: Animator
   m_TagString: Untagged
@@ -1507,19 +1506,6 @@ MonoBehaviour:
   skyboxEvil: {fileID: 2100000, guid: 56c9ed5ee739a324e8d8bdb9613f4890, type: 2}
   audioSource: {fileID: 1400044599}
   offset: 1
---- !u!114 &1331179797
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1331179793}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b83080a4a0e747d1b500a16b8a7143b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  localizationFileName: LOTL_locale.csv
 --- !u!1 &1395722890
 GameObject:
   m_ObjectHideFlags: 0

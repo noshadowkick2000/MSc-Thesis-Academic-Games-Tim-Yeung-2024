@@ -6,9 +6,8 @@ using UnityEngine;
 public class SoundEngine : MonoBehaviour
 {
     [SerializeField] private GameObject audioHolder;
-    [SerializeField] private AudioSource[] ambientPlayers;
-    [SerializeField] private AudioSource[] runPlayers;
-    [SerializeField] private AudioSource[] trialAmbientPlayers;
+    [SerializeField] private AudioSource ambientPlayer;
+    [SerializeField] private AudioSource trialAmbientPlayer;
     [SerializeField] private AudioClip enemyAppear;
     [SerializeField] private AudioClip enterMind;
     [SerializeField] private AudioClip spotLight;
@@ -22,24 +21,13 @@ public class SoundEngine : MonoBehaviour
     [SerializeField] private AudioSource oneShotPlayer;
 
     private void Init()
-    {
-        foreach (var ambientPlayer in ambientPlayers)
-        {
-            ambientPlayer.Play();
-        }
-        foreach (var runPlayer in runPlayers)
-        {
-            runPlayer.Play();
-            runPlayer.Pause();
-        }
-        foreach (var trialAmbientPlayer in trialAmbientPlayers)
-        {
-            trialAmbientPlayer.Play();
-            trialAmbientPlayer.Pause();
-        }
+    { 
+        ambientPlayer.Play();
+        trialAmbientPlayer.Play();
+        trialAmbientPlayer.Pause();
     }
     
-    private void Awake()
+    private void Start()
     {
         if (PlayerPrefs.GetInt(MainMenuHandler.SoundKey) == 1)
         {
@@ -92,7 +80,7 @@ public class SoundEngine : MonoBehaviour
     private void Update()
     {
         if (!breaking || oneShotPlayer.isPlaying ||
-            ((!Input.GetKeyDown(KeyCode.LeftArrow) && !Input.GetKeyDown(KeyCode.RightArrow)))) return;
+            ((!TInput.GetButtonDown(TInput.ButtonNames.LEFT) && !TInput.GetButtonDown(TInput.ButtonNames.RIGHT)))) return;
         oneShotPlayer.pitch = InputHandler.InputAverage + .5f;
         oneShotPlayer.PlayOneShot(cork);
         // oneShotPlayer.pitch = 1;
@@ -100,19 +88,11 @@ public class SoundEngine : MonoBehaviour
 
     private void OnRail()
     {
-        foreach (var runPlayer in runPlayers)
-        {
-            runPlayer.UnPause();
-        }
+
     }
 
     private void StartingEncounter()
     {
-        foreach (var runPlayer in runPlayers)
-        {
-            runPlayer.Pause();
-        }
-        
         oneShotPlayer.PlayOneShot(foundDiscoverable);
     }
 
@@ -138,15 +118,8 @@ public class SoundEngine : MonoBehaviour
 
     private void SettingUpMind()
     {
-        foreach (var ambientPlayer in ambientPlayers)
-        {
-            ambientPlayer.Pause();
-        }
-
-        foreach (var trialAmbientPlayer in trialAmbientPlayers)
-        {
-            trialAmbientPlayer.UnPause();
-        }
+        ambientPlayer.Pause();
+        trialAmbientPlayer.UnPause();
         
         oneShotPlayer.PlayOneShot(enterMind);
     }
@@ -179,15 +152,8 @@ public class SoundEngine : MonoBehaviour
 
     private void EvaluatingEncounter()
     {
-        foreach (var ambientPlayer in ambientPlayers)
-        {
-            ambientPlayer.UnPause();
-        }
-        
-        foreach (var trialAmbientPlayer in trialAmbientPlayers)
-        {
-            trialAmbientPlayer.Pause();
-        }
+        ambientPlayer.UnPause();
+        trialAmbientPlayer.Pause();
     }
 
     private void WonEncounter()
