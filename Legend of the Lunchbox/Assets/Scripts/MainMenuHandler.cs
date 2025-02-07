@@ -186,6 +186,11 @@ public class MainMenuHandler : MonoBehaviour
         FindObjectOfType<UILanguageSetter>().SetAll();
     }
 
+    public void CloseGame()
+    {
+        Application.Quit();
+    }
+
     private void Start()
     {
         if (!PlayerPrefs.HasKey(SoundKey) 
