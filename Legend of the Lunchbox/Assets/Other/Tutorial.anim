@@ -4142,7 +4142,7 @@ AnimationClip:
   - time: 12.733334
     functionName: SetAmbienceAudio
     data: 
-    objectReferenceParameter: {fileID: 8300000, guid: 838612bbb71b93d4d85de081c1b9eb49, type: 3}
+    objectReferenceParameter: {fileID: 8300000, guid: 97ccb2ae5816f054992eb9dc14addd24, type: 3}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0

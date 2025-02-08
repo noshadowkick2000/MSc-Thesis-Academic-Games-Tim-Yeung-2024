@@ -104,7 +104,7 @@ public class LevelOverScreen : MonoBehaviour
 
         if (LevelHandler.CurrentLevel == LevelHandler.LastLevel)
         {
-            nextScene = 0;
+            nextScene = 4;
             Logger.CloseLog();
         }
         else
