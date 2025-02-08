@@ -1014,7 +1014,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b83080a4a0e747d1b500a16b8a7143b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  localizationFileName: LOTL_locale.csv
 --- !u!82 &743214179
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2479,7 +2478,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: f30e4d26bea2f3f44b196d4cd2888ae1, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 77060944f34f9004a9d553600d7eee28, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
