@@ -16,6 +16,7 @@ public class MainMenuHandler : MonoBehaviour
     [SerializeField] private Slider calibrationSlider;
     [SerializeField] private GameObject objectPrefab;
     [FormerlySerializedAs("CreditsMenu")] [SerializeField] private RectTransform creditsMenu;
+    [SerializeField] private RectTransform creditsText;
     [SerializeField] private Toggle soundToggle;
     [SerializeField] private Toggle feedbackToggle;
     [SerializeField] private Toggle promptToggle;
@@ -72,12 +73,37 @@ public class MainMenuHandler : MonoBehaviour
     {
         LeanTween.moveX(mainMenu, -1.5f * mainMenu.rect.width, .5f).setEaseInBack();
         LeanTween.moveX(creditsMenu, xStart, .5f).setEaseOutBack();
+
+        creditsScrollRoutine = StartCoroutine(ScrollCredits());
+    }
+
+    private Coroutine creditsScrollRoutine;
+
+    private IEnumerator ScrollCredits()
+    {
+        float height = creditsText.rect.height * 2;
+        Vector2 pos = Vector2.zero;
+        float move = .1f;
+        
+        creditsText.anchoredPosition = Vector2.zero;
+        
+        while (true)
+        {
+            if (creditsText.anchoredPosition.y > height)
+                creditsText.anchoredPosition = Vector2.zero; 
+            creditsText.anchoredPosition += new Vector2(0, move);
+
+            yield return null;
+        }
     }
 
     public void CloseCredits()
     {
         LeanTween.moveX(mainMenu, xStart, .5f).setEaseOutBack();
         LeanTween.moveX(creditsMenu, -1.5f * creditsMenu.rect.width, .5f).setEaseInBack();
+        
+        StopCoroutine(creditsScrollRoutine);
+        creditsScrollRoutine = null;
     }
 
     public void OpenCalibrationMenu()
