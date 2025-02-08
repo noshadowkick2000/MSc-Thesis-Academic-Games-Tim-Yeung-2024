@@ -2763,6 +2763,7 @@ MonoBehaviour:
   calibrationSlider: {fileID: 28700552}
   objectPrefab: {fileID: 522304669}
   creditsMenu: {fileID: 2143314090}
+  creditsText: {fileID: 781883061}
   soundToggle: {fileID: 296406835}
   feedbackToggle: {fileID: 2049447519}
   promptToggle: {fileID: 1989163135}
@@ -3031,11 +3032,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1070041078}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_SizeDelta: {x: 210, y: 380}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &781883062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3064,7 +3065,9 @@ MonoBehaviour:
     Sciences\n\n<b>Dr. Gesa Hartwigsen</b>\nUniversity of Leipzig, Research Group
     Cognition and Plasticity Max Planck Institute for Human Cognitive and Brain Sciences\n\n<b>Prof.
     Dr. Markus Kiefer</b>\nSection for Cognitive Electrophysiology, Ulm University\n\n\n----ADDITIONAL
-    ASSETS----\n"
+    ASSETS----\n\n<b>madtrollstudio</b>\nWizardus Maximus 3D Model [CC-BY] \nvia
+    Poly Pizza\n\n<b>Nick Slough</b>\nWizards Tower 3D Model [CC]\n\n<b>freepik</b>
+    \nLunchbox 3D Model [CC-BY] via Freepik"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: efbdacae9ff8eb640889119ef5d17f82, type: 2}
   m_sharedMaterial: {fileID: -5977553200152279131, guid: efbdacae9ff8eb640889119ef5d17f82, type: 2}
@@ -3091,8 +3094,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 8
-  m_fontSizeBase: 8
+  m_fontSize: 9
+  m_fontSizeBase: 9
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
