@@ -72,6 +72,10 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+<<<<<<< Updated upstream:Legend of the Lunchbox/Assets/Materials/Grass.mat
+=======
+    - _Rotation: 2204.653
+>>>>>>> Stashed changes:Legend of the Lunchbox/Assets/Fantasy Skybox FREE/Panoramics/FS003/FS003_Day_Sunless.mat
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1

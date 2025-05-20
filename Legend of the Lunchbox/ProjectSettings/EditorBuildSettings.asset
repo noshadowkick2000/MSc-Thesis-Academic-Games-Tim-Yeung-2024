@@ -4,5 +4,24 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
+<<<<<<< Updated upstream
   m_Scenes: []
+=======
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: 9e8dde34b7c351144ba339ddb184ce7e
+  - enabled: 1
+    path: Assets/Scenes/OpeningCutscene.unity
+    guid: 624ba6b23ea19174c93b11b4ec175df1
+  - enabled: 1
+    path: Assets/Scenes/LevelTemplate.unity
+    guid: fcb7ad008f0651e49bd255fe32f1983d
+  - enabled: 1
+    path: Assets/Scenes/LevelOverScreen.unity
+    guid: c2029a97475806f46977c3bce01f9fd6
+  - enabled: 1
+    path: Assets/Scenes/ClosingCutscene.unity
+    guid: d45abc2582ab58144a4483d3fff6bf9c
+>>>>>>> Stashed changes
   m_configObjects: {}
