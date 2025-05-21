@@ -1,0 +1,11 @@
+﻿Level,Environment,BlockDelay,ObjectType,StimulusObject,PropertyType,StimulusProperty,ValidProperty,ITI
+0,TOWER,2000,IMAGE,hammer,ACTION,hammeraction,TRUE,0
+0,TOWER,0,IMAGE,hammer,SOUND,hammersound,TRUE,0
+0,TOWER,2000,WORD,HammerWord,WORD,Metal,TRUE,0
+0,TOWER,0,WORD,HammerWord,WORD,Swung,TRUE,0
+0,TOWER,1000,BREAK,None,None,None,FALSE,0
+1,LAKEBANK,2000,IMAGE,hammer,ACTION,hammeraction,TRUE,0
+1,LAKEBANK,2000,IMAGE,hammer,ACTION,hammeraction,TRUE,0
+1,LAKEBANK,0,IMAGE,hammer,ACTION,hammeraction,TRUE,0
+1,LAKEBANK,2000,WORD,HammerWord,WORD,Metal,TRUE,0
+1,LAKEBANK,0,WORD,HammerWord,WORD,Swung,TRUE,0
