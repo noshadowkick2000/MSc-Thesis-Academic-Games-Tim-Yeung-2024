@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class PropertyAnimator : MonoBehaviour
 {
+   private Vector3 originalScale = Vector3.zero;
+   
    private void Awake()
    {
       SubscribeToEvents();
@@ -66,11 +68,12 @@ public class PropertyAnimator : MonoBehaviour
    Transform currentProperty = null;
    private void PropertySpawned(Transform property)
    {
+      if (originalScale == Vector3.zero)
+         originalScale = property.localScale;
+      
       property.gameObject.SetActive(true);
       float offset = Vector3.Distance(LocationHolder.PropertyLocation.position, LocationHolder.MindCameraLocation.position);
       property.position = (offset * PropertyCameraController.PropertyCamTransform.forward) + PropertyCameraController.PropertyCamTransform.position;
-      // StartCoroutine(ActivateProperty(property));
-      Vector3 originalScale = property.localScale;
       property.localScale = Vector3.zero;
       LeanTween.scale(property.gameObject, originalScale, .2f);
       currentProperty = property;

@@ -147,7 +147,7 @@ public class TrialHandler : MonoBehaviour
                     string lastStimulusObject = encounterEntry.StimulusObject;
 
                     int propertyCounter = 0;
-                    while (lastStimulusObject == encounterEntry.StimulusObject && LevelHandler.CurrentLevel == encounterEntry.Level)
+                    while ((propertyCounter == 0 || encounterEntry.BlockDelay == 0) && LevelHandler.CurrentLevel == encounterEntry.Level)
                     {
                         EncounterData.PropertyTrial propertyTrial = new EncounterData.PropertyTrial();
                         propertyTrial.PropertyId = UtilsT.GetId(encounterEntry.StimulusProperty);
@@ -220,7 +220,7 @@ public class TrialHandler : MonoBehaviour
         // Add property gameobjects
         foreach (var propertyTrial in encounters[encounterCounter].PropertyTrials)
         {
-            if (propertyTrial.PropertyType != EncounterData.PropertyType.WORD)
+            if (propertyTrial.PropertyType != EncounterData.PropertyType.WORD && !objectDictionary.ContainsKey(propertyTrial.PropertyId))
                 SpawnAddToDictionary(ExternalAssetLoader.GetAsset(propertyTrial.PropertyId), propertyTrial.PropertyId);
         }
     }
