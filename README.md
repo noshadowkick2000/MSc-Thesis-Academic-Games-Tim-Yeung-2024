@@ -1,5 +1,5 @@
 # MSc Thesis Academic Games Tim Yeung 2024
- Academic test game made through collaboration between UT and MPI
+ Academic test game made as part of a Masters Thesis for Interaction Technology at the University of Twente, through collaboration between researchers attached to: the University of Twente, The Max Planck Institute for Cognitive and Brain Sciences, Leipzig University, and Ulm University
 
 ### CHANGELOG 08/02/2025
 
